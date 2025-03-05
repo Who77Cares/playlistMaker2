@@ -1,8 +1,12 @@
 package com.bignerdranch.playlistmaker
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -34,6 +38,32 @@ class AudioPlayer : AppCompatActivity() {
     private lateinit var addToLikeButton: ImageButton
     private lateinit var arrowBackButton: ImageView
 
+    private lateinit var durationInRealTime: TextView
+
+
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+    }
+
+    private lateinit var previewUrl: String
+    private var mediaPlayer = MediaPlayer()
+    private var playerState = STATE_DEFAULT
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val updateRunnable = object : Runnable {
+        override fun run() {
+            if (playerState == STATE_PLAYING) {
+                val currentPosition = mediaPlayer.currentPosition
+                val formattedTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(currentPosition)
+                durationInRealTime.text = formattedTime
+                handler.postDelayed(this, 300)
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,12 +86,11 @@ class AudioPlayer : AppCompatActivity() {
         addToLikeButton = findViewById(R.id.addToLike)
         arrowBackButton = findViewById(R.id.arrow_back)
 
-
+        durationInRealTime = findViewById(R.id.durationInRealTime)
 
 
         // Установка интентов
         val intent: Intent = intent
-
 
         val songYearIntent = intent.getStringExtra("songYear") ?: return
         val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).parse(songYearIntent)
@@ -71,6 +100,8 @@ class AudioPlayer : AppCompatActivity() {
         val formattedTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(durationTimeIntent)
 
         val songCoverIntent = intent.getStringExtra("songCover")
+
+        previewUrl = intent.getStringExtra("previewUrl") ?: ""
 
 
         trackName.text = intent.getStringExtra("trackName")
@@ -90,7 +121,7 @@ class AudioPlayer : AppCompatActivity() {
             .placeholder(R.drawable.placeholder_search)
             .into(songCover)
 
-
+        preparePlayer()
 
         arrowBackButton .setOnClickListener {
 
@@ -99,17 +130,17 @@ class AudioPlayer : AppCompatActivity() {
         }
 
 
-        playPauseButton.setOnClickListener {
-            val currentDrawable = playPauseButton.drawable
-            val pauseDrawable = ContextCompat.getDrawable(this, R.drawable.pause_icon)
-
-            // Сравниваем состояния drawable, а не сами объекты
-            if (currentDrawable.constantState == pauseDrawable?.constantState) {
-                playPauseButton.setImageResource(R.drawable.play_arrow_icon)
-            } else {
-                playPauseButton.setImageResource(R.drawable.pause_icon)
-            }
-        }
+//        playPauseButton.setOnClickListener {
+//            val currentDrawable = playPauseButton.drawable
+//            val pauseDrawable = ContextCompat.getDrawable(this, R.drawable.pause_icon)
+//
+//            // Сравниваем состояния drawable, а не сами объекты
+//            if (currentDrawable.constantState == pauseDrawable?.constantState) {
+//                playPauseButton.setImageResource(R.drawable.play_arrow_icon)
+//            } else {
+//                playPauseButton.setImageResource(R.drawable.pause_icon)
+//            }
+//        }
 
         addToLikeButton.setOnClickListener {
             val currentDrawable = addToLikeButton.drawable
@@ -123,6 +154,56 @@ class AudioPlayer : AppCompatActivity() {
             }
         }
 
+        playPauseButton .setOnClickListener {
+            playbackControl()
+        }
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(updateRunnable)
+        mediaPlayer.release()
+    }
+
+    private fun preparePlayer() {
+        mediaPlayer.setDataSource(previewUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playPauseButton.isEnabled = true
+            playerState = STATE_PREPARED
+        }
+        mediaPlayer.setOnCompletionListener {
+            playPauseButton.setImageResource(R.drawable.play_arrow_icon)
+            playerState = STATE_PREPARED
+            handler.removeCallbacks(updateRunnable)
+            durationInRealTime.text = "00:00"
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playPauseButton.setImageResource(R.drawable.pause_icon)
+        playerState = STATE_PLAYING
+        handler.post(updateRunnable)
+    }
+
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        playPauseButton.setImageResource(R.drawable.play_arrow_icon)
+        playerState = STATE_PAUSED
+        handler.removeCallbacks(updateRunnable)
+    }
+
+    private fun playbackControl() {
+        when (playerState) {
+            STATE_PLAYING -> pausePlayer()
+            STATE_PREPARED, STATE_PAUSED -> startPlayer()
+        }
     }
 }

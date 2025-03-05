@@ -46,9 +46,8 @@ class SearchAdapter(
                 putExtra("songYear", tracks[position].releaseDate)
                 putExtra("songStyle", tracks[position].primaryGenreName)
                 putExtra("songCountry", tracks[position].country)
-                putExtra("songCover", tracks[position].artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")) // увеличиваем разрешение картинки для AudioPlayer
-
-
+                putExtra("songCover", tracks[position].artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")) // увеличиваем разрешение картинки для AudioPlayer,
+                putExtra("previewUrl", tracks[position].previewUrl)
             }
 
             holder.itemView.context.startActivity(intent)

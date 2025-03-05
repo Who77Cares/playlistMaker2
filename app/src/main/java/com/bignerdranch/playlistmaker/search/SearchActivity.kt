@@ -71,6 +71,8 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
     private var handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
 
+
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

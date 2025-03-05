@@ -126,7 +126,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp12"
-        android:text="00:30"
+        android:text="00:00"
         app:layout_constraintTop_toBottomOf="@+id/PlayOrStop"
         app:layout_constraintStart_toStartOf="@+id/PlayOrStop"
         app:layout_constraintEnd_toEndOf="@+id/PlayOrStop" />
