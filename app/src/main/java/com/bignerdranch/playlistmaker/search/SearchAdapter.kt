@@ -20,6 +20,7 @@ class SearchAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(track: Track)
+        fun isClickAllowed(): Boolean
     }
 
 
@@ -32,7 +33,9 @@ class SearchAdapter(
         holder.bind(tracks[position])
 
         holder.itemView.setOnClickListener {
-            if(isClickable) itemClickListener.onItemClick(tracks[position]) // Передаем нажатый элемент в активность
+            if (isClickable && itemClickListener.isClickAllowed()) {
+                itemClickListener.onItemClick(tracks[position])
+            } // Передаем нажатый элемент в активность
 
             // открываем нажатый элемент в AudioPlayer
             val intent: Intent = Intent(holder.itemView.context, AudioPlayer::class.java).apply {
