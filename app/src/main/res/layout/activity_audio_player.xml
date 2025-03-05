@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/search_background"
+    android:paddingTop="@dimen/paddingTop"
+    android:paddingEnd="@dimen/paddingLeftAndRight"
+    android:paddingStart="@dimen/paddingLeftAndRight"
+    tools:context=".AudioPlayer">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+
+
+    <ImageView
+        android:id="@+id/arrow_back"
+        style="@style/arrow_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/songCover"
+        android:layout_marginTop="@dimen/dp42"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+
+        app:layout_constraintTop_toBottomOf="@+id/arrow_back"
+        app:layout_constraintBottom_toTopOf="@+id/trackName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/dp24"
+
+        tools:src="@drawable/placeholder_search" />
+
+    <!-- Название трека -->
+    <TextView
+        android:id="@+id/trackName"
+        style="@style/YS_Medium_22"
+        android:layout_marginTop="@dimen/dp24"
+        app:layout_constraintBottom_toTopOf="@+id/artistName"
+
+        android:layout_marginBottom="@dimen/dp12"
+        app:layout_constraintStart_toStartOf="parent"
+
+        tools:text="Еее бой" />
+
+    <!-- Группа -->
+
+    <TextView
+        style="@style/YS_Medium_14"
+        android:id="@+id/artistName"
+        android:layout_marginTop="@dimen/dp12"
+        app:layout_constraintBottom_toBottomOf="@+id/guideLine"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Сосисочка" />
+
+
+    <!-- Кнопки -->
+    <ImageButton
+        android:id="@+id/addToPlayList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.15"
+        app:layout_constraintDimensionRatio="1:1"
+        android:background="@drawable/audio_shape"
+        android:backgroundTint="@color/AudioPlayer_RightAndLeftButtons"
+        android:padding="15dp"
+        android:scaleType="centerCrop"
+
+        android:src="@drawable/add_to_play_list_icon"
+
+        app:layout_constraintEnd_toStartOf="@+id/PlayOrStop"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/PlayOrStop"
+        app:layout_constraintTop_toTopOf="@+id/PlayOrStop" />
+
+    <ImageButton
+        android:id="@+id/PlayOrStop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.25"
+        app:layout_constraintDimensionRatio="1:1"
+        android:foreground="?attr/selectableItemBackground"
+        android:background="@drawable/audio_shape"
+        android:backgroundTint="@color/text_error_color"
+        android:padding="15dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/play_arrow_icon"
+        android:layout_marginTop="28dp"
+        app:layout_constraintTop_toBottomOf="@+id/guideLine"
+        app:layout_constraintEnd_toStartOf="@+id/addToLike"
+        app:layout_constraintStart_toEndOf="@+id/addToPlayList" />
+
+    <ImageButton
+        android:id="@+id/addToLike"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.15"
+        app:layout_constraintDimensionRatio="1:1"
+        android:background="@drawable/audio_shape"
+        android:src="@drawable/empty_like"
+        android:backgroundTint="@color/AudioPlayer_RightAndLeftButtons"
+        android:padding="15dp"
+        android:scaleType="centerCrop"
+
+        app:layout_constraintBottom_toBottomOf="@+id/PlayOrStop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/PlayOrStop"
+        app:layout_constraintTop_toTopOf="@+id/PlayOrStop"/>
+
+
+    <!-- Время проигрыша трека -->
+    <TextView
+        style="@style/YS_Medium_14"
+        android:id="@+id/durationInRealTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp12"
+        android:text="00:00"
+        app:layout_constraintTop_toBottomOf="@+id/PlayOrStop"
+        app:layout_constraintStart_toStartOf="@+id/PlayOrStop"
+        app:layout_constraintEnd_toEndOf="@+id/PlayOrStop" />
+
+    <!-- Длительность -->
+    <TextView
+        style="@style/YS_Regular_13"
+        android:id="@+id/duration"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/durationInRealTime"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/song_duration" />
+
+    <TextView
+        style="@style/YS_Regular_13_for_values"
+        android:id="@+id/durationTime"
+        app:layout_constraintTop_toTopOf="@+id/duration"
+        app:layout_constraintBottom_toBottomOf="@+id/duration"
+        app:layout_constraintStart_toEndOf="@id/duration"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="00:00" />
+
+    <!-- Альбом -->
+    <TextView
+        style="@style/YS_Regular_13"
+        android:id="@+id/albom"
+        android:layout_marginTop="18dp"
+        app:layout_constraintTop_toBottomOf="@+id/duration"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/song_album" />
+
+    <TextView
+        style="@style/YS_Regular_13_for_values"
+        android:id="@+id/album"
+        app:layout_constraintTop_toTopOf="@+id/albom"
+        app:layout_constraintBottom_toBottomOf="@+id/albom"
+        app:layout_constraintStart_toEndOf="@id/albom"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text=" Neo" />
+
+    <!-- год -->
+    <TextView
+        style="@style/YS_Regular_13"
+        android:id="@+id/year"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/albom"
+        android:text="@string/song_year" />
+
+    <TextView
+        style="@style/YS_Regular_13_for_values"
+        android:id="@+id/sondYear"
+        app:layout_constraintTop_toTopOf="@+id/year"
+        app:layout_constraintBottom_toBottomOf="@+id/year"
+        app:layout_constraintStart_toEndOf="@id/year"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="1999" />
+
+    <!-- Стиль -->
+    <TextView
+        style="@style/YS_Regular_13"
+        android:id="@+id/style"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/year"
+        android:text="@string/song_style" />
+
+    <TextView
+        style="@style/YS_Regular_13_for_values"
+        android:id="@+id/songStyle"
+        app:layout_constraintTop_toTopOf="@+id/style"
+        app:layout_constraintBottom_toBottomOf="@+id/style"
+        app:layout_constraintStart_toEndOf="@id/style"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="rock" />
+
+    <!-- страна -->
+    <TextView
+        style="@style/YS_Regular_13"
+        android:id="@+id/country"
+        android:layout_marginTop="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/style"
+        android:text="@string/song_country" />
+
+    <TextView
+        style="@style/YS_Regular_13_for_values"
+        android:id="@+id/songCountry"
+        app:layout_constraintTop_toTopOf="@+id/country"
+        app:layout_constraintBottom_toBottomOf="@+id/country"
+        app:layout_constraintStart_toEndOf="@id/country"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Россия" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/country"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

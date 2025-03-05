@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
+    <dimen name="button_main_height">0dp</dimen>
+    <dimen name="search_drawablePadding">8dp</dimen>
+    <dimen name="text_group_name_and_duration">11sp</dimen>
+    <dimen name="dp12">12dp</dimen>
+    <dimen name="sp14">14sp</dimen>
     <dimen name="paddingTop">14dp</dimen>
     <dimen name="paddingLeftAndRight">16dp</dimen>
-    <dimen name="paddingBottom">28dp</dimen>
-
-    <dimen name="for_blocks">40dp</dimen>
-    <dimen name="screen_margins">24dp</dimen>
-    <dimen name="text">22sp</dimen>
     <dimen name="text_small">16sp</dimen>
-    <dimen name="button_main_height">0dp</dimen>
-
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="sp22">22sp</dimen>
+    <dimen name="dp24">24dp</dimen>
+    <dimen name="paddingBottom">28dp</dimen>
+    <dimen name="for_blocks">40dp</dimen>
     <dimen name="padding_for_settings">40dp</dimen>
-
-    <dimen name="search_drawablePadding">8dp</dimen>
-    <dimen name="search_song_box_height">61dp</dimen>
+    <dimen name="dp42">42dp</dimen>
     <dimen name="song_pic">45dp</dimen>
-    <dimen name="text_group_name_and_duration">11sp</dimen>
+    <dimen name="search_song_box_height">61dp</dimen>
 
 </resources>

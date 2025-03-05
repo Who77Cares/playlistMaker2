@@ -19,11 +19,8 @@
 
         <ImageView
             android:id="@+id/arrow_back"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            app:tint="@color/settings_back_icon"
-            android:src="@drawable/arrow_back"
-            android:layout_marginEnd="@dimen/screen_margins"/>
+            style="@style/arrow_back"
+            android:layout_marginEnd="@dimen/dp24"/>
 
         <TextView
             android:fontFamily="@font/ys_display_medium"
@@ -31,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="@string/settings"
             android:textColor="@color/main_text"
-            android:textSize="@dimen/text" />
+            android:textSize="@dimen/sp22" />
 
     </LinearLayout>
 

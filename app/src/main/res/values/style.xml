@@ -6,7 +6,7 @@
         <item name="android:layout_height">@dimen/button_main_height</item>
         <item name="android:layout_weight">1</item>
         <item name="android:backgroundTint">@color/white</item>
-        <item name="android:textSize">@dimen/text</item>
+        <item name="android:textSize">@dimen/sp22</item>
         <item name="android:textColor">@color/main_text_buttons</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
@@ -72,10 +72,58 @@
     <style name="button_for_updateButton_and_clearSearchList" >
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/screen_margins</item>
+        <item name="android:layout_marginTop">@dimen/dp24</item>
         <item name="backgroundTint">@color/text_error_color</item>
         <item name="android:textColor">@color/search_background</item>
         <item name="cornerRadius">54dp</item>
+    </style>
+
+
+    <style name="arrow_back" >
+        <item name="android:layout_width">22dp</item>
+        <item name="android:layout_height">22dp</item>
+        <item name="tint">@color/settings_back_icon</item>
+        <item name="android:src">@drawable/arrow_back</item>
+    </style>
+
+    <!-- Текст-->
+
+    <style name="YS_Medium_22" >
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/main_text</item>
+        <item name="android:textSize">@dimen/sp22</item>
+    </style>
+
+    <style name="YS_Medium_14" >
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/main_text</item>
+        <item name="android:textSize">@dimen/sp14</item>
+    </style>
+
+    <style name="YS_Regular_13" >
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#AEAFB4</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <style name="YS_Regular_13_for_values" >
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/main_text</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="layout_constraintHorizontal_chainStyle">packed</item>
+        <item name="layout_constraintHorizontal_bias">1.0</item>
+        <item name="maxLines">1</item>
+        <item name="layout_constrainedWidth">true</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
 

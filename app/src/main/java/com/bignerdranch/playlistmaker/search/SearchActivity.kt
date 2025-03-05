@@ -3,6 +3,8 @@ package com.bignerdranch.playlistmaker.search
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -11,6 +13,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.playlistmaker.MainActivity
@@ -39,6 +42,7 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
     private lateinit var layoutForSearchList: LinearLayout
     private lateinit var updateButton:Button
     private lateinit var searchTracksClearButton: Button
+    private lateinit var progressBar: ProgressBar
 
     private var searchText: String? = null
 
@@ -56,9 +60,17 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         .build()
 
     private val iTunesService = retrofit.create(iTunesApi::class.java)
-
-
     private val searchPreferences = SearchPreferences()
+
+
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+    }
+    private val searchRunnable = Runnable { fetchTracks(searchEditText.text.toString()) }
+    private var handler = Handler(Looper.getMainLooper())
+    private var isClickAllowed = true
+
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -69,16 +81,14 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         searchEditText = findViewById(R.id.search_editText)
         arrowBackButton = findViewById(R.id.arrow_back_search)
         closeImageView = findViewById(R.id.close_ImageView_button)
-
         recyclerViewForSearch = findViewById(R.id.search_list)
         recyclerView = findViewById(R.id.track_list)
-
         placeholderLayoutNotFound = findViewById(R.id.placeholderLayout_notFound)
         placeholderLayoutConnectionError = findViewById(R.id.placeholderLayout_connectionError)
         updateButton = findViewById(R.id.updateButton)
         layoutForSearchList = findViewById(R.id.searched_tracks)
-
         searchTracksClearButton = findViewById(R.id.searched_tracksButton_clear)
+        progressBar = findViewById(R.id.progressBar)
 
 
 
@@ -130,9 +140,9 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         // поиск в iTunes
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                fetchTracks(searchEditText.text.toString())
+//                fetchTracks(searchEditText.text.toString())
                 hideKeyboard()
-                placeholderLayoutNotFound.visibility = View.GONE
+//                placeholderLayoutNotFound.visibility = View.GONE
                 true
             } else {
                 false
@@ -192,6 +202,8 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
                 tracks.clear()
                 adapter.notifyDataSetChanged()
             }
+
+            searchDebounce()
         }
         override fun afterTextChanged(p0: Editable?) {
         }
@@ -243,8 +255,11 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
     // логика работы iTunesAPI
     private fun fetchTracks(searchQuery: String) {
+        if (searchQuery.isEmpty()) return  // Не делать запрос, если строка пустая
+        progressBar.visibility = View.VISIBLE
         iTunesService.findTrack(searchQuery).enqueue(object : Callback<TrackResponse> {
             override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
+                progressBar.visibility = View.GONE
                 tracks.clear()
                 if (response.isSuccessful && response.body()?.results?.isNotEmpty() == true) {
                     tracks.addAll(response.body()?.results!!)
@@ -260,6 +275,7 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
             }
 
             override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                progressBar.visibility = View.GONE
                 tracks.clear()
                 adapter.notifyDataSetChanged()
                 updatePlaceholders(showNotFound = false, showConnectionError = true, showViewSearch = false)
@@ -272,5 +288,27 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         placeholderLayoutNotFound.visibility = if (showNotFound) View.VISIBLE else View.GONE
         placeholderLayoutConnectionError.visibility = if (showConnectionError) View.VISIBLE else View.GONE
         layoutForSearchList.visibility = if (showViewSearch && searchTracks.isNotEmpty()) View.VISIBLE else View.GONE
+    }
+
+// отложенный запрос в сеть через 2 сек после ввода текста в эдиттекст
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        if (!searchEditText.text.isNullOrEmpty()) {
+            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        }
+    }
+
+    // отмена случайного двойного нажатия
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    override fun isClickAllowed(): Boolean {
+        return clickDebounce()
     }
 }

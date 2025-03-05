@@ -23,5 +23,11 @@
     <string name="your_search">Вы искали</string>
     <string name="clean_search_list">Очистить историю</string>
 
+    <string name="song_duration">Длительность</string>
+    <string name="song_album">Альбом</string>
+    <string name="song_year">Год</string>
+    <string name="song_style">Жанр</string>
+    <string name="song_country">Страна</string>
+
 
 </resources>

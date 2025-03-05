@@ -1,10 +1,12 @@
 package com.bignerdranch.playlistmaker.search
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bignerdranch.playlistmaker.AudioPlayer
 import com.bignerdranch.playlistmaker.R
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -18,6 +20,7 @@ class SearchAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(track: Track)
+        fun isClickAllowed(): Boolean
     }
 
 
@@ -30,7 +33,25 @@ class SearchAdapter(
         holder.bind(tracks[position])
 
         holder.itemView.setOnClickListener {
-            if(isClickable) itemClickListener.onItemClick(tracks[position]) // Передаем нажатый элемент в активность
+            if (isClickable && itemClickListener.isClickAllowed()) {
+                itemClickListener.onItemClick(tracks[position])
+            } // Передаем нажатый элемент в активность
+
+            // открываем нажатый элемент в AudioPlayer
+            val intent: Intent = Intent(holder.itemView.context, AudioPlayer::class.java).apply {
+                putExtra("trackName", tracks[position].trackName)
+                putExtra("artistName", tracks[position].artistName)
+                putExtra("durationTime", tracks[position].trackTimeMillis)
+                putExtra("album", tracks[position].collectionName)
+                putExtra("songYear", tracks[position].releaseDate)
+                putExtra("songStyle", tracks[position].primaryGenreName)
+                putExtra("songCountry", tracks[position].country)
+                putExtra("songCover", tracks[position].artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")) // увеличиваем разрешение картинки для AudioPlayer,
+                putExtra("previewUrl", tracks[position].previewUrl)
+            }
+
+            holder.itemView.context.startActivity(intent)
+
         }
 
     }
