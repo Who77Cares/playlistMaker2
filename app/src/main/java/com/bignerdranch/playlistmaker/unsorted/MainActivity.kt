@@ -1,9 +1,10 @@
-package com.bignerdranch.playlistmaker
+package com.bignerdranch.playlistmaker.unsorted
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.search.SearchActivity
 
 class MainActivity : AppCompatActivity() {

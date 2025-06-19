@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/paddingTop"
     android:paddingEnd="@dimen/paddingLeftAndRight"
     android:paddingStart="@dimen/paddingLeftAndRight"
-    tools:context=".AudioPlayer">
+    tools:context=".unsorted.AudioPlayer">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideLine"
