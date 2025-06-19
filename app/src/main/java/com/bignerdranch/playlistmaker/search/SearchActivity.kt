@@ -27,7 +27,7 @@ const val SEARCH_LIST: String = "search_list"
 
 class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
-    private val trackInteractor = Creator.provideTrackInteractor()
+    private val trackInteractor = Creator.provideTrackInteractor(this)
 
     private lateinit var searchEditText:EditText
     private lateinit var arrowBackButton:ImageView
@@ -256,16 +256,20 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
         trackInteractor.searchTracks(
             searchEditText.text.toString(), object : TrackInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>) {
+                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
                     handler.post { // и тут многопоточка
                         progressBar.visibility = View.GONE
-                        tracks.clear()
-                        tracks.addAll(foundTracks)
-                        trackRecycleView.visibility = View.VISIBLE
-                        adapter.notifyDataSetChanged()
 
-                        if (tracks.isEmpty()) {
+                        if(foundTracks != null) {
+                            tracks.clear()
+                            tracks.addAll(foundTracks)
+                            trackRecycleView.visibility = View.VISIBLE
+                            adapter.notifyDataSetChanged()
+
+                        } else if (errorMessage == "Ничего не найдено") {
                             placeholderLayoutNotFound.visibility = View.VISIBLE
+                        } else {
+                            placeholderLayoutConnectionError.visibility = View.VISIBLE
                         }
                     }
                 }

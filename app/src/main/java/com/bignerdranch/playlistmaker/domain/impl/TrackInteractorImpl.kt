@@ -1,5 +1,6 @@
 package com.bignerdranch.playlistmaker.domain.impl
 
+import com.bignerdranch.playlistmaker.Resource
 import com.bignerdranch.playlistmaker.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.domain.api.TrackRepository
 import java.util.concurrent.Executors
@@ -13,7 +14,12 @@ class TrackInteractorImpl(
 
     override fun searchTracks(expression: String, consumer: TrackInteractor.TracksConsumer) {
         executor.execute {
-            consumer.consume(repository.searchTrack(expression))
+            val resource = repository.searchTrack(expression)
+
+            when(resource) {
+                is Resource.Success -> { consumer.consume(resource.data, null) }
+                is Resource.Error -> { consumer.consume(null, resource.message) }
+            }
         }
     }
 }
