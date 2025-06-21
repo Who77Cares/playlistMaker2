@@ -20,7 +20,7 @@
             android:name=".unsorted.AudioPlayer"
             android:exported="false" />
         <activity
-            android:name=".search.SearchActivity"
+            android:name=".ui.searchTrack.SearchActivity"
             android:exported="false" />
         <activity
             android:name=".unsorted.MediaActivity"

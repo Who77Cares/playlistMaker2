@@ -11,7 +11,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bignerdranch.playlistmaker.R
-import com.bignerdranch.playlistmaker.search.SearchActivity
+import com.bignerdranch.playlistmaker.ui.searchTrack.SearchActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat

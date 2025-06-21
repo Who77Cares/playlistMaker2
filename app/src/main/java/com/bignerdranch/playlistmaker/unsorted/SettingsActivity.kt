@@ -13,9 +13,6 @@ import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
 
-
-
-
     private lateinit var buttonArrowBack: ImageView
     private lateinit var switch: SwitchMaterial
     private lateinit var share: MaterialTextView
@@ -25,9 +22,6 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
-
-
 
         buttonArrowBack = findViewById(R.id.arrow_back)
         switch = findViewById(R.id.switch_compat)

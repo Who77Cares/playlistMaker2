@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.search
+package com.bignerdranch.playlistmaker.ui.searchTrack
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,6 +8,8 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -20,6 +22,8 @@ import com.bignerdranch.playlistmaker.unsorted.MainActivity
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.domain.models.Track
+import com.bignerdranch.playlistmaker.search.SearchPreferences
+import com.bignerdranch.playlistmaker.unsorted.AudioPlayer
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -46,8 +50,9 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
     private var searchText: String? = null
 
-    private val adapter = SearchAdapter(this, isClickable = true)
-    private val adapterForHistoryTracks = SearchAdapter(this, isClickable = false)
+
+    private val adapter = SearchAdapter(false, this)
+    private val adapterForHistoryTracks = SearchAdapter(true, this)
 
     private val tracks = ArrayList<Track>()
     private val historyTracks = ArrayList<Track>()
@@ -60,6 +65,7 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
+
     private val searchRunnable = Runnable { searchRequest() }
     private var handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
@@ -130,18 +136,6 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
 
 
-//        // поиск в iTunes
-//        searchEditText.setOnEditorActionListener { _, actionId, _ ->
-//            if (actionId == EditorInfo.IME_ACTION_DONE) {
-////                fetchTracks(searchEditText.text.toString())
-//                hideKeyboard()
-////                placeholderLayoutNotFound.visibility = View.GONE
-//                true
-//            } else {
-//                false
-//            }
-//        }
-
         // убираем список сохраненных песен при фокусе на editText
         searchEditText.setOnFocusChangeListener { view, hasFocus ->
 
@@ -163,9 +157,25 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
     }
 
     // реализация интерфейса из класса SearchAdapter для добавления нажатых треков в новый список
-    override fun onItemClick(track: Track) {
-        val existingTrack = historyTracks.find { it.trackId == track.trackId }
+    override fun onItemClick(track: Track, trackFromHistory: Boolean) {
+        if (clickDebounce()) {
+            val intent = Intent(this, AudioPlayer::class.java).apply {
+                putExtra("trackName", track.trackName)
+                putExtra("artistName", track.artistName)
+                putExtra("durationTime", track.trackTimeMillis)
+                putExtra("album", track.collectionName)
+                putExtra("songYear", track.releaseDate)
+                putExtra("songStyle", track.primaryGenreName)
+                putExtra("songCountry", track.country)
+                putExtra("songCover", track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
+                putExtra("previewUrl", track.previewUrl)
+            }
+            startActivity(intent)
+        }
 
+        if (trackFromHistory) return
+
+        val existingTrack = historyTracks.find { it.trackId == track.trackId }
         if (existingTrack != null) {
             // Если трек найден, удаляем его
             historyTracks.remove(existingTrack)
@@ -173,7 +183,6 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
             // Если трек не найден, но в списке больше 10, удаляем последний
             historyTracks.removeAt(historyTracks.size - 1)
         }
-
         historyTracks.add(0, track)
         adapterForHistoryTracks.notifyDataSetChanged()
 
@@ -303,7 +312,4 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         return current
     }
 
-    override fun isClickAllowed(): Boolean {
-        return clickDebounce()
-    }
 }
