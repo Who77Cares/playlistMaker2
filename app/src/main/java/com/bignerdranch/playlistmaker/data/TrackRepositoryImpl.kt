@@ -36,7 +36,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient): TrackReposi
                                 it.releaseDate,
                                 it.primaryGenreName,
                                 it.country,
-                                it.previewUrl
+                                it.previewUrl ?: "" // без проверки на null при поиске "щ" приложение крашится
                             )
                         }
                     )
@@ -46,27 +46,5 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient): TrackReposi
                 Resource.Error("Ошибка сервера")
             }
         }
-
-
-//        if (response.resultCode == 200) {
-//            val track = (response as TrackResponse).results.map {
-//                Track(
-//                    it.trackName,
-//                    it.artistName,
-//                    it.trackTimeMillis,
-//                    it.artworkUrl100,
-//                    it.trackId,
-//                    it.collectionName,
-//                    it.releaseDate,
-//                    it.primaryGenreName,
-//                    it.country,
-//                    it.previewUrl
-//                )
-//            }
-//            return track
-//
-//        } else {
-//            return emptyList()
-//        }
     }
 }

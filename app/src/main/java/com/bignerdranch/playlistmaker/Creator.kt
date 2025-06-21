@@ -6,6 +6,7 @@ import com.bignerdranch.playlistmaker.data.network.RetrofitNetworkClient
 import com.bignerdranch.playlistmaker.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.domain.api.TrackRepository
 import com.bignerdranch.playlistmaker.domain.impl.TrackInteractorImpl
+import com.bignerdranch.playlistmaker.ui.presentation.SearchViewModel
 
 object Creator {
 
@@ -15,5 +16,12 @@ object Creator {
 
     fun provideTrackInteractor(context: Context): TrackInteractor {
         return TrackInteractorImpl(getTrackRepository(context = context))
+    }
+
+    fun provideTrackSearchPresenter(trackView: TrackView, context: Context): SearchViewModel {
+        return SearchViewModel(
+            trackView,
+            context
+        )
     }
 }

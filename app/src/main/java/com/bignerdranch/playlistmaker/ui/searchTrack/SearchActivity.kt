@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.playlistmaker.Creator
 import com.bignerdranch.playlistmaker.unsorted.MainActivity
 import com.bignerdranch.playlistmaker.R
+import com.bignerdranch.playlistmaker.TrackState
+import com.bignerdranch.playlistmaker.TrackView
 import com.bignerdranch.playlistmaker.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.domain.models.Track
 import com.bignerdranch.playlistmaker.search.SearchPreferences
@@ -29,9 +32,10 @@ import com.google.gson.reflect.TypeToken
 
 const val SEARCH_LIST: String = "search_list"
 
-class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
+class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener, TrackView {
 
-    private val trackInteractor = Creator.provideTrackInteractor(this)
+
+    private val trackPresentr = Creator.provideTrackSearchPresenter(this, this)
 
     private lateinit var searchEditText:EditText
     private lateinit var arrowBackButton:ImageView
@@ -48,7 +52,7 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
     private lateinit var tracksHistoryClearButton: Button
     private lateinit var progressBar: ProgressBar
 
-    private var searchText: String? = null
+    private var searchText: String = ""
 
 
     private val adapter = SearchAdapter(false, this)
@@ -62,11 +66,10 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
 
     companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private val searchRunnable = Runnable { searchRequest() }
+
     private var handler = Handler(Looper.getMainLooper())
     private var isClickAllowed = true
 
@@ -83,7 +86,7 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
         trackHistoryRecycleView = findViewById(R.id.track_history_list)
         trackRecycleView = findViewById(R.id.track_list)
-        
+
         placeholderLayoutNotFound = findViewById(R.id.placeholderLayout_notFound)
         placeholderLayoutConnectionError = findViewById(R.id.placeholderLayout_connectionError)
         updateButton = findViewById(R.id.updateButton)
@@ -116,9 +119,8 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         closeImageView.setOnClickListener {
             searchEditText.text.clear()
             hideKeyboard()
-            tracks.clear()
-            adapter.notifyDataSetChanged()
-            updatePlaceholders(showNotFound = false, showConnectionError = false, showViewSearch = true)
+            showHistory()
+
         }
 
         arrowBackButton.setOnClickListener {
@@ -144,7 +146,8 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
         // Повторный запрос в iTunes
         updateButton.setOnClickListener {
-            searchRequest()
+
+            trackPresentr.searchDebounce(searchEditText.text.toString())
         }
 
     }
@@ -153,10 +156,9 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
     override fun onStop() {
         super.onStop()
         searchPreferences.write(getSharedPreferences(SEARCH_LIST, MODE_PRIVATE), historyTracks)
-
     }
 
-    // реализация интерфейса из класса SearchAdapter для добавления нажатых треков в новый список
+    // открываем трек
     override fun onItemClick(track: Track, trackFromHistory: Boolean) {
         if (clickDebounce()) {
             val intent = Intent(this, AudioPlayer::class.java).apply {
@@ -174,6 +176,8 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         }
 
         if (trackFromHistory) return
+
+        // добавляем в список истории
 
         val existingTrack = historyTracks.find { it.trackId == track.trackId }
         if (existingTrack != null) {
@@ -193,19 +197,18 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             // empty
         }
-        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            closeImageView.visibility = if (p0.isNullOrEmpty()) View.GONE else View.VISIBLE
-            searchText = p0?.toString()
+        override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            closeImageView.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
 
-            layoutForHistoryTracks.visibility = if (searchEditText.hasFocus() && p0?.isEmpty() == true) View.VISIBLE else View.GONE
+            searchText = s?.toString()?.trim() ?: ""
 
-            if (p0.isNullOrEmpty())  {
-                updatePlaceholders(showNotFound = false, showConnectionError = false, showViewSearch = true)
-                tracks.clear()
-                adapter.notifyDataSetChanged()
+            if(searchText.isEmpty()) {
+                showHistory()
+                return
             }
 
-            searchDebounce()
+            trackPresentr.searchDebounce(newText = searchText)
+
         }
         override fun afterTextChanged(p0: Editable?) {
         }
@@ -228,24 +231,24 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
     }
 
     // Восстановление состояния после изменения конфигурации устройста: введенный текст; список песен; плейсхолдеры
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchText = savedInstanceState.getString("searchText")
-        searchEditText.setText(searchText)
-
-        val savedTracksJson = savedInstanceState.getString("tracks")
-        if (!savedTracksJson.isNullOrEmpty()) {
-            val trackType = object : TypeToken<ArrayList<Track>>() {}.type
-            val restoredTracks: ArrayList<Track> = gson.fromJson(savedTracksJson, trackType)
-            tracks.clear()
-            tracks.addAll(restoredTracks)
-            adapter.notifyDataSetChanged()
-        }
-
-
-        placeholderLayoutNotFound.visibility = savedInstanceState.getInt("placeholderNotFoundVisibility", View.GONE)
-        placeholderLayoutConnectionError.visibility = savedInstanceState.getInt("placeholderConnectionErrorVisibility", View.GONE)
-    }
+//    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+//        super.onRestoreInstanceState(savedInstanceState)
+//        searchText = savedInstanceState.getString("searchText").toString()
+//        searchEditText.setText(searchText)
+//
+//        val savedTracksJson = savedInstanceState.getString("tracks")
+//        if (!savedTracksJson.isNullOrEmpty()) {
+//            val trackType = object : TypeToken<ArrayList<Track>>() {}.type
+//            val restoredTracks: ArrayList<Track> = gson.fromJson(savedTracksJson, trackType)
+//            tracks.clear()
+//            tracks.addAll(restoredTracks)
+//            adapter.notifyDataSetChanged()
+//        }
+//
+//
+//        placeholderLayoutNotFound.visibility = savedInstanceState.getInt("placeholderNotFoundVisibility", View.GONE)
+//        placeholderLayoutConnectionError.visibility = savedInstanceState.getInt("placeholderConnectionErrorVisibility", View.GONE)
+//    }
 
     private fun hideKeyboard() {
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
@@ -255,52 +258,7 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         }
     }
 
-    private fun searchRequest() {
 
-        progressBar.visibility = View.VISIBLE
-        placeholderLayoutNotFound.visibility = View.GONE
-        placeholderLayoutConnectionError.visibility = View.GONE
-        layoutForHistoryTracks.visibility = View.GONE
-        trackRecycleView.visibility = View.GONE
-
-        trackInteractor.searchTracks(
-            searchEditText.text.toString(), object : TrackInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                    handler.post { // и тут многопоточка
-                        progressBar.visibility = View.GONE
-
-                        if(foundTracks != null) {
-                            tracks.clear()
-                            tracks.addAll(foundTracks)
-                            trackRecycleView.visibility = View.VISIBLE
-                            adapter.notifyDataSetChanged()
-
-                        } else if (errorMessage == "Ничего не найдено") {
-                            placeholderLayoutNotFound.visibility = View.VISIBLE
-                        } else {
-                            placeholderLayoutConnectionError.visibility = View.VISIBLE
-                        }
-                    }
-                }
-
-            }
-        )
-    }
-
-
-    private fun updatePlaceholders(showNotFound: Boolean, showConnectionError: Boolean, showViewSearch: Boolean) {
-        placeholderLayoutNotFound.visibility = if (showNotFound) View.VISIBLE else View.GONE
-        placeholderLayoutConnectionError.visibility = if (showConnectionError) View.VISIBLE else View.GONE
-        layoutForHistoryTracks.visibility = if (showViewSearch && historyTracks.isNotEmpty()) View.VISIBLE else View.GONE
-    }
-
-// отложенный запрос в сеть через 2 сек после ввода текста в эдиттекст
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        if (!searchEditText.text.isNullOrEmpty()) {
-            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-        }
-    }
 
     // отмена случайного двойного нажатия
     private fun clickDebounce() : Boolean {
@@ -312,4 +270,67 @@ class SearchActivity: AppCompatActivity(), SearchAdapter.OnItemClickListener {
         return current
     }
 
+
+    override fun render(state: TrackState) {
+        Log.d("SearchActivity", "Render called with state: ${state::class.simpleName}")
+        when (state) {
+            is TrackState.Content -> showContent(state.tracks)
+            is TrackState.Empty -> showEmpty(state.message)
+            is TrackState.Error -> showError(state.errorMessage)
+            TrackState.Loading -> showLoading()
+        }
+    }
+
+    private fun showContent(tracks: List<Track>) {
+
+        trackRecycleView.visibility = View.VISIBLE
+
+        layoutForHistoryTracks.visibility = View.GONE
+        placeholderLayoutNotFound.visibility = View.GONE
+        placeholderLayoutConnectionError.visibility = View.GONE
+        progressBar.visibility = View.GONE
+
+        adapter.tracks.clear()
+        adapter.tracks.addAll(tracks)
+        adapter.notifyDataSetChanged()
+
+    }
+
+    private fun showEmpty(emptyMessage: String) {
+        placeholderLayoutNotFound.visibility = View.VISIBLE
+
+        trackRecycleView.visibility = View.GONE
+        layoutForHistoryTracks.visibility = View.GONE
+        placeholderLayoutConnectionError.visibility = View.GONE
+        progressBar.visibility = View.GONE
+    }
+
+    private fun showError(errorMessage: String) {
+        placeholderLayoutConnectionError.visibility = View.VISIBLE
+
+        placeholderLayoutNotFound.visibility = View.GONE
+        trackRecycleView.visibility = View.GONE
+        layoutForHistoryTracks.visibility = View.GONE
+        progressBar.visibility = View.GONE
+    }
+
+    private fun showLoading() {
+
+        progressBar.visibility = View.VISIBLE
+
+        placeholderLayoutConnectionError.visibility = View.GONE
+        placeholderLayoutNotFound.visibility = View.GONE
+        trackRecycleView.visibility = View.GONE
+        layoutForHistoryTracks.visibility = View.GONE
+
+    }
+
+    private fun showHistory() {
+        layoutForHistoryTracks.visibility = if (historyTracks.isNotEmpty()) View.VISIBLE else View.GONE
+
+        placeholderLayoutNotFound.visibility = View.GONE
+        placeholderLayoutConnectionError.visibility = View.GONE
+        trackRecycleView.visibility = View.GONE
+        progressBar.visibility = View.GONE
+    }
 }
