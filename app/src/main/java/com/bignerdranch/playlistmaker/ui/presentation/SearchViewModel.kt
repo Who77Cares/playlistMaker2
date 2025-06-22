@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,16 +12,16 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.bignerdranch.playlistmaker.Creator
-import com.bignerdranch.playlistmaker.TrackState
+import com.bignerdranch.playlistmaker.domain.api.SearchHistoryInteractor
+import com.bignerdranch.playlistmaker.ui.models.TrackState
 import com.bignerdranch.playlistmaker.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.domain.models.Track
-import com.bignerdranch.playlistmaker.search.App
-import com.bignerdranch.playlistmaker.search.SearchPreferences
-
-
-const val SEARCH_LIST: String = "search_list"
+import com.bignerdranch.playlistmaker.App
 
 class SearchViewModel(context: Context): ViewModel() {
+
+    private val trackInteractor = Creator.provideTrackInteractor(context)
+    private val historyTrackInteractor = Creator.provideSearchHistoryInteractor(context)
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
@@ -38,20 +37,15 @@ class SearchViewModel(context: Context): ViewModel() {
     private val stateLiveData = MutableLiveData<TrackState>()
     fun observerState(): LiveData<TrackState> = stateLiveData
 
+    private val historyTracks = MutableLiveData<List<Track>>()
+    fun observeHistoryMovies(): LiveData<List<Track>> = historyTracks
+
+
+    private val tracks = ArrayList<Track>()
+    private var lastSearchText: String = ""
 
     private var handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { searchRequest(lastSearchText) }
-
-    private val tracks = ArrayList<Track>()
-    private val historyTracks = ArrayList<Track>()
-    private var lastSearchText: String = ""
-
-
-    private val trackInteractor = Creator.provideTrackInteractor(context)
-
-    private val searchPreferences = SearchPreferences()
-    private val sharedPrefs = context.getSharedPreferences(SEARCH_LIST, Context.MODE_PRIVATE)
-
 
 
     // отложенный запрос в сеть через 2 сек после ввода текста в эдиттекст
@@ -59,24 +53,12 @@ class SearchViewModel(context: Context): ViewModel() {
         handler.removeCallbacks(searchRunnable)
 
         if (newText.isEmpty()) {
-            tracks.clear()
-            renderState(TrackState.History(historyTracks))
+            loadHistory()
             return
         }
 
         lastSearchText = newText
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
-
-
-    fun updateHistory() {
-
-        if (historyTracks.isEmpty()) {
-            return
-        } else {
-            renderState(TrackState.History(historyTracks))
-        }
-
     }
 
 
@@ -129,23 +111,26 @@ class SearchViewModel(context: Context): ViewModel() {
     }
 
     fun loadHistory() {
-        historyTracks.clear()
-        historyTracks.addAll(searchPreferences.read(sharedPrefs))
+      historyTrackInteractor.getHistory(
+          object : SearchHistoryInteractor.HistoryConsumer {
+              override fun consume(searchHistory: List<Track>?) {
+                  historyTracks.postValue(searchHistory ?: emptyList())
+              }
+
+          }
+      )
     }
 
-    fun saveHistory() {
-        searchPreferences.write(sharedPrefs, historyTracks)
-    }
 
     fun addTrackToHistory(track: Track) {
-        val existingTrack = historyTracks.find { it.trackId == track.trackId }
-        if (existingTrack != null) {
-            historyTracks.remove(existingTrack)
-        } else if (historyTracks.size >= 10) {
-            historyTracks.removeAt(historyTracks.size - 1)
-        }
-        historyTracks.add(0, track)
+        historyTrackInteractor.saveToHistory(track)
     }
+
+    fun clearHistory() {
+        historyTrackInteractor.clearHistory()
+        loadHistory()
+    }
+
 }
 
 

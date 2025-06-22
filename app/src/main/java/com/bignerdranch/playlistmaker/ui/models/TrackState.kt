@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker
+package com.bignerdranch.playlistmaker.ui.models
 
 import com.bignerdranch.playlistmaker.domain.models.Track
 

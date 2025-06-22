@@ -18,7 +18,7 @@
         android:layout_marginBottom="@dimen/text_small">
 
         <ImageView
-            android:id="@+id/arrow_back_search"
+            android:id="@+id/arrowBackButton"
             android:layout_width="22dp"
             android:layout_height="22dp"
             app:tint="@color/settings_back_icon"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/search_editText"
+            android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/search_shape"
@@ -62,7 +62,7 @@
             />
 
         <ImageView
-            android:id="@+id/close_ImageView_button"
+            android:id="@+id/closeImageViewButton"
             android:layout_gravity="center_vertical|end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
         android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/track_list"
+        android:id="@+id/trackRecycleView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp24"
@@ -100,14 +100,14 @@
         <LinearLayout
 
             style="@style/linear_layout_for_search"
-            android:id="@+id/searched_tracks" >
+            android:id="@+id/layoutForHistoryTracks" >
 
             <TextView
                 style="@style/text_search_error"
                 android:text="@string/your_search"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/track_history_list"
+                android:id="@+id/trackHistoryRecycleView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -116,7 +116,7 @@
 
             <Button
                 style="@style/button_for_updateButton_and_clearSearchList"
-                android:id="@+id/searched_tracksButton_clear"
+                android:id="@+id/tracksHistoryClearButton"
                 android:text="@string/clean_search_list" />
         </LinearLayout>
 
@@ -126,7 +126,7 @@
         <LinearLayout
             style="@style/linear_layout_for_search"
             android:visibility="invisible"
-            android:id="@+id/placeholderLayout_notFound" >
+            android:id="@+id/placeholderLayoutNotFound" >
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -142,7 +142,7 @@
         <LinearLayout
             style="@style/linear_layout_for_search"
             android:visibility="invisible"
-            android:id="@+id/placeholderLayout_connectionError" >
+            android:id="@+id/placeholderLayoutConnectionError" >
 
             <ImageView
                 android:layout_width="wrap_content"
