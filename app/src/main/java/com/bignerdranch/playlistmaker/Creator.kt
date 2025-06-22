@@ -17,11 +17,4 @@ object Creator {
     fun provideTrackInteractor(context: Context): TrackInteractor {
         return TrackInteractorImpl(getTrackRepository(context = context))
     }
-
-    fun provideTrackSearchPresenter(trackView: TrackView, context: Context): SearchViewModel {
-        return SearchViewModel(
-            trackView,
-            context
-        )
-    }
 }

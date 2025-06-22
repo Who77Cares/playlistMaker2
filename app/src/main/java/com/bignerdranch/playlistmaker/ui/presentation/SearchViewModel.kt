@@ -3,45 +3,80 @@ package com.bignerdranch.playlistmaker.ui.presentation
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.bignerdranch.playlistmaker.Creator
 import com.bignerdranch.playlistmaker.TrackState
-import com.bignerdranch.playlistmaker.TrackView
 import com.bignerdranch.playlistmaker.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.domain.models.Track
-import com.bignerdranch.playlistmaker.ui.searchTrack.SearchActivity
-import com.bignerdranch.playlistmaker.ui.searchTrack.SearchActivity.Companion
+import com.bignerdranch.playlistmaker.search.App
+import com.bignerdranch.playlistmaker.search.SearchPreferences
 
-class SearchViewModel(private val view: TrackView, private val context: Context) {
+
+const val SEARCH_LIST: String = "search_list"
+
+class SearchViewModel(context: Context): ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
 
+        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val app = (this[APPLICATION_KEY] as App)
+                SearchViewModel(app)
+            }
+        }
     }
 
+    private val stateLiveData = MutableLiveData<TrackState>()
+    fun observerState(): LiveData<TrackState> = stateLiveData
+
+
     private var handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { searchRequest(lastSearchText) }
 
     private val tracks = ArrayList<Track>()
     private val historyTracks = ArrayList<Track>()
     private var lastSearchText: String = ""
 
-    private val searchRunnable = Runnable { searchRequest(lastSearchText) }
-
 
     private val trackInteractor = Creator.provideTrackInteractor(context)
 
+    private val searchPreferences = SearchPreferences()
+    private val sharedPrefs = context.getSharedPreferences(SEARCH_LIST, Context.MODE_PRIVATE)
+
+
+
     // отложенный запрос в сеть через 2 сек после ввода текста в эдиттекст
     fun searchDebounce(newText: String) {
-        lastSearchText = newText
         handler.removeCallbacks(searchRunnable)
-        if (newText.isNotEmpty()) {
-            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-        } else {
-            // Очистить результаты, если пустой запрос
+
+        if (newText.isEmpty()) {
             tracks.clear()
-            view.render(TrackState.Empty("Введите текст для поиска"))
+            renderState(TrackState.History(historyTracks))
+            return
         }
+
+        lastSearchText = newText
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+
+    fun updateHistory() {
+
+        if (historyTracks.isEmpty()) {
+            return
+        } else {
+            renderState(TrackState.History(historyTracks))
+        }
+
     }
 
 
@@ -53,7 +88,7 @@ class SearchViewModel(private val view: TrackView, private val context: Context)
 
         }
 
-        view.render( TrackState.Loading )
+        renderState( TrackState.Loading )
 
         trackInteractor.searchTracks(
             newSearchText, object : TrackInteractor.TracksConsumer {
@@ -70,15 +105,15 @@ class SearchViewModel(private val view: TrackView, private val context: Context)
                         when {
                             errorMessage == "Проверьте подключение к интернету" -> {
                                 Log.d("SearchViewModel", "Rendering Error state")
-                                view.render(TrackState.Error("Опаньки"))
+                                renderState(TrackState.Error("Опаньки"))
                             }
                             tracks.isEmpty() -> {
                                 Log.d("SearchViewModel", "Rendering Empty state")
-                                view.render(TrackState.Empty("Пусто"))
+                                renderState(TrackState.Empty("Пусто"))
                             }
                             else -> {
                                 Log.d("SearchViewModel", "Rendering Content state with ${tracks.size} tracks")
-                                view.render(TrackState.Content(tracks))
+                                renderState(TrackState.Content(tracks))
                             }
                         }
                     }
@@ -89,9 +124,28 @@ class SearchViewModel(private val view: TrackView, private val context: Context)
 
     }
 
+    fun renderState(state: TrackState) {
+        stateLiveData.postValue(state)
+    }
 
+    fun loadHistory() {
+        historyTracks.clear()
+        historyTracks.addAll(searchPreferences.read(sharedPrefs))
+    }
 
+    fun saveHistory() {
+        searchPreferences.write(sharedPrefs, historyTracks)
+    }
 
+    fun addTrackToHistory(track: Track) {
+        val existingTrack = historyTracks.find { it.trackId == track.trackId }
+        if (existingTrack != null) {
+            historyTracks.remove(existingTrack)
+        } else if (historyTracks.size >= 10) {
+            historyTracks.removeAt(historyTracks.size - 1)
+        }
+        historyTracks.add(0, track)
+    }
 }
 
 

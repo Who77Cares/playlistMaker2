@@ -17,4 +17,8 @@ sealed interface TrackState {
     data class Empty(
         val message: String
     ): TrackState
+
+    data class History(
+        val historyTracks: List<Track>
+    ): TrackState
 }
