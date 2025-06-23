@@ -1,7 +1,6 @@
-package com.bignerdranch.playlistmaker.search
+package com.bignerdranch.playlistmaker
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 
 class App: Application() {

@@ -1,14 +1,12 @@
-package com.bignerdranch.playlistmaker
+package com.bignerdranch.playlistmaker.unsorted
 
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
-import com.bignerdranch.playlistmaker.search.App
+import com.bignerdranch.playlistmaker.R
+import com.bignerdranch.playlistmaker.App
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
@@ -22,7 +20,6 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
 
         buttonArrowBack = findViewById(R.id.arrow_back)

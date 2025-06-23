@@ -1,28 +1,28 @@
-package com.bignerdranch.playlistmaker.search
+package com.bignerdranch.playlistmaker.ui.searchTrack
 
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bignerdranch.playlistmaker.AudioPlayer
+import com.bignerdranch.playlistmaker.unsorted.AudioPlayer
 import com.bignerdranch.playlistmaker.R
+import com.bignerdranch.playlistmaker.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class SearchAdapter(
-    private val itemClickListener: OnItemClickListener,
-    private val isClickable: Boolean = false
+    private val isHistory: Boolean, // обновляем историю только при клике на трек из сети
+    private val itemClickListener: OnItemClickListener // интерфейс для обработки клика в SearchActivity
 ) : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
-    interface OnItemClickListener {
-        fun onItemClick(track: Track)
-        fun isClickAllowed(): Boolean
+    fun interface OnItemClickListener {
+        fun onItemClick(track: Track, trackFromHistory: Boolean)
     }
-
 
     var tracks = ArrayList<Track>()
 
@@ -33,25 +33,10 @@ class SearchAdapter(
         holder.bind(tracks[position])
 
         holder.itemView.setOnClickListener {
-            if (isClickable && itemClickListener.isClickAllowed()) {
-                itemClickListener.onItemClick(tracks[position])
-            } // Передаем нажатый элемент в активность
-
-            // открываем нажатый элемент в AudioPlayer
-            val intent: Intent = Intent(holder.itemView.context, AudioPlayer::class.java).apply {
-                putExtra("trackName", tracks[position].trackName)
-                putExtra("artistName", tracks[position].artistName)
-                putExtra("durationTime", tracks[position].trackTimeMillis)
-                putExtra("album", tracks[position].collectionName)
-                putExtra("songYear", tracks[position].releaseDate)
-                putExtra("songStyle", tracks[position].primaryGenreName)
-                putExtra("songCountry", tracks[position].country)
-                putExtra("songCover", tracks[position].artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")) // увеличиваем разрешение картинки для AudioPlayer,
-                putExtra("previewUrl", tracks[position].previewUrl)
-            }
-
-            holder.itemView.context.startActivity(intent)
-
+                itemClickListener.onItemClick(
+                    track = tracks[position],
+                    trackFromHistory = isHistory
+                )
         }
 
     }

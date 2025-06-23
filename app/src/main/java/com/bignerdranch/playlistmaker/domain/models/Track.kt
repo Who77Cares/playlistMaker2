@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.search
+package com.bignerdranch.playlistmaker.domain.models
 
 data class Track (
     val trackName: String,
