@@ -37,9 +37,6 @@ class SearchViewModel(context: Context): ViewModel() {
     private val stateLiveData = MutableLiveData<TrackState>()
     fun observerState(): LiveData<TrackState> = stateLiveData
 
-    private val historyTracks = MutableLiveData<List<Track>>()
-    fun observeHistoryMovies(): LiveData<List<Track>> = historyTracks
-
 
     private val tracks = ArrayList<Track>()
     private var lastSearchText: String = ""
@@ -114,7 +111,7 @@ class SearchViewModel(context: Context): ViewModel() {
       historyTrackInteractor.getHistory(
           object : SearchHistoryInteractor.HistoryConsumer {
               override fun consume(searchHistory: List<Track>?) {
-                  historyTracks.postValue(searchHistory ?: emptyList())
+                  renderState(TrackState.History(searchHistory ?: emptyList() ))
               }
 
           }

@@ -56,13 +56,6 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener {
             render(it)
         }
 
-        viewModel?.observeHistoryMovies()?.observe(this) {
-            if (binding.searchEditText.text.isEmpty()) {
-                render(TrackState.History(it))
-            }
-        }
-
-
         // логика работы RecycleView
         adapter.tracks = tracks
         binding.trackRecycleView.adapter = adapter
@@ -140,8 +133,6 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
             if (searchText.isEmpty()) {
                 viewModel?.loadHistory()
-            } else {
-                binding.layoutForHistoryTracks.visibility = View.GONE
             }
         }
     }
