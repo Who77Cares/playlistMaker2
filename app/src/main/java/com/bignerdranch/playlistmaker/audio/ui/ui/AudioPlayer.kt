@@ -13,8 +13,6 @@ import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bignerdranch.playlistmaker.search.ui.ui.SearchActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 
 class AudioPlayer : AppCompatActivity() {

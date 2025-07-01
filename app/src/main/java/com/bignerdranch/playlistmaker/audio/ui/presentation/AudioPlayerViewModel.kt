@@ -3,7 +3,6 @@ package com.bignerdranch.playlistmaker.audio.ui.presentation
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.bignerdranch.playlistmaker.mainScreen.MainActivity
 import com.bignerdranch.playlistmaker.databinding.ActivitySearchBinding
 import com.bignerdranch.playlistmaker.search.ui.models.TrackState
 import com.bignerdranch.playlistmaker.search.domain.models.Track
@@ -80,8 +79,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener {
         }
 
         binding.arrowBackButton.setOnClickListener {
-            val intent = Intent(this@SearchActivity, MainActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         binding.tracksHistoryClearButton.setOnClickListener {

@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.unsorted
+package com.bignerdranch.playlistmaker.media
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
