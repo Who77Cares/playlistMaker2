@@ -1,18 +1,17 @@
 package com.bignerdranch.playlistmaker
 
 import android.content.Context
-import com.bignerdranch.playlistmaker.data.SearchHistoryRepositoryImpl
-import com.bignerdranch.playlistmaker.data.TrackRepositoryImpl
-import com.bignerdranch.playlistmaker.data.network.RetrofitNetworkClient
-import com.bignerdranch.playlistmaker.data.storage.PrefsStorageClient
-import com.bignerdranch.playlistmaker.domain.api.SearchHistoryInteractor
-import com.bignerdranch.playlistmaker.domain.api.SearchHistoryRepository
-import com.bignerdranch.playlistmaker.domain.api.TrackInteractor
-import com.bignerdranch.playlistmaker.domain.api.TrackRepository
-import com.bignerdranch.playlistmaker.domain.impl.SearchHistoryInteractorImpl
-import com.bignerdranch.playlistmaker.domain.impl.TrackInteractorImpl
-import com.bignerdranch.playlistmaker.domain.models.Track
-import com.bignerdranch.playlistmaker.ui.presentation.SearchViewModel
+import com.bignerdranch.playlistmaker.search.data.repositoryImpl.SearchHistoryRepositoryImpl
+import com.bignerdranch.playlistmaker.search.data.repositoryImpl.TrackRepositoryImpl
+import com.bignerdranch.playlistmaker.search.data.network.RetrofitNetworkClient
+import com.bignerdranch.playlistmaker.search.data.storage.PrefsStorageClient
+import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryInteractor
+import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryRepository
+import com.bignerdranch.playlistmaker.search.domain.api.TrackInteractor
+import com.bignerdranch.playlistmaker.search.domain.api.TrackRepository
+import com.bignerdranch.playlistmaker.search.domain.interactorImpl.SearchHistoryInteractorImpl
+import com.bignerdranch.playlistmaker.search.domain.interactorImpl.TrackInteractorImpl
+import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.google.gson.reflect.TypeToken
 
 object Creator {

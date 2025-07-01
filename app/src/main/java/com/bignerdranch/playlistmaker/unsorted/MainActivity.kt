@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.bignerdranch.playlistmaker.R
-import com.bignerdranch.playlistmaker.ui.searchTrack.SearchActivity
+import com.bignerdranch.playlistmaker.search.ui.ui.SearchActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

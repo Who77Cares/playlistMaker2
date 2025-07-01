@@ -17,10 +17,10 @@
         android:theme="@style/Theme.PlaylistMaker"
         tools:targetApi="31" >
         <activity
-            android:name=".unsorted.AudioPlayer"
+            android:name=".audio.ui.ui.AudioPlayer"
             android:exported="false" />
         <activity
-            android:name=".ui.searchTrack.SearchActivity"
+            android:name="com.bignerdranch.playlistmaker.search.ui.ui.SearchActivity"
             android:exported="false" />
         <activity
             android:name=".unsorted.MediaActivity"
