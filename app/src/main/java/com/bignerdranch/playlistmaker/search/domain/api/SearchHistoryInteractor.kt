@@ -4,9 +4,13 @@ import com.bignerdranch.playlistmaker.search.domain.models.Track
 
 interface SearchHistoryInteractor {
 
-    fun getHistory(): List<Track>?
+    fun getHistory(consumer: HistoryConsumer)
     fun saveToHistory(t: Track)
     fun clearHistory()
+
+    interface HistoryConsumer {
+        fun consume(searchHistory: List<Track>?)
+    }
 
 }
 

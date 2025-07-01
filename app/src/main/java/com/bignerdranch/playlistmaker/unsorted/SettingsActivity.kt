@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.App
+import com.bignerdranch.playlistmaker.mainScreen.MainActivity
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 

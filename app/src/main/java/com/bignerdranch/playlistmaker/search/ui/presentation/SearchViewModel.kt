@@ -16,6 +16,7 @@ import com.bignerdranch.playlistmaker.search.ui.models.TrackState
 import com.bignerdranch.playlistmaker.search.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bignerdranch.playlistmaker.App
+import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryInteractor
 
 class SearchViewModel(context: Context): ViewModel() {
 
@@ -107,12 +108,17 @@ class SearchViewModel(context: Context): ViewModel() {
     }
 
     fun loadHistory() {
+        historyTrackInteractor.getHistory(
+            object : SearchHistoryInteractor.HistoryConsumer {
+                override fun consume(searchHistory: List<Track>?) {
+                    tracks.clear()
+                    tracks.addAll(searchHistory ?: emptyList())
+                    renderState(TrackState.History(tracks))
+                }
 
-       val history = historyTrackInteractor.getHistory()
-       renderState(TrackState.History(history ?: emptyList() ))
-
+            }
+        )
     }
-
 
     fun addTrackToHistory(track: Track) {
         historyTrackInteractor.saveToHistory(track)

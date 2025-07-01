@@ -29,7 +29,7 @@
             android:name=".unsorted.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".unsorted.MainActivity"
+            android:name=".mainScreen.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

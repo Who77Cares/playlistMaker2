@@ -10,7 +10,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.bignerdranch.playlistmaker.unsorted.MainActivity
+import com.bignerdranch.playlistmaker.mainScreen.MainActivity
 import com.bignerdranch.playlistmaker.databinding.ActivitySearchBinding
 import com.bignerdranch.playlistmaker.search.ui.models.TrackState
 import com.bignerdranch.playlistmaker.search.domain.models.Track
