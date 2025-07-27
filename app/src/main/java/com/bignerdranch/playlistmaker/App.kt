@@ -2,6 +2,12 @@ package com.bignerdranch.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
+import com.bignerdranch.playlistmaker.di.dataModule
+import com.bignerdranch.playlistmaker.di.domainModule
+import com.bignerdranch.playlistmaker.di.presentationModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+
 
 class App: Application() {
     companion object {
@@ -14,6 +20,11 @@ class App: Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        startKoin{
+            androidContext(this@App)
+            modules(listOf(dataModule, domainModule, presentationModule))
+        }
 
         // Получение SharedPreferences
         val sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)

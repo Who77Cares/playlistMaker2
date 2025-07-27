@@ -2,11 +2,14 @@ package com.bignerdranch.playlistmaker.audio.ui
 
 import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
 import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.ui.presentation.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class TrackAudioMapper {
+
 
     fun map(track:Track): TrackAudioModel {
         val durationFormatted = SimpleDateFormat("mm:ss", Locale.getDefault())

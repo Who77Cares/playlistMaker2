@@ -13,11 +13,15 @@ import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bignerdranch.playlistmaker.search.ui.ui.SearchActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 
 class AudioPlayer : AppCompatActivity() {
 
-    private lateinit var viewModel: AudioPlayerViewModel
+    val mapper = TrackAudioMapper()
+    private val viewModel: AudioPlayerViewModel by viewModel {parametersOf(mapper) }
 
     private lateinit var binding: ActivityAudioPlayerBinding
 
@@ -30,11 +34,6 @@ class AudioPlayer : AppCompatActivity() {
         // Извлекаем Track из Intent
         val track = extractTrackFromIntent(intent)
 
-        // работа с ViewModel
-        val mapper = TrackAudioMapper()
-
-        viewModel = ViewModelProvider(this, AudioPlayerViewModel.getFactory(mapper))
-            .get(AudioPlayerViewModel::class.java)
 
         viewModel.observeProgressTime().observe(this) {
             binding.durationInRealTime.text = it

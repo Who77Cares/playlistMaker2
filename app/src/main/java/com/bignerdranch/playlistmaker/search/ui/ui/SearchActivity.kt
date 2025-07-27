@@ -16,10 +16,13 @@ import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bignerdranch.playlistmaker.search.ui.presentation.SearchViewModel
 import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayer
 
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
-    private var viewModel: SearchViewModel? = null
+class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
+
+    private val viewModel: SearchViewModel by viewModel()
+
     private lateinit var binding: ActivitySearchBinding
 
 
@@ -48,10 +51,9 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this, SearchViewModel.getFactory())
-            .get(SearchViewModel::class.java)
 
-        viewModel?.observerState()?.observe(this) {
+
+        viewModel.observerState().observe(this) {
             render(it)
         }
 
@@ -63,7 +65,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener {
         binding.trackHistoryRecycleView.adapter = adapterForHistoryTracks
 
 
-        viewModel?.loadHistory()
+        viewModel.loadHistory()
 
 
         // Cлушатель TextWatcher (изменения текста) в едиттексте
@@ -74,7 +76,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener {
         binding.closeImageViewButton.setOnClickListener {
             binding.searchEditText.text.clear()
             hideKeyboard()
-            viewModel?.loadHistory()
+            viewModel.loadHistory()
 
         }
 
@@ -83,13 +85,13 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener {
         }
 
         binding.tracksHistoryClearButton.setOnClickListener {
-            viewModel?.clearHistory()
+            viewModel.clearHistory()
 
         }
 
         // Повторный запрос в iTunes
         binding.updateButton.setOnClickListener {
-            viewModel?.searchDebounce(binding.searchEditText.text.toString())
+            viewModel.searchDebounce(binding.searchEditText.text.toString())
         }
 
     }
@@ -112,7 +114,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener {
         }
         // если нажатый трек не из истории -> добавляем в историю
         if (trackFromHistory) return
-        viewModel?.addTrackToHistory(track)
+        viewModel.addTrackToHistory(track)
     }
 
 
@@ -127,10 +129,10 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener {
 
             searchText = s?.toString()?.trim() ?: ""
 
-            viewModel?.searchDebounce(newText = searchText)
+            viewModel.searchDebounce(newText = searchText)
 
             if (searchText.isEmpty()) {
-                viewModel?.loadHistory()
+                viewModel.loadHistory()
             }
         }
     }
