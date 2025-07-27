@@ -72,8 +72,7 @@ class AudioPlayer : AppCompatActivity() {
 
 
         binding.arrowBack.setOnClickListener {
-            val _intent = Intent(this@AudioPlayer, SearchActivity::class.java)
-            startActivity(_intent)
+            finish()
         }
 
 

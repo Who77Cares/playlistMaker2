@@ -22,13 +22,9 @@ class AudioPlayerViewModel(private val mapper: TrackAudioMapper): ViewModel() {
         const val STATE_PREPARED = 1
         const val STATE_PLAYING = 2
         const val STATE_PAUSED = 3
-
-        fun getFactory(mapper: TrackAudioMapper): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                AudioPlayerViewModel(mapper)
-            }
         }
-    }
+
+
 
     private var previewUrl: String = ""
 
