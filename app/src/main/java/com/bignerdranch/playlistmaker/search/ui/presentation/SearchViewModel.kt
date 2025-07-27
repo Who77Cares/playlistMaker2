@@ -18,20 +18,18 @@ import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bignerdranch.playlistmaker.App
 import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryInteractor
 
-class SearchViewModel(context: Context): ViewModel() {
+class SearchViewModel(
+    context: Context,
+    private val trackInteractor: TrackInteractor,
+    private val historyTrackInteractor: SearchHistoryInteractor
+) : ViewModel() {
 
-    private val trackInteractor = Creator.provideTrackInteractor(context)
-    private val historyTrackInteractor = Creator.provideSearchHistoryInteractor(context)
+
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
 
-        fun getFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val app = (this[APPLICATION_KEY] as App)
-                SearchViewModel(app)
-            }
-        }
+
     }
 
     private val stateLiveData = MutableLiveData<TrackState>()
@@ -104,7 +102,7 @@ class SearchViewModel(context: Context): ViewModel() {
     }
 
     fun renderState(state: TrackState) {
-        stateLiveData.postValue(state)
+        stateLiveData.setValue(state)
     }
 
     fun loadHistory() {
