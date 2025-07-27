@@ -17,19 +17,19 @@
         android:theme="@style/Theme.PlaylistMaker"
         tools:targetApi="31" >
         <activity
-            android:name=".unsorted.AudioPlayer"
+            android:name=".audio.ui.ui.AudioPlayer"
             android:exported="false" />
         <activity
-            android:name=".ui.searchTrack.SearchActivity"
+            android:name="com.bignerdranch.playlistmaker.search.ui.ui.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".unsorted.MediaActivity"
+            android:name=".media.MediaActivity"
             android:exported="false" />
         <activity
-            android:name=".unsorted.SettingsActivity"
+            android:name=".settings.ui.ui.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".unsorted.MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
