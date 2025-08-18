@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,6 +12,7 @@
     android:paddingEnd="@dimen/paddingLeftAndRight"
     android:paddingBottom="@dimen/paddingBottom"
     android:paddingStart="@dimen/paddingLeftAndRight">
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,6 +47,18 @@
             android:text="@string/settings"
             app:icon="@drawable/settings" />
     </LinearLayout>
+
+
+    <!-- 0dp + layout_weight="1" гарантирует,
+    что контейнер не «толкает» ваши кнопки и
+    заголовок, а ровно занимает остаток экрана.
+    «верстку выше» мы не нарушаем.-->
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 
 </LinearLayout>

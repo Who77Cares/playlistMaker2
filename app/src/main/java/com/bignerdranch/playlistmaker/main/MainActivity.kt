@@ -7,22 +7,29 @@ import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.databinding.ActivityMainBinding
-import com.bignerdranch.playlistmaker.search.ui.ui.SearchActivity
+import com.bignerdranch.playlistmaker.media.FavoriteMediaFragment
 import com.bignerdranch.playlistmaker.media.MediaActivity
+import com.bignerdranch.playlistmaker.search.ui.ui.SearchActivity
+//import com.bignerdranch.playlistmaker.media.MediaActivity
 import com.bignerdranch.playlistmaker.settings.ui.ui.SettingsActivity
 
 class MainActivity : AppCompatActivity(), OnClickListener {
 
-    private lateinit var binding: ActivityMainBinding
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.searchButton.setOnClickListener(this)
         binding.mediaButton.setOnClickListener(this)
         binding.settingsButton.setOnClickListener(this)
+
+
     }
 
     override fun onClick(v: View) {
