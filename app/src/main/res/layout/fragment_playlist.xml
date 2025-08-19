@@ -7,10 +7,17 @@
     android:orientation="vertical"
    >
 
+    <Button
+        style="@style/button_for_updateButton_and_clearSearchList"
+
+        android:id="@+id/tracksHistoryClearButton"
+        android:text="@string/new_playlist"
+        android:layout_marginBottom="45dp"/>
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+
         android:src="@drawable/error_nothing_found" />
 
     <TextView

@@ -24,5 +24,18 @@ class FavoriteMediaFragment: Fragment() {
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
+    companion object {
+        fun newInstance(): FavoriteMediaFragment {
+            return FavoriteMediaFragment().apply {
+                arguments = Bundle().apply {
+                    // если нужно будет передать данные — положим сюда
+                }
+            }
+        }
+    }
 }

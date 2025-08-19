@@ -15,14 +15,14 @@ import com.bignerdranch.playlistmaker.settings.ui.ui.SettingsActivity
 
 class MainActivity : AppCompatActivity(), OnClickListener {
 
-    private var _binding: ActivityMainBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: ActivityMainBinding
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        _binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.searchButton.setOnClickListener(this)

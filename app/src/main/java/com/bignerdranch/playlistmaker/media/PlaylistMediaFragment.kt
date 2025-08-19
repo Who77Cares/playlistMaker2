@@ -24,4 +24,21 @@ class PlaylistMediaFragment: Fragment() {
         return binding.root
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+
+    companion object {
+        fun newInstance(): PlaylistMediaFragment {
+            return PlaylistMediaFragment().apply {
+                arguments = Bundle().apply {
+                    // если нужно будет передать данные — положим сюда
+                }
+            }
+        }
+    }
+
 }
