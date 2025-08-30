@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.TrackAudioMapper
 import com.bignerdranch.playlistmaker.audio.ui.presentation.AudioPlayerViewModel
@@ -18,9 +20,7 @@ import org.koin.core.parameter.parametersOf
 
 class AudioPlayerFragment: Fragment() {
 
-
     companion object {
-
         const val TRACK_NAME = "trackName"
         const val ARTIST_NAME = "artistName"
         const val DURATION_TIME = "durationTime"
@@ -32,25 +32,21 @@ class AudioPlayerFragment: Fragment() {
         const val SONG_COUNTRY = "songCountry"
         const val PREVIEW_URL = "previewUrl"
 
-        const val TAG = "AudioPlayerFragment"
-
-
-        fun newInstance(track: Track): AudioPlayerFragment {
-            return AudioPlayerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(TRACK_NAME, track.trackName)
-                    putString(ARTIST_NAME, track.artistName)
-                    putInt(DURATION_TIME, track.trackTimeMillis)
-                    putString(SONG_COVER, track.artworkUrl100)
-                    putInt(TRACK_ID, track.trackId)
-                    putString(ALBUM, track.collectionName)
-                    putString(SONG_YEAR, track.releaseDate)
-                    putString(SONG_STYLE, track.primaryGenreName)
-                    putString(SONG_COUNTRY, track.country)
-                    putString(PREVIEW_URL, track.previewUrl)
-                }
+        fun createArgs(track: Track): Bundle {
+            return Bundle().apply {
+                putString(TRACK_NAME, track.trackName)
+                putString(ARTIST_NAME, track.artistName)
+                putInt(DURATION_TIME, track.trackTimeMillis)
+                putString(SONG_COVER, track.artworkUrl100)
+                putInt(TRACK_ID, track.trackId)
+                putString(ALBUM, track.collectionName)
+                putString(SONG_YEAR, track.releaseDate)
+                putString(SONG_STYLE, track.primaryGenreName)
+                putString(SONG_COUNTRY, track.country)
+                putString(PREVIEW_URL, track.previewUrl)
             }
         }
+
 
     }
 
@@ -108,7 +104,7 @@ class AudioPlayerFragment: Fragment() {
 
 
         binding.arrowBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().navigateUp()
         }
 
         binding.addToLike.setOnClickListener {

@@ -40,11 +40,6 @@ class MediaFragment: Fragment() {
         tabMediator.attach()
 
 
-        binding.arrowBackMedia.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-
-
     }
     override fun onDestroyView() {
         super.onDestroyView()
