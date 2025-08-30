@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/search_background"
+    android:background="@color/background_color"
     android:paddingTop="@dimen/paddingTop"
     android:paddingEnd="@dimen/paddingLeftAndRight"
     android:paddingStart="@dimen/paddingLeftAndRight">

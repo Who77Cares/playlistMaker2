@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal|top"
+    android:layout_gravity="top|start"
+    android:orientation="vertical"
+   >
+
+    <Button
+        style="@style/button_for_updateButton_and_clearSearchList"
+
+        android:id="@+id/tracksHistoryClearButton"
+        android:text="@string/new_playlist"
+        android:layout_marginBottom="45dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:src="@drawable/error_nothing_found" />
+
+    <TextView
+        style="@style/text_search_error"
+        android:gravity="center"
+        android:text="@string/your_playlist_empty" />
+
+
+</LinearLayout>

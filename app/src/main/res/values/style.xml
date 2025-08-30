@@ -60,6 +60,19 @@
         <item name="android:layout_marginTop">@dimen/paddingLeftAndRight</item>
     </style>
 
+
+    <style name="Widget.MyTabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabTextColor">@color/text_error_color</item>
+        <item name="tabSelectedTextColor">@color/text_error_color</item>
+        <item name="tabIndicatorColor">@color/text_error_color</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="android:background">@color/background_color</item>
+
+        <item name="tabMode">fixed</item>
+        <item name="tabGravity">fill</item>
+    </style>
+
+
     <style name="linear_layout_for_search" >
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -74,7 +87,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/dp24</item>
         <item name="backgroundTint">@color/text_error_color</item>
-        <item name="android:textColor">@color/search_background</item>
+        <item name="android:textColor">@color/background_color</item>
         <item name="cornerRadius">54dp</item>
     </style>
 
