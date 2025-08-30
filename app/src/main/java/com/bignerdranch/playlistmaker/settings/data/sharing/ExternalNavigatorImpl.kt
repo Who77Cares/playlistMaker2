@@ -30,13 +30,22 @@ class ExternalNavigatorImpl(
         context.startActivity(chooserIntent)
     }
 
+
     override fun openLink(url: String) {
-        val intent = Intent().apply {
-            action = Intent.ACTION_VIEW
-            data = Uri.parse(url)
+        val safeUri = Uri.parse(
+            if (url.startsWith("http://") || url.startsWith("https://")) url
+            else "https://$url"
+        )
+
+        val intent = Intent(Intent.ACTION_VIEW, safeUri).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        val chooserIntent = Intent.createChooser(intent, "Выберите браузер:")
-        chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        val chooserIntent = Intent.createChooser(intent, "Выберите браузер:").apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         context.startActivity(chooserIntent)
+
     }
 }

@@ -1,0 +1,158 @@
+package com.bignerdranch.playlistmaker.audio.ui.ui
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.bignerdranch.playlistmaker.R
+import com.bignerdranch.playlistmaker.audio.ui.TrackAudioMapper
+import com.bignerdranch.playlistmaker.audio.ui.presentation.AudioPlayerViewModel
+import com.bignerdranch.playlistmaker.databinding.FragmentAudioPlayerBinding
+import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
+
+class AudioPlayerFragment: Fragment() {
+
+
+    companion object {
+
+        const val TRACK_NAME = "trackName"
+        const val ARTIST_NAME = "artistName"
+        const val DURATION_TIME = "durationTime"
+        const val SONG_COVER = "songCover"
+        const val TRACK_ID = "trackId"
+        const val ALBUM = "album"
+        const val SONG_YEAR = "songYear"
+        const val SONG_STYLE = "songStyle"
+        const val SONG_COUNTRY = "songCountry"
+        const val PREVIEW_URL = "previewUrl"
+
+        const val TAG = "AudioPlayerFragment"
+
+
+        fun newInstance(track: Track): AudioPlayerFragment {
+            return AudioPlayerFragment().apply {
+                arguments = Bundle().apply {
+                    putString(TRACK_NAME, track.trackName)
+                    putString(ARTIST_NAME, track.artistName)
+                    putInt(DURATION_TIME, track.trackTimeMillis)
+                    putString(SONG_COVER, track.artworkUrl100)
+                    putInt(TRACK_ID, track.trackId)
+                    putString(ALBUM, track.collectionName)
+                    putString(SONG_YEAR, track.releaseDate)
+                    putString(SONG_STYLE, track.primaryGenreName)
+                    putString(SONG_COUNTRY, track.country)
+                    putString(PREVIEW_URL, track.previewUrl)
+                }
+            }
+        }
+
+    }
+
+    private var _binding: FragmentAudioPlayerBinding? = null
+    private val binding get() = _binding!!
+
+    private val mapper = TrackAudioMapper()
+    private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(mapper) }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentAudioPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val track = extractTrackFromBundle()
+
+        viewModel.observeProgressTime().observe(viewLifecycleOwner) {
+            binding.durationInRealTime.text = it
+        }
+
+        viewModel.observePlayerState().observe(viewLifecycleOwner) {
+            changeButtonState(it == AudioPlayerViewModel.STATE_PLAYING)
+        }
+
+        binding.PlayOrStopButton.setOnClickListener {
+            viewModel.onPlayButtonClicked()
+        }
+
+        viewModel.observeTrackUiModel().observe(viewLifecycleOwner) { model ->
+            binding.trackName.text = model.trackName
+            binding.artistName.text = model.artistName
+            binding.album.text = model.album
+            binding.songYear.text = model.year
+            binding.durationTime.text = model.duration
+            binding.songStyle.text = model.style
+            binding.songCountry.text = model.country
+
+            Glide.with(this)
+                .load(model.coverUrl)
+                .fitCenter()
+                .transform(RoundedCorners(20))
+                .placeholder(R.drawable.placeholder_search)
+                .into(binding.songCover)
+        }
+
+        // Устанавливаем трек во ViewModel
+        viewModel.setTrack(track)
+
+
+        binding.arrowBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
+        binding.addToLike.setOnClickListener {
+            val currentDrawable = binding.addToLike.drawable
+            val likeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.empty_like)
+
+            // Сравниваем состояния drawable, а не сами объекты
+            if (currentDrawable.constantState == likeDrawable?.constantState) {
+                binding.addToLike.setImageResource(R.drawable.is_liked)
+            } else {
+                binding.addToLike.setImageResource(R.drawable.empty_like)
+            }
+        }
+
+
+    }
+
+    private fun changeButtonState(isPlaying: Boolean) {
+        if (isPlaying) {
+            binding.PlayOrStopButton.setImageResource(R.drawable.pause_icon)
+        } else {
+            binding.PlayOrStopButton.setImageResource(R.drawable.play_arrow_icon)
+        }
+    }
+
+    private fun extractTrackFromBundle(): Track {
+        return Track(
+            trackName = arguments?.getString(TRACK_NAME).orEmpty(),
+            artistName = arguments?.getString(ARTIST_NAME).orEmpty(),
+            trackTimeMillis = arguments?.getInt(DURATION_TIME, 0) ?: 0,
+            artworkUrl100 = arguments?.getString(SONG_COVER).orEmpty(),
+            trackId = arguments?.getInt(TRACK_ID, 0) ?: 0,
+            collectionName = arguments?.getString(ALBUM).orEmpty(),
+            releaseDate = arguments?.getString(SONG_YEAR).orEmpty(),
+            primaryGenreName =  arguments?.getString(SONG_STYLE).orEmpty(),
+            country = arguments?.getString(SONG_COUNTRY).orEmpty(),
+            previewUrl = arguments?.getString(PREVIEW_URL).orEmpty()
+        )
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+}

@@ -13,5 +13,5 @@ data class TrackDto(
     val country: String,
 
     val previewUrl: String
-) {
+){
 }

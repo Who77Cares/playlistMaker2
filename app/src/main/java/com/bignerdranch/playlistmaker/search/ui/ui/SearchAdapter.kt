@@ -1,5 +1,6 @@
 package com.bignerdranch.playlistmaker.search.ui.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -30,6 +31,9 @@ class SearchAdapter(
         holder.bind(tracks[position])
 
         holder.itemView.setOnClickListener {
+
+
+
                 itemClickListener.onItemClick(
                     track = tracks[position],
                     trackFromHistory = isHistory

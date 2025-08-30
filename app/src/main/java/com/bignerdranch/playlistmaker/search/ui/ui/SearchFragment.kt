@@ -1,61 +1,67 @@
 package com.bignerdranch.playlistmaker.search.ui.ui
 
-import android.content.Intent
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import com.bignerdranch.playlistmaker.databinding.ActivitySearchBinding
-import com.bignerdranch.playlistmaker.search.ui.models.TrackState
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import com.bignerdranch.playlistmaker.R
+import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment
+import com.bignerdranch.playlistmaker.databinding.FragmentSearchBinding
 import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.ui.models.TrackState
 import com.bignerdranch.playlistmaker.search.ui.presentation.SearchViewModel
-import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayer
-
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.text.clear
+import kotlin.toString
 
-
-class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
+class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
+    private var _binding: FragmentSearchBinding? = null
+    private val binding  get() = _binding!!
 
     private val viewModel: SearchViewModel by viewModel()
-
-    private lateinit var binding: ActivitySearchBinding
-
-
-    private var searchText: String = ""
 
 
     private val adapter = SearchAdapter(false, this)
     private val adapterForHistoryTracks = SearchAdapter(true, this)
+    private var isClickAllowed = true
+    private var searchText = ""
+
+
+    private var isHistoryLoaded = false
+
 
     private val tracks = ArrayList<Track>()
     private val historyTracks = ArrayList<Track>()
 
+    private var handler = Handler(Looper.getMainLooper())
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private var isClickAllowed = true
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
 
-    private var handler = Handler(Looper.getMainLooper())
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-
-
-        viewModel.observerState().observe(this) {
-            render(it)
-        }
 
         // логика работы RecycleView
         adapter.tracks = tracks
@@ -65,11 +71,35 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
         binding.trackHistoryRecycleView.adapter = adapterForHistoryTracks
 
 
-        viewModel.loadHistory()
+        // костыли чтобы не показывалась история поиска после возврата из AdioPlayerFragment
+        if (!isHistoryLoaded) {
+            viewModel.loadHistory()
+            isHistoryLoaded = true
+        }
 
 
         // Cлушатель TextWatcher (изменения текста) в едиттексте
         binding.searchEditText.addTextChangedListener(textWatcher)
+
+
+        viewModel.observerState().observe(viewLifecycleOwner) {
+            render(it)
+        }
+
+        // Повторный запрос в iTunes
+        binding.updateButton.setOnClickListener {
+            viewModel.searchDebounce(binding.searchEditText.text.toString())
+        }
+
+
+        binding.tracksHistoryClearButton.setOnClickListener {
+            viewModel.clearHistory()
+
+        }
+
+        binding.arrowBackButton.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
 
 
         // Очищаем содержимое EditText и прячем клаввиатуру при нажатии на крест
@@ -80,42 +110,32 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
 
         }
 
-        binding.arrowBackButton.setOnClickListener {
-            finish()
-        }
-
-        binding.tracksHistoryClearButton.setOnClickListener {
-            viewModel.clearHistory()
-
-        }
-
-        // Повторный запрос в iTunes
-        binding.updateButton.setOnClickListener {
-            viewModel.searchDebounce(binding.searchEditText.text.toString())
-        }
 
     }
 
-    // открываем трек
-    override fun onItemClick(track: Track, trackFromHistory: Boolean) {
+
+    override fun onItemClick(
+        track: Track,
+        trackFromHistory: Boolean
+    ) {
+
         if (clickDebounce()) {
-            val intent = Intent(this, AudioPlayer::class.java).apply {
-                putExtra("trackName", track.trackName)
-                putExtra("artistName", track.artistName)
-                putExtra("durationTime", track.trackTimeMillis)
-                putExtra("album", track.collectionName)
-                putExtra("songYear", track.releaseDate)
-                putExtra("songStyle", track.primaryGenreName)
-                putExtra("songCountry", track.country)
-                putExtra("songCover", track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
-                putExtra("previewUrl", track.previewUrl)
+            // тут передаем обхект Track в AudioPlayerFragment
+            parentFragmentManager.commit {
+                replace(
+                    R.id.rootFragmentContainerView,
+                    AudioPlayerFragment.newInstance(track)
+                )
+
+                addToBackStack(AudioPlayerFragment.TAG)
             }
-            startActivity(intent)
         }
-        // если нажатый трек не из истории -> добавляем в историю
+
         if (trackFromHistory) return
         viewModel.addTrackToHistory(track)
     }
+
+
 
 
     private val textWatcher = object : TextWatcher {
@@ -131,31 +151,36 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
 
             viewModel.searchDebounce(newText = searchText)
 
+
+
+
             if (searchText.isEmpty()) {
                 viewModel.loadHistory()
             }
         }
     }
 
-
-    private fun hideKeyboard() {
-        val inputMethodManager =
-            getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
-        val view = currentFocus
-        if (view != null) {
-            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-        }
-    }
-
-
     // отмена случайного двойного нажатия
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            handler.postDelayed({ isClickAllowed = true },
+                SearchFragment.CLICK_DEBOUNCE_DELAY
+            )
         }
         return current
+    }
+
+
+
+    fun hideKeyboard() {
+        val inputMethodManager =
+            requireActivity().getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+        val view = requireActivity().currentFocus
+        if (view != null) {
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 
 
@@ -171,7 +196,6 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
         }
     }
 
-
     private fun showContent(tracks: List<Track>) {
         binding.apply {
             trackRecycleView.visibility = View.VISIBLE
@@ -185,9 +209,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
         adapter.tracks.clear()
         adapter.tracks.addAll(tracks)
         adapter.notifyDataSetChanged()
-
     }
-
 
     private fun showEmpty(emptyMessage: String) {
         binding.apply {
@@ -200,7 +222,6 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
         }
     }
 
-
     private fun showError(errorMessage: String) {
         binding.apply {
             placeholderLayoutConnectionError.visibility = View.VISIBLE
@@ -212,7 +233,6 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
         }
     }
 
-
     private fun showLoading() {
         binding.apply {
             progressBar.visibility = View.VISIBLE
@@ -223,7 +243,6 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
             layoutForHistoryTracks.visibility = View.GONE
         }
     }
-//
 
     private fun showHistory(historyTracks: List<Track>) {
         if (historyTracks.isNotEmpty()) {
@@ -242,6 +261,14 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.OnItemClickListener  {
             progressBar.visibility = View.GONE
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+
+
 
 
 }
