@@ -2,13 +2,17 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    tools:context="com.bignerdranch.playlistmaker.settings.ui.ui.SettingsFragment"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/background_color"
-    android:paddingTop="@dimen/paddingTop"
-    android:paddingEnd="@dimen/paddingLeftAndRight"
-    android:paddingStart="@dimen/paddingLeftAndRight">
+    android:paddingTop="@dimen/dimen14"
+    android:paddingEnd="@dimen/dimen16"
+    android:paddingStart="@dimen/dimen16">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -17,10 +21,6 @@
         android:gravity="center_vertical"
         android:layout_marginBottom="@dimen/padding_for_settings">
 
-        <ImageView
-            android:id="@+id/arrow_back"
-            style="@style/arrow_back"
-            android:layout_marginEnd="@dimen/dp24"/>
 
         <TextView
             android:fontFamily="@font/ys_display_medium"

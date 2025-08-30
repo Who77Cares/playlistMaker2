@@ -27,10 +27,6 @@ class SettingsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.arrowBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-
         viewModel.observeTheme().observe(viewLifecycleOwner) { settings ->
             binding.switchCompat.isChecked = settings.isDarkTheme
         }

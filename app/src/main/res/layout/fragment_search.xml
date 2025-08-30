@@ -4,11 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+
+    tools:context="com.bignerdranch.playlistmaker.search.ui.ui.SearchFragment"
+
     android:background="@color/background_color"
     android:orientation="vertical"
-    android:paddingTop="@dimen/paddingTop"
-    android:paddingEnd="@dimen/paddingLeftAndRight"
-    android:paddingStart="@dimen/paddingLeftAndRight">
+    android:paddingTop="@dimen/dimen14"
+    android:paddingEnd="@dimen/dimen16"
+    android:paddingStart="@dimen/dimen16">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -17,13 +20,6 @@
         android:gravity="center_vertical"
         android:layout_marginBottom="@dimen/text_small">
 
-        <ImageView
-            android:id="@+id/arrowBackButton"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            app:tint="@color/settings_back_icon"
-            android:src="@drawable/arrow_back"
-            android:layout_marginEnd="@dimen/dp24"/>
 
         <TextView
             style="@style/YS_Medium_22"
@@ -91,7 +87,7 @@
         android:id="@+id/trackRecycleView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp24"
+        android:layout_marginTop="@dimen/dimen24"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
@@ -111,11 +107,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginTop="@dimen/dp24"
+                android:layout_marginTop="@dimen/dimen24"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <Button
                 style="@style/button_for_updateButton_and_clearSearchList"
+
                 android:id="@+id/tracksHistoryClearButton"
                 android:text="@string/clean_search_list" />
         </LinearLayout>

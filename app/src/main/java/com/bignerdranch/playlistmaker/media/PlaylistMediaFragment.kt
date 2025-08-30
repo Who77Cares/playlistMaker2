@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.bignerdranch.playlistmaker.databinding.FragmentPlaylistBinding
+import com.bignerdranch.playlistmaker.databinding.FragmentPlaylistMediaBinding
 import com.bignerdranch.playlistmaker.media.presentation.FavoriteMediaViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 class PlaylistMediaFragment: Fragment() {
 
-    private var _binding: FragmentPlaylistBinding? = null
+    private var _binding: FragmentPlaylistMediaBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: FavoriteMediaViewModel by viewModel()
@@ -20,7 +20,7 @@ class PlaylistMediaFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPlaylistBinding.inflate(inflater, container, false)
+        _binding = FragmentPlaylistMediaBinding.inflate(inflater, container, false)
         return binding.root
     }
 

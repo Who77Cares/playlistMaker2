@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentSearchBinding
@@ -97,10 +98,6 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
 
         }
 
-        binding.arrowBackButton.setOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
-
 
         // Очищаем содержимое EditText и прячем клаввиатуру при нажатии на крест
         binding.closeImageViewButton.setOnClickListener {
@@ -118,17 +115,12 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
         track: Track,
         trackFromHistory: Boolean
     ) {
-
         if (clickDebounce()) {
-            // тут передаем обхект Track в AudioPlayerFragment
-            parentFragmentManager.commit {
-                replace(
-                    R.id.rootFragmentContainerView,
-                    AudioPlayerFragment.newInstance(track)
-                )
 
-                addToBackStack(AudioPlayerFragment.TAG)
-            }
+            findNavController().navigate(
+                R.id.action_searchFragment_to_audioPlayerFragment,
+                AudioPlayerFragment.createArgs(track)
+            )
         }
 
         if (trackFromHistory) return
