@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.bignerdranch.playlistmaker.search.ui.models.TrackState
@@ -16,6 +17,9 @@ import com.bignerdranch.playlistmaker.search.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bignerdranch.playlistmaker.App
 import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryInteractor
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     context: Context,
@@ -24,12 +28,11 @@ class SearchViewModel(
 ) : ViewModel() {
 
 
-
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-
-
     }
+
+    private var searchJob: Job? = null
 
     private val stateLiveData = MutableLiveData<TrackState>()
     fun observerState(): LiveData<TrackState> = stateLiveData
@@ -39,21 +42,23 @@ class SearchViewModel(
     private var lastSearchText: String = ""
 
     private var handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { searchRequest(lastSearchText) }
 
 
     // отложенный запрос в сеть через 2 сек после ввода текста в эдиттекст
     fun searchDebounce(newText: String) {
-        handler.removeCallbacks(searchRunnable)
+        searchJob?.cancel()
 
         if (newText.isEmpty()) {
             loadHistory()
             return
         }
 
-        if (lastSearchText != newText) {    // костылm чтобы не происходил повторный запрос после возврата из AdioPlayerFragment
+        if (lastSearchText != newText) {    // костыли чтобы не происходил повторный запрос после возврата из AdioPlayerFragment
             lastSearchText = newText
-            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+            searchJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY)
+                searchRequest(newText)
+            }
         }
     }
 
@@ -129,6 +134,3 @@ class SearchViewModel(
     }
 
 }
-
-
-
