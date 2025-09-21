@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.bignerdranch.playlistmaker.Creator
 import com.bignerdranch.playlistmaker.search.ui.models.TrackState
 import com.bignerdranch.playlistmaker.search.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.search.domain.models.Track
@@ -52,8 +51,10 @@ class SearchViewModel(
             return
         }
 
-        lastSearchText = newText
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        if (lastSearchText != newText) {    // костылm чтобы не происходил повторный запрос после возврата из AdioPlayerFragment
+            lastSearchText = newText
+            handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        }
     }
 
 

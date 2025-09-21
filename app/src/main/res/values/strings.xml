@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">PlaylistMaker</string>
     <string name="app_name2">Playlist maker</string>
+
     <string name="search">Поиск</string>
     <string name="media">Медиатека</string>
     <string name="settings">Настройки</string>
+
     <string name="dark_theme">Темная тема</string>
     <string name="share_with_app">Поделиться приложением</string>
     <string name="support">Написать в поддержку</string>
@@ -37,6 +39,8 @@
 
     <string name="tab1">Избранные треки</string>
     <string name="tab2">Плейлисты</string>
+
+
 
 
 

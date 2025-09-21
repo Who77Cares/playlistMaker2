@@ -2,14 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
+    tools:context=".audio.ui.ui.AudioPlayerFragment"
+
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    android:paddingTop="@dimen/paddingTop"
-    android:paddingEnd="@dimen/paddingLeftAndRight"
-    android:paddingStart="@dimen/paddingLeftAndRight"
-    tools:context=".audio.ui.ui.AudioPlayer">
+    android:paddingTop="@dimen/dimen14"
+    android:paddingEnd="@dimen/dimen16"
+    android:paddingStart="@dimen/dimen16" >
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideLine"
@@ -28,7 +30,7 @@
 
     <ImageView
         android:id="@+id/songCover"
-        android:layout_marginTop="@dimen/dp42"
+        android:layout_marginTop="@dimen/dimen42"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
@@ -37,7 +39,7 @@
         app:layout_constraintBottom_toTopOf="@+id/trackName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="@dimen/dp24"
+        android:layout_marginBottom="@dimen/dimen24"
 
         tools:src="@drawable/placeholder_search" />
 
@@ -45,10 +47,10 @@
     <TextView
         android:id="@+id/trackName"
         style="@style/YS_Medium_22"
-        android:layout_marginTop="@dimen/dp24"
+        android:layout_marginTop="@dimen/dimen24"
         app:layout_constraintBottom_toTopOf="@+id/artistName"
 
-        android:layout_marginBottom="@dimen/dp12"
+        android:layout_marginBottom="@dimen/dimen12"
         app:layout_constraintStart_toStartOf="parent"
 
         tools:text="Еее бой" />
@@ -58,7 +60,7 @@
     <TextView
         style="@style/YS_Medium_14"
         android:id="@+id/artistName"
-        android:layout_marginTop="@dimen/dp12"
+        android:layout_marginTop="@dimen/dimen12"
         app:layout_constraintBottom_toBottomOf="@+id/guideLine"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Сосисочка" />
@@ -125,7 +127,7 @@
         android:id="@+id/durationInRealTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp12"
+        android:layout_marginTop="@dimen/dimen12"
         android:text="00:00"
         app:layout_constraintTop_toBottomOf="@+id/PlayOrStopButton"
         app:layout_constraintStart_toStartOf="@+id/PlayOrStopButton"
