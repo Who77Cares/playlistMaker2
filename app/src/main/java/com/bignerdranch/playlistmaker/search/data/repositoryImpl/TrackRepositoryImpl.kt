@@ -24,6 +24,8 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient): TrackReposi
                 val trackResponse = response as TrackResponse
                 val result = trackResponse.results
 
+
+
                 if (result.isEmpty()) {
                     emit(Resource.Error("Ничего не найдено"))
                 } else {
@@ -42,6 +44,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient): TrackReposi
                                 it.previewUrl ?: "" // без проверки на null при поиске "щ" приложение крашится
                             )
                         }
+
                     emit(Resource.Success(data))
                 }
             }

@@ -22,10 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-class AudioPlayerViewModel(private val mapper: TrackAudioMapper): ViewModel() {
-
-
-    private val mediaPlayer = MediaPlayer()
+class AudioPlayerViewModel(private val mapper: TrackAudioMapper, private val mediaPlayer: MediaPlayer): ViewModel() {
 
     private var previewUrl: String = ""
     private var timerJob: Job? = null

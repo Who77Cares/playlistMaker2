@@ -1,8 +1,6 @@
 package com.bignerdranch.playlistmaker.search.ui.presentation
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    context: Context,
     private val trackInteractor: TrackInteractor,
     private val historyTrackInteractor: SearchHistoryInteractor
 ) : ViewModel() {
@@ -36,11 +33,10 @@ class SearchViewModel(
     private val tracks = ArrayList<Track>()
     private var lastSearchText: String = ""
 
-    private var handler = Handler(Looper.getMainLooper())
-
 
     // отложенный запрос в сеть через 2 сек после ввода текста в эдиттекст
-    fun searchDebounce(newText: String) {
+    fun searchDebounce(newText: String, forceUpdate: Boolean = false) {
+
         searchJob?.cancel()
 
         if (newText.isEmpty()) {
@@ -48,7 +44,8 @@ class SearchViewModel(
             return
         }
 
-        if (lastSearchText != newText) {    // костыли чтобы не происходил повторный запрос после возврата из AdioPlayerFragment
+        if (lastSearchText != newText || forceUpdate) {    // костыли чтобы не происходил повторный запрос после возврата из AdioPlayerFragment + запрос при нажатии кнопки "обновить"
+
             lastSearchText = newText
             searchJob = viewModelScope.launch {
                 delay(SEARCH_DEBOUNCE_DELAY)
@@ -61,7 +58,7 @@ class SearchViewModel(
     private fun searchRequest(newSearchText: String) {
         Log.d("SearchViewModel", "searchRequest called with: \"$newSearchText\"")
         if (newSearchText.isEmpty()) {
-            Log.d("SearchViewModel", "searchRequest called with: \"$newSearchText\"")
+
             return
 
         }
@@ -80,6 +77,7 @@ class SearchViewModel(
 
     private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
         val tracks = mutableListOf<Track>()
+
 
         if(foundTracks != null) {
             tracks.addAll(foundTracks)

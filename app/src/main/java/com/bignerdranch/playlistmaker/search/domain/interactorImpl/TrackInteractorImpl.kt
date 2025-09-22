@@ -6,8 +6,6 @@ import com.bignerdranch.playlistmaker.search.domain.api.TrackRepository
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.koin.core.time.measureDurationForResult
-import java.util.concurrent.Executors
 
 
 class TrackInteractorImpl(
@@ -17,10 +15,10 @@ class TrackInteractorImpl(
     override fun searchTrack(expression: String): Flow<Pair<List<Track>?, String?>> {
         return repository.searchTrack(expression).map { result ->
             when(result) {
-                is Resource.Error -> {
+                is Resource.Success -> {
                     Pair(result.data, null)
                 }
-                is Resource.Success -> {
+                is Resource.Error -> {
                     Pair(null, result.message)
                 }
             }

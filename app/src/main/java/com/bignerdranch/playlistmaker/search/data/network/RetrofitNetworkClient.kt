@@ -11,14 +11,10 @@ import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitNetworkClient(private val context: Context): NetworkClient {
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://itunes.apple.com/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val itunesService = retrofit.create(iTunesApi::class.java)
+class RetrofitNetworkClient(
+    private val context: Context,
+    private val itunesService: iTunesApi
+    ): NetworkClient {
 
 
     override suspend fun doRequest(dto: Any): Response {
@@ -38,6 +34,7 @@ class RetrofitNetworkClient(private val context: Context): NetworkClient {
                 Response().apply { resultCode = 500 }
             }
         }
+
         return result
     }
 

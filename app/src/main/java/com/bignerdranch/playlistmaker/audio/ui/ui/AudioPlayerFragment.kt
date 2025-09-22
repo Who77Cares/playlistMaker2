@@ -16,10 +16,10 @@ import com.bignerdranch.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-
-class AudioPlayerFragment: Fragment() {
+class AudioPlayerFragment(): Fragment() {
 
     companion object {
         const val TRACK_NAME = "trackName"
@@ -54,8 +54,7 @@ class AudioPlayerFragment: Fragment() {
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
-    private val mapper = TrackAudioMapper()
-    private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(mapper) }
+    private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(get<TrackAudioMapper>())  }
 
     override fun onCreateView(
         inflater: LayoutInflater,

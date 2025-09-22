@@ -84,7 +84,7 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
 
         // Повторный запрос в iTunes
         binding.updateButton.setOnClickListener {
-            viewModel.searchDebounce(binding.searchEditText.text.toString())
+            viewModel.searchDebounce(binding.searchEditText.text.toString(), true)
         }
 
 
