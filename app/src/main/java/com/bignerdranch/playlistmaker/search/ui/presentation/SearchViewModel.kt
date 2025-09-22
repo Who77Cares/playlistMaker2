@@ -7,15 +7,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.bignerdranch.playlistmaker.search.ui.models.TrackState
 import com.bignerdranch.playlistmaker.search.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.search.domain.models.Track
-import com.bignerdranch.playlistmaker.App
 import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryInteractor
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -73,37 +68,38 @@ class SearchViewModel(
 
         renderState( TrackState.Loading )
 
-        trackInteractor.searchTracks(
-            newSearchText, object : TrackInteractor.TracksConsumer {
-                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                    handler.post {
+       viewModelScope.launch {
+           trackInteractor
+               .searchTrack(newSearchText)
+               .collect { pair ->
+                   processResult(pair.first, pair.second)
+               }
+       }
 
-                        tracks.clear()
-                        Log.d("SearchViewModel", "consume called with foundTracks size = ${foundTracks?.size}, errorMessage = $errorMessage")
+    }
 
-                        if (foundTracks != null) {
-                            tracks.addAll(foundTracks)
-                        }
+    private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
+        val tracks = mutableListOf<Track>()
 
-                        when {
-                            errorMessage == "Проверьте подключение к интернету" -> {
-                                Log.d("SearchViewModel", "Rendering Error state")
-                                renderState(TrackState.Error("Опаньки"))
-                            }
-                            tracks.isEmpty() -> {
-                                Log.d("SearchViewModel", "Rendering Empty state")
-                                renderState(TrackState.Empty("Пусто"))
-                            }
-                            else -> {
-                                Log.d("SearchViewModel", "Rendering Content state with ${tracks.size} tracks")
-                                renderState(TrackState.Content(tracks))
-                            }
-                        }
-                    }
-                }
-
+        if(foundTracks != null) {
+            tracks.addAll(foundTracks)
+        }
+        when (errorMessage) {
+            "Проверьте подключение к интернету" -> {
+                renderState(TrackState.Error(errorMessage))
             }
-        )
+
+            "Ошибка сервера" -> {
+                renderState(TrackState.Error(errorMessage))
+            }
+
+            "Ничего не найдено" -> {
+                renderState(TrackState.Empty(errorMessage))
+            }
+            else -> {
+                renderState(TrackState.Content(tracks))
+            }
+        }
 
     }
 
