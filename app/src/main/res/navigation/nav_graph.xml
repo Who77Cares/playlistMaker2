@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/mediaFragment"
-        android:name="com.bignerdranch.playlistmaker.media.MediaFragment"
+        android:name="com.bignerdranch.playlistmaker.media.ui.MediaFragment"
         android:label="fragment_media"
         tools:layout="@layout/fragment_media" />
     <fragment
         android:id="@+id/favoriteMediaFragment"
-        android:name="com.bignerdranch.playlistmaker.media.FavoriteMediaFragment"
+        android:name="com.bignerdranch.playlistmaker.media.db_favorite.FavoriteMediaFragment"
         android:label="fragment_favorite_media"
         tools:layout="@layout/fragment_favorite_media" />
     <fragment
         android:id="@+id/playlistMediaFragment"
-        android:name="com.bignerdranch.playlistmaker.media.PlaylistMediaFragment"
+        android:name="com.bignerdranch.playlistmaker.media.ui.PlaylistMediaFragment"
         android:label="fragment_playlist_media"
         tools:layout="@layout/fragment_playlist_media" />
     <fragment

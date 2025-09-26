@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.media.presentation
+package com.bignerdranch.playlistmaker.media.db_favorite
 
 import androidx.lifecycle.ViewModel
 

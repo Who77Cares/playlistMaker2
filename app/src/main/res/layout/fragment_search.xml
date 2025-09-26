@@ -88,8 +88,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dimen24"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/track_view"
+        tools:visibility="gone" />
 
 
         <!-- Сохраненный список треков -->
@@ -108,6 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginTop="@dimen/dimen24"
+                tools:listitem="@layout/track_view"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <Button

@@ -1,28 +1,28 @@
 package com.bignerdranch.playlistmaker.audio.ui.presentation
 
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.bignerdranch.playlistmaker.audio.ui.TrackAudioMapper
+import com.bignerdranch.playlistmaker.TrackMapper
 import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
 import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
+import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteInteractor
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-class AudioPlayerViewModel(private val mapper: TrackAudioMapper, private val mediaPlayer: MediaPlayer): ViewModel() {
+class AudioPlayerViewModel(
+    private val mapper: TrackMapper,
+    private val mediaPlayer: MediaPlayer,
+    private val favoriteInteractor: FavoriteInteractor
+) : ViewModel() {
 
     private var previewUrl: String = ""
     private var timerJob: Job? = null
@@ -44,7 +44,9 @@ class AudioPlayerViewModel(private val mapper: TrackAudioMapper, private val med
     }
 
     fun setTrack(track: Track) {
-        val uiModel = mapper.map(track)
+
+        val uiModel = mapper.mapToAudioModel(track)
+
         trackAudioModel.value = uiModel
         previewUrl = track.previewUrl
         preparePlayer()
@@ -109,6 +111,13 @@ class AudioPlayerViewModel(private val mapper: TrackAudioMapper, private val med
 
     private fun getCurrentPlayerPosition(): String {
         return timeFormatter.format(mediaPlayer.currentPosition.toLong())
+    }
+
+
+    fun addTrackToFavorite(track: Track) {
+        viewModelScope.launch {
+            favoriteInteractor.addToFavorite(track)
+        }
     }
 
 }

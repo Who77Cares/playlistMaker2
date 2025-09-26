@@ -32,12 +32,11 @@ class SearchAdapter(
 
         holder.itemView.setOnClickListener {
 
+            itemClickListener.onItemClick(
+                track = tracks[position],
+                trackFromHistory = isHistory
+            )
 
-
-                itemClickListener.onItemClick(
-                    track = tracks[position],
-                    trackFromHistory = isHistory
-                )
         }
 
     }

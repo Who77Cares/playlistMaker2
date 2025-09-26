@@ -1,5 +1,6 @@
 package com.bignerdranch.playlistmaker.search.data.repositoryImpl
 
+import android.util.Log
 import com.bignerdranch.playlistmaker.Resource
 import com.bignerdranch.playlistmaker.search.data.client.NetworkClient
 import com.bignerdranch.playlistmaker.search.data.models.TrackRequest
@@ -41,10 +42,11 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient): TrackReposi
                                 it.releaseDate,
                                 it.primaryGenreName,
                                 it.country,
-                                it.previewUrl ?: "" // без проверки на null при поиске "щ" приложение крашится
-                            )
-                        }
+                                it.previewUrl ?: ""
 
+                            )
+
+                        }
                     emit(Resource.Success(data))
                 }
             }

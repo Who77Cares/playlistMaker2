@@ -81,6 +81,7 @@ class SearchViewModel(
 
         if(foundTracks != null) {
             tracks.addAll(foundTracks)
+
         }
         when (errorMessage) {
             "Проверьте подключение к интернету" -> {
