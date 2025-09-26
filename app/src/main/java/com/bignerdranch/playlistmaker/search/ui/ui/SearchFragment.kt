@@ -1,10 +1,7 @@
 package com.bignerdranch.playlistmaker.search.ui.ui
 
-import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -12,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment
@@ -20,9 +17,10 @@ import com.bignerdranch.playlistmaker.databinding.FragmentSearchBinding
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bignerdranch.playlistmaker.search.ui.models.TrackState
 import com.bignerdranch.playlistmaker.search.ui.presentation.SearchViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.text.clear
-import kotlin.toString
+
 
 class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
     private var _binding: FragmentSearchBinding? = null
@@ -36,14 +34,11 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
     private var isClickAllowed = true
     private var searchText = ""
 
-
     private var isHistoryLoaded = false
 
 
     private val tracks = ArrayList<Track>()
     private val historyTracks = ArrayList<Track>()
-
-    private var handler = Handler(Looper.getMainLooper())
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
@@ -89,7 +84,7 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
 
         // Повторный запрос в iTunes
         binding.updateButton.setOnClickListener {
-            viewModel.searchDebounce(binding.searchEditText.text.toString())
+            viewModel.searchDebounce(binding.searchEditText.text.toString(), true)
         }
 
 
@@ -106,7 +101,6 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
             viewModel.loadHistory()
 
         }
-
 
     }
 
@@ -157,16 +151,16 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true },
-                SearchFragment.CLICK_DEBOUNCE_DELAY
-            )
+
+            lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }
 
-
-
-    fun hideKeyboard() {
+    private fun hideKeyboard() {
         val inputMethodManager =
             requireActivity().getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
         val view = requireActivity().currentFocus
@@ -258,9 +252,4 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
         super.onDestroy()
         _binding = null
     }
-
-
-
-
-
 }

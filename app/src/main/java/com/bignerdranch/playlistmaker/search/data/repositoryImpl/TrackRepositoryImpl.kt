@@ -6,26 +6,30 @@ import com.bignerdranch.playlistmaker.search.data.models.TrackRequest
 import com.bignerdranch.playlistmaker.search.data.models.TrackResponse
 import com.bignerdranch.playlistmaker.search.domain.api.TrackRepository
 import com.bignerdranch.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TrackRepositoryImpl(private val networkClient: NetworkClient): TrackRepository  {
 
-    override fun searchTrack(expression: String): Resource<List<Track>> {
+    override fun searchTrack(expression: String): Flow<Resource<List<Track>>> = flow {
 
         val response = networkClient.doRequest(TrackRequest(expression))
 
-        return  when(response.resultCode) {
+        when(response.resultCode) {
             -1 -> {
-                Resource.Error("Проверьте подключение к интернету")
+                emit(Resource.Error("Проверьте подключение к интернету"))
             }
 
             200 -> {
-                val trackResponce = response as TrackResponse
-                val result = trackResponce.results
+                val trackResponse = response as TrackResponse
+                val result = trackResponse.results
+
+
 
                 if (result.isEmpty()) {
-                    Resource.Error("Ничего не найдено")
+                    emit(Resource.Error("Ничего не найдено"))
                 } else {
-                    Resource.Success(
+                    val data =
                         result.map {
                             Track(
                                 it.trackName,
@@ -40,11 +44,12 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient): TrackReposi
                                 it.previewUrl ?: "" // без проверки на null при поиске "щ" приложение крашится
                             )
                         }
-                    )
+
+                    emit(Resource.Success(data))
                 }
             }
             else -> {
-                Resource.Error("Ошибка сервера")
+                emit(Resource.Error("Ошибка сервера"))
             }
         }
     }

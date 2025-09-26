@@ -10,15 +10,16 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.TrackAudioMapper
+import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
 import com.bignerdranch.playlistmaker.audio.ui.presentation.AudioPlayerViewModel
 import com.bignerdranch.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-
-class AudioPlayerFragment: Fragment() {
+class AudioPlayerFragment(): Fragment() {
 
     companion object {
         const val TRACK_NAME = "trackName"
@@ -53,8 +54,7 @@ class AudioPlayerFragment: Fragment() {
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
-    private val mapper = TrackAudioMapper()
-    private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(mapper) }
+    private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(get<TrackAudioMapper>())  }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,12 +70,16 @@ class AudioPlayerFragment: Fragment() {
 
         val track = extractTrackFromBundle()
 
-        viewModel.observeProgressTime().observe(viewLifecycleOwner) {
-            binding.durationInRealTime.text = it
-        }
 
         viewModel.observePlayerState().observe(viewLifecycleOwner) {
-            changeButtonState(it == AudioPlayerViewModel.STATE_PLAYING)
+            binding.PlayOrStopButton.isEnabled = it.isPlayButtonEnabled
+            binding.durationInRealTime.text = it.progress
+
+            binding.PlayOrStopButton.setImageResource(
+                if (it is PlayerState.Playing) R.drawable.pause_icon
+                else R.drawable.play_arrow_icon
+            )
+
         }
 
         binding.PlayOrStopButton.setOnClickListener {
@@ -119,16 +123,16 @@ class AudioPlayerFragment: Fragment() {
             }
         }
 
-
     }
 
-    private fun changeButtonState(isPlaying: Boolean) {
-        if (isPlaying) {
-            binding.PlayOrStopButton.setImageResource(R.drawable.pause_icon)
-        } else {
-            binding.PlayOrStopButton.setImageResource(R.drawable.play_arrow_icon)
-        }
-    }
+
+//    private fun changeButtonState(isPlaying: Boolean) {
+//        if (isPlaying) {
+//            binding.PlayOrStopButton.setImageResource(R.drawable.pause_icon)
+//        } else {
+//            binding.PlayOrStopButton.setImageResource(R.drawable.play_arrow_icon)
+//        }
+//    }
 
     private fun extractTrackFromBundle(): Track {
         return Track(
@@ -145,6 +149,10 @@ class AudioPlayerFragment: Fragment() {
         )
     }
 
+    override fun onPause() {
+        super.onPause()
+        viewModel.onPause()
+    }
 
     override fun onDestroy() {
         super.onDestroy()

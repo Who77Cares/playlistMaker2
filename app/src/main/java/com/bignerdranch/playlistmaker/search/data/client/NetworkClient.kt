@@ -4,6 +4,6 @@ import com.bignerdranch.playlistmaker.search.data.models.Response
 
 interface NetworkClient {
 
-    fun doRequest(dto: Any): Response
+   suspend fun doRequest(dto: Any): Response
 
 }

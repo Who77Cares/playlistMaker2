@@ -13,12 +13,11 @@ import org.koin.dsl.module
 val presentationModule = module {
 
     viewModel { (mapper: TrackAudioMapper) ->
-        AudioPlayerViewModel(mapper = get())
+        AudioPlayerViewModel(mapper = get(), mediaPlayer = get())
     }
 
     viewModel {
         SearchViewModel(
-            context = get(),
             trackInteractor = get(),
             historyTrackInteractor = get()
         )

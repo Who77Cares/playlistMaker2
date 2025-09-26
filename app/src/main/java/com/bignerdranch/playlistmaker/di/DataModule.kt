@@ -2,6 +2,7 @@ package com.bignerdranch.playlistmaker.di
 
 import com.bignerdranch.playlistmaker.search.data.client.NetworkClient
 import com.bignerdranch.playlistmaker.search.data.network.RetrofitNetworkClient
+import com.bignerdranch.playlistmaker.search.data.network.iTunesApi
 import com.bignerdranch.playlistmaker.search.data.repositoryImpl.SearchHistoryRepositoryImpl
 import com.bignerdranch.playlistmaker.search.data.repositoryImpl.TrackRepositoryImpl
 import com.bignerdranch.playlistmaker.search.data.storage.PrefsStorageClient
@@ -13,11 +14,25 @@ import com.bignerdranch.playlistmaker.settings.data.settings.SettingsRepositoryI
 import com.bignerdranch.playlistmaker.settings.domain.model.ThemeSettings
 import com.google.gson.reflect.TypeToken
 import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 val dataModule = module {
 
+
+    single {
+        Retrofit.Builder()
+            .baseUrl("https://itunes.apple.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    single { get<Retrofit>().create(iTunesApi::class.java)}
+
+
+
     single<NetworkClient> {
-        RetrofitNetworkClient(context = get())
+        RetrofitNetworkClient(context = get(), itunesService = get())
     }
     
     single<TrackRepository> {
