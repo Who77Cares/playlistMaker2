@@ -47,8 +47,6 @@ class AudioPlayerFragment(): Fragment() {
                 putString(PREVIEW_URL, track.previewUrl)
             }
         }
-
-
     }
 
     private var _binding: FragmentAudioPlayerBinding? = null

@@ -34,7 +34,7 @@ val presentationModule = module {
         )
     }
 
-    viewModel { FavoriteMediaViewModel() }
+    viewModel { FavoriteMediaViewModel(get()) }
     viewModel { PlaylistMediaViewModel() }
 
 }

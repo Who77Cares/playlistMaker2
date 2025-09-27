@@ -2,28 +2,31 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
     tools:context="com.bignerdranch.playlistmaker.media.db_favorite.FavoriteMediaFragment"
-
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal|top"
-    android:layout_gravity="top|start"
+    android:layout_gravity="top|start">
 
-    >
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favoriteRecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen24"
+        tools:listitem="@layout/track_view" />
 
     <ImageView
+        android:id="@+id/favoritePlaceholderImge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:src="@drawable/error_nothing_found"
-        />
+        android:src="@drawable/error_nothing_found" />
+
 
     <TextView
+        android:id="@+id/favoritePlaceholderText"
         style="@style/text_search_error"
         android:text="@string/your_media_empty" />
-
-
 
 </LinearLayout>

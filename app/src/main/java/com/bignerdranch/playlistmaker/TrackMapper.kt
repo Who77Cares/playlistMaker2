@@ -21,7 +21,6 @@ class TrackMapper {
             country = track.country,
             previewUrl = track.previewUrl
         )
-
     }
 
     fun mapToEntity(track: Track): TrackEntity {
@@ -55,7 +54,9 @@ class TrackMapper {
         )
     }
 
-
+    fun convertFromTrackEntity(tracks: List<TrackEntity>): List<Track> {
+        return tracks.map { track -> mapToTrackFromEntity(track) }
+    }
 
     fun formatDuration(track: Track): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault())

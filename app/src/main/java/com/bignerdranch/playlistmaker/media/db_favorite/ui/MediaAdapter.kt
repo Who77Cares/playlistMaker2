@@ -1,51 +1,35 @@
-package com.bignerdranch.playlistmaker.search.ui.ui
+package com.bignerdranch.playlistmaker.media.db_favorite.ui
 
+import com.bignerdranch.playlistmaker.R
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class SearchAdapter(
-    private val isHistory: Boolean, // обновляем историю только при клике на трек из сети
-    private val itemClickListener: OnItemClickListener // интерфейс для обработки клика в SearchActivity
-) : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
-
-    fun interface OnItemClickListener {
-        fun onItemClick(track: Track, trackFromHistory: Boolean)
-    }
+class MediaAdapter(
+    private val onItemClick: (Track) -> Unit
+) : RecyclerView.Adapter<MediaAdapter.MediaViewHolder>() {
 
     var tracks = ArrayList<Track>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder =
-        SearchViewHolder(parent)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): MediaViewHolder = MediaViewHolder(parent, onItemClick)
 
-    override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
         holder.bind(tracks[position])
-
-        holder.itemView.setOnClickListener {
-
-            itemClickListener.onItemClick(
-                track = tracks[position],
-                trackFromHistory = isHistory
-            )
-
-        }
-
     }
 
     override fun getItemCount(): Int = tracks.size
 
-
-
-
-    class SearchViewHolder(parent: ViewGroup): RecyclerView.ViewHolder(
+    class MediaViewHolder(parent: ViewGroup,  private val onItemClick: (Track) -> Unit) : RecyclerView.ViewHolder(
         LayoutInflater
             .from(parent.context)
             .inflate(R.layout.track_view, parent, false)
@@ -69,6 +53,15 @@ class SearchAdapter(
                 .transform(RoundedCorners(2))
                 .placeholder(R.drawable.placeholder_search)
                 .into(artworkUrl100View)
+
+
+            // Клик по элементу
+            itemView.setOnClickListener {
+                onItemClick(model)
+            }
         }
+
     }
+
 }
+

@@ -16,6 +16,7 @@ data class TrackEntity(
     val coverUrl: String,
     val style: String,
     val country: String,
-    val previewUrl: String
+    val previewUrl: String,
+    val createdAt: Long = System.currentTimeMillis()
 ) {
 }
