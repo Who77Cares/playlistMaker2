@@ -56,6 +56,8 @@ class AudioPlayerFragment(): Fragment() {
 
     private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(get<TrackMapper>())  }
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,7 +81,13 @@ class AudioPlayerFragment(): Fragment() {
                 if (it is PlayerState.Playing) R.drawable.pause_icon
                 else R.drawable.play_arrow_icon
             )
+        }
 
+        viewModel.isFavoriteLiveData.observe(viewLifecycleOwner) { isFavorite ->
+            binding.addToLike.setImageResource(
+                if (isFavorite) R.drawable.is_liked
+                else R.drawable.empty_like
+            )
         }
 
         binding.PlayOrStopButton.setOnClickListener {
@@ -113,18 +121,7 @@ class AudioPlayerFragment(): Fragment() {
         }
 
         binding.addToLike.setOnClickListener {
-
-            viewModel.addTrackToFavorite(track)
-
-//            val currentDrawable = binding.addToLike.drawable
-//            val likeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.empty_like)
-//
-//            // Сравниваем состояния drawable, а не сами объекты
-//            if (currentDrawable.constantState == likeDrawable?.constantState) {
-//                binding.addToLike.setImageResource(R.drawable.is_liked)
-//            } else {
-//                binding.addToLike.setImageResource(R.drawable.empty_like)
-//            }
+            viewModel.toggleFavorite(track)
         }
 
     }

@@ -37,6 +37,9 @@ class AudioPlayerViewModel(
     private val trackAudioModel = MutableLiveData<TrackAudioModel>()
     fun observeTrackUiModel(): LiveData<TrackAudioModel> = trackAudioModel
 
+    private val _isFavoriteLiveData = MutableLiveData<Boolean>()
+    val isFavoriteLiveData: LiveData<Boolean> = _isFavoriteLiveData
+
 
     override fun onCleared() {
         super.onCleared()
@@ -49,6 +52,8 @@ class AudioPlayerViewModel(
 
         trackAudioModel.value = uiModel
         previewUrl = track.previewUrl
+
+        checkIfFavorite(track.trackId.toLong())
         preparePlayer()
     }
 
@@ -114,9 +119,25 @@ class AudioPlayerViewModel(
     }
 
 
-    fun addTrackToFavorite(track: Track) {
+    // проверка да добавленность в избранное чтобы сразу отобразить нужную иконку
+    fun checkIfFavorite(trackId: Long) {
         viewModelScope.launch {
-            favoriteInteractor.addToFavorite(track)
+            val isFav = favoriteInteractor.isFavorite(trackId)
+            _isFavoriteLiveData.postValue(isFav)
+        }
+    }
+
+    // логика добавления в избранное
+    fun toggleFavorite(track: Track) {
+        viewModelScope.launch {
+            val isFav = favoriteInteractor.isFavorite(track.trackId.toLong())
+            if (isFav) {
+                favoriteInteractor.removeTrack(track)
+            } else {
+                favoriteInteractor.addToFavorite(track)
+            }
+            // обновляем флажок LiveData
+            _isFavoriteLiveData.postValue(!isFav)
         }
     }
 

@@ -2,6 +2,7 @@ package com.bignerdranch.playlistmaker.media.db_favorite.data
 
 import com.bignerdranch.playlistmaker.TrackMapper
 import com.bignerdranch.playlistmaker.media.db_favorite.data.db.AppDatabase
+import com.bignerdranch.playlistmaker.media.db_favorite.data.db.TrackEntity
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 
 class FavoriteRepositoryImpl(
@@ -14,10 +15,13 @@ class FavoriteRepositoryImpl(
     }
 
     override suspend fun removeTrack(track: Track) {
-        return
+        db.trackDao().removeTrackFromFavorite(mapper.mapToEntity(track))
     }
 
-    private fun convertTrackEntity() {
+
+
+    override suspend fun isTrackFavorite(trackId: Long): Boolean {
+        return db.trackDao().isTrackFavorite(trackId)
     }
 
 }

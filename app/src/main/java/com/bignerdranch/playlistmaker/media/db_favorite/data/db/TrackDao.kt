@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 
 @Dao
@@ -14,5 +15,9 @@ interface TrackDao {
 
     @Delete
     suspend fun removeTrackFromFavorite(track: TrackEntity)
+
+    // проверяем имеется ли уже трек в бд room
+    @Query("SELECT EXISTS(SELECT 1 FROM track_favorite WHERE id = :trackId)")
+    suspend fun isTrackFavorite(trackId: Long): Boolean
 
 }
