@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.media
+package com.bignerdranch.playlistmaker.media.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bignerdranch.playlistmaker.databinding.FragmentPlaylistMediaBinding
-import com.bignerdranch.playlistmaker.media.presentation.FavoriteMediaViewModel
+import com.bignerdranch.playlistmaker.media.db_favorite.FavoriteMediaViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 class PlaylistMediaFragment: Fragment() {
 
     private var _binding: FragmentPlaylistMediaBinding? = null

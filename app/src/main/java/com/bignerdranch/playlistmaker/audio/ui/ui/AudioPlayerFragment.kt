@@ -1,15 +1,15 @@
 package com.bignerdranch.playlistmaker.audio.ui.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
-import com.bignerdranch.playlistmaker.audio.ui.TrackAudioMapper
+import com.bignerdranch.playlistmaker.TrackMapper
 import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
 import com.bignerdranch.playlistmaker.audio.ui.presentation.AudioPlayerViewModel
 import com.bignerdranch.playlistmaker.databinding.FragmentAudioPlayerBinding
@@ -47,14 +47,14 @@ class AudioPlayerFragment(): Fragment() {
                 putString(PREVIEW_URL, track.previewUrl)
             }
         }
-
-
     }
 
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(get<TrackAudioMapper>())  }
+    private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(get<TrackMapper>())  }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,10 +79,17 @@ class AudioPlayerFragment(): Fragment() {
                 if (it is PlayerState.Playing) R.drawable.pause_icon
                 else R.drawable.play_arrow_icon
             )
+        }
 
+        viewModel.isFavoriteLiveData.observe(viewLifecycleOwner) { isFavorite ->
+            binding.addToLike.setImageResource(
+                if (isFavorite) R.drawable.is_liked
+                else R.drawable.empty_like
+            )
         }
 
         binding.PlayOrStopButton.setOnClickListener {
+            Log.d("AudioPlayerFragment", "Play button clicked!")
             viewModel.onPlayButtonClicked()
         }
 
@@ -112,30 +119,14 @@ class AudioPlayerFragment(): Fragment() {
         }
 
         binding.addToLike.setOnClickListener {
-            val currentDrawable = binding.addToLike.drawable
-            val likeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.empty_like)
-
-            // Сравниваем состояния drawable, а не сами объекты
-            if (currentDrawable.constantState == likeDrawable?.constantState) {
-                binding.addToLike.setImageResource(R.drawable.is_liked)
-            } else {
-                binding.addToLike.setImageResource(R.drawable.empty_like)
-            }
+            viewModel.toggleFavorite(track)
         }
 
     }
 
 
-//    private fun changeButtonState(isPlaying: Boolean) {
-//        if (isPlaying) {
-//            binding.PlayOrStopButton.setImageResource(R.drawable.pause_icon)
-//        } else {
-//            binding.PlayOrStopButton.setImageResource(R.drawable.play_arrow_icon)
-//        }
-//    }
-
     private fun extractTrackFromBundle(): Track {
-        return Track(
+        val track = Track(
             trackName = arguments?.getString(TRACK_NAME).orEmpty(),
             artistName = arguments?.getString(ARTIST_NAME).orEmpty(),
             trackTimeMillis = arguments?.getInt(DURATION_TIME, 0) ?: 0,
@@ -147,6 +138,9 @@ class AudioPlayerFragment(): Fragment() {
             country = arguments?.getString(SONG_COUNTRY).orEmpty(),
             previewUrl = arguments?.getString(PREVIEW_URL).orEmpty()
         )
+
+        Log.d("AudioPlayerFragment", "Extracted track previewUrl: ${track.previewUrl}")
+        return track
     }
 
     override fun onPause() {

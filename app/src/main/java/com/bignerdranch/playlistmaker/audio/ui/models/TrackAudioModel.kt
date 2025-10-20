@@ -1,5 +1,6 @@
 package com.bignerdranch.playlistmaker.audio.ui.models
 
+// берем за основу для Entity
 data class TrackAudioModel(
     val trackName: String,
     val artistName: String,
@@ -9,6 +10,5 @@ data class TrackAudioModel(
     val coverUrl: String,
     val style: String,
     val country: String,
-    val previewUrl: String
-) {
+    val previewUrl: String) {
 }

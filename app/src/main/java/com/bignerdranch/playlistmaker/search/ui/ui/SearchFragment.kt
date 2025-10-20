@@ -108,7 +108,8 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
     override fun onItemClick(
         track: Track,
         trackFromHistory: Boolean
-    ) {
+    )  {
+
         if (clickDebounce()) {
 
             findNavController().navigate(
@@ -119,6 +120,20 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
 
         if (trackFromHistory) return
         viewModel.addTrackToHistory(track)
+    }
+
+    // отмена случайного двойного нажатия
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+
+            lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
+        }
+        return current
     }
 
 
@@ -146,19 +161,8 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
         }
     }
 
-    // отмена случайного двойного нажатия
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
 
-            lifecycleScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
-                isClickAllowed = true
-            }
-        }
-        return current
-    }
+
 
     private fun hideKeyboard() {
         val inputMethodManager =

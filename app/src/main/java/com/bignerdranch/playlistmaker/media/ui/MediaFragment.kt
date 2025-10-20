@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.media
+package com.bignerdranch.playlistmaker.media.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
