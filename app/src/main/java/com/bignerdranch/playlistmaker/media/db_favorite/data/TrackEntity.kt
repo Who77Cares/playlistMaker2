@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.media.db_favorite.data.db
+package com.bignerdranch.playlistmaker.media.db_favorite.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

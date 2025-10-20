@@ -11,7 +11,7 @@
         android:layout_width="@dimen/song_pic"
         android:layout_height="@dimen/song_pic"
         android:layout_gravity="center_vertical"
-        tools:background="@color/cursorColor"/>
+        tools:background="@color/color_3772E7_3772E7"/>
 
     <LinearLayout
         style="@style/text_track_view"
@@ -24,7 +24,7 @@
             android:id="@+id/trackName"
             android:layout_marginStart="@dimen/search_drawablePadding"
             android:textColor="@color/main_text"
-            android:textSize="@dimen/text_small"
+            android:textSize="@dimen/sp16"
             tools:text="Название песни" />
 
         <LinearLayout
@@ -35,7 +35,7 @@
                 style="@style/text_track_view"
                 android:id="@+id/artistName"
                 android:layout_marginStart="@dimen/search_drawablePadding"
-                android:textColor="@color/group_name_and_duration_andDot"
+                android:textColor="@color/color_AEAFB4_FFFFFFFF"
                 android:textSize="@dimen/text_group_name_and_duration"
                 tools:text="Название исполнителя песни" />
 
@@ -43,13 +43,13 @@
                 style="@style/text_track_view"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                app:tint="@color/group_name_and_duration_andDot"
+                app:tint="@color/color_AEAFB4_FFFFFFFF"
                 android:src="@drawable/ellipse_song_search" />
 
             <TextView
                 style="@style/text_track_view"
                 android:id="@+id/trackTime"
-                android:textColor="@color/group_name_and_duration_andDot"
+                android:textColor="@color/color_AEAFB4_FFFFFFFF"
                 android:layout_marginStart="0dp"
                 tools:text="1:11"
                 android:textSize="@dimen/text_group_name_and_duration" />
@@ -64,6 +64,6 @@
         android:src="@drawable/arrow_forward"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/search_drawablePadding"
-        app:tint="@color/group_name_and_duration_andDot" />
+        app:tint="@color/color_AEAFB4_FFFFFFFF" />
 
 </LinearLayout>

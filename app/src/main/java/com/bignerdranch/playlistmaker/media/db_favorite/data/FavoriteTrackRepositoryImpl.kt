@@ -1,17 +1,15 @@
 package com.bignerdranch.playlistmaker.media.db_favorite.data
 
 import com.bignerdranch.playlistmaker.TrackMapper
-import com.bignerdranch.playlistmaker.media.db_favorite.data.db.AppDatabase
-import com.bignerdranch.playlistmaker.media.db_favorite.data.db.TrackEntity
+import com.bignerdranch.playlistmaker.AppDatabase
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-class FavoriteRepositoryImpl(
+class FavoriteTrackRepositoryImpl(
     val db: AppDatabase,
     val mapper: TrackMapper
-): FavoriteRepository {
+): FavoriteTrackRepository {
 
     override suspend fun addTrack(track: Track) {
         db.trackDao().addTrackToFavorite(mapper.mapToEntity(track))

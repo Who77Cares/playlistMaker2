@@ -1,17 +1,16 @@
-package com.bignerdranch.playlistmaker.media.db_favorite
+package com.bignerdranch.playlistmaker.media.db_favorite.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.bignerdranch.playlistmaker.R
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentFavoriteMediaBinding
-import com.bignerdranch.playlistmaker.media.db_favorite.ui.MediaAdapter
-import com.bignerdranch.playlistmaker.media.db_favorite.ui.MediaState
+import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteMediaViewModel
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -83,7 +82,7 @@ class FavoriteMediaFragment: Fragment() {
     private fun onTrackClicked(track: Track) {
         findNavController().navigate(
             R.id.action_mediaFragment_to_audioPlayerFragment,
-            AudioPlayerFragment.createArgs(track)
+            AudioPlayerFragment.Companion.createArgs(track)
         )
     }
 

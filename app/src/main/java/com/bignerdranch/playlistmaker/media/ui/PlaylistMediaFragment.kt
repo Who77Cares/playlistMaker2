@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.bignerdranch.playlistmaker.R
+import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentPlaylistMediaBinding
-import com.bignerdranch.playlistmaker.media.db_favorite.FavoriteMediaViewModel
+import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteMediaViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistMediaFragment: Fragment() {
@@ -23,6 +26,16 @@ class PlaylistMediaFragment: Fragment() {
     ): View? {
         _binding = FragmentPlaylistMediaBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.newPlaylistButton.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_favoriteMediaFragment_to_newPlaylistFragment
+            )
+        }
     }
 
 

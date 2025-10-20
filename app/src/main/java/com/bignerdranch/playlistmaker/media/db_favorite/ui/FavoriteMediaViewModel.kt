@@ -1,17 +1,15 @@
-package com.bignerdranch.playlistmaker.media.db_favorite
+package com.bignerdranch.playlistmaker.media.db_favorite.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteInteractor
-import com.bignerdranch.playlistmaker.media.db_favorite.ui.MediaState
+import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteTrackInteractor
 import com.bignerdranch.playlistmaker.search.domain.models.Track
-import com.bignerdranch.playlistmaker.search.ui.models.TrackState
 import kotlinx.coroutines.launch
 
 class FavoriteMediaViewModel(
-    private val favoriteInteractor: FavoriteInteractor
+    private val favoriteTrackInteractor: FavoriteTrackInteractor
 ): ViewModel() {
 
     private val stateLiveData = MutableLiveData<MediaState>()
@@ -20,7 +18,7 @@ class FavoriteMediaViewModel(
 
     fun fillData() {
         viewModelScope.launch {
-            favoriteInteractor
+            favoriteTrackInteractor
                 .getAllTrack()
                 .collect { tracks ->
                     processResult(tracks)

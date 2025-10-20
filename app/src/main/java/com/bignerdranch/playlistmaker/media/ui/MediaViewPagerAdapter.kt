@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.bignerdranch.playlistmaker.media.db_favorite.FavoriteMediaFragment
+import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteMediaFragment
 
 class MediaViewPagerAdapter(
     fragmentManager: FragmentManager,

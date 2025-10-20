@@ -1,7 +1,7 @@
 package com.bignerdranch.playlistmaker
 
 import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
-import com.bignerdranch.playlistmaker.media.db_favorite.data.db.TrackEntity
+import com.bignerdranch.playlistmaker.media.db_favorite.data.TrackEntity
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Date

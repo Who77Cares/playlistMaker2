@@ -14,7 +14,7 @@
     <Button
         style="@style/button_for_updateButton_and_clearSearchList"
 
-        android:id="@+id/tracksHistoryClearButton"
+        android:id="@+id/newPlaylistButton"
         android:text="@string/new_playlist"
         android:layout_marginBottom="45dp"/>
 

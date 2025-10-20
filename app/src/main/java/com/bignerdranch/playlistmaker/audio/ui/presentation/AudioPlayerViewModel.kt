@@ -1,7 +1,6 @@
 package com.bignerdranch.playlistmaker.audio.ui.presentation
 
 import android.media.MediaPlayer
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.bignerdranch.playlistmaker.TrackMapper
 import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
 import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
-import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteInteractor
+import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteTrackInteractor
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,7 +20,7 @@ import java.util.TimeZone
 class AudioPlayerViewModel(
     private val mapper: TrackMapper,
     private val mediaPlayer: MediaPlayer,
-    private val favoriteInteractor: FavoriteInteractor
+    private val favoriteTrackInteractor: FavoriteTrackInteractor
 ) : ViewModel() {
 
     private var previewUrl: String = ""
@@ -122,7 +121,7 @@ class AudioPlayerViewModel(
     // проверка да добавленность в избранное чтобы сразу отобразить нужную иконку
     fun checkIfFavorite(trackId: Long) {
         viewModelScope.launch {
-            val isFav = favoriteInteractor.isFavorite(trackId)
+            val isFav = favoriteTrackInteractor.isFavorite(trackId)
             _isFavoriteLiveData.postValue(isFav)
         }
     }
@@ -130,11 +129,11 @@ class AudioPlayerViewModel(
     // логика добавления в избранное
     fun toggleFavorite(track: Track) {
         viewModelScope.launch {
-            val isFav = favoriteInteractor.isFavorite(track.trackId.toLong())
+            val isFav = favoriteTrackInteractor.isFavorite(track.trackId.toLong())
             if (isFav) {
-                favoriteInteractor.removeTrack(track)
+                favoriteTrackInteractor.removeTrack(track)
             } else {
-                favoriteInteractor.addToFavorite(track)
+                favoriteTrackInteractor.addToFavorite(track)
             }
             // обновляем флажок LiveData
             _isFavoriteLiveData.postValue(!isFav)

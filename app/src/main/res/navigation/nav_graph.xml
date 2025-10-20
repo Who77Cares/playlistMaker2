@@ -6,10 +6,10 @@
     app:startDestination="@id/mediaFragment">
 
     <fragment
-        android:id="@+id/mediaFragment"
-        android:name="com.bignerdranch.playlistmaker.media.ui.MediaFragment"
-        android:label="fragment_media"
-        tools:layout="@layout/fragment_media" >
+    android:id="@+id/mediaFragment"
+    android:name="com.bignerdranch.playlistmaker.media.ui.MediaFragment"
+    android:label="fragment_media"
+    tools:layout="@layout/fragment_media" >
 
         <action
             android:id="@+id/action_mediaFragment_to_audioPlayerFragment"
@@ -19,15 +19,21 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
 
-    </fragment>
 
+        <action
+            android:id="@+id/action_favoriteMediaFragment_to_newPlaylistFragment"
+            app:destination="@id/newPlaylistFragment" />
+
+    </fragment>
 
 
     <fragment
         android:id="@+id/favoriteMediaFragment"
-        android:name="com.bignerdranch.playlistmaker.media.db_favorite.FavoriteMediaFragment"
+        android:name="com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteMediaFragment"
         android:label="fragment_favorite_media"
         tools:layout="@layout/fragment_favorite_media">
+
+
 
 
 
@@ -38,7 +44,12 @@
         android:id="@+id/playlistMediaFragment"
         android:name="com.bignerdranch.playlistmaker.media.ui.PlaylistMediaFragment"
         android:label="fragment_playlist_media"
-        tools:layout="@layout/fragment_playlist_media" />
+        tools:layout="@layout/fragment_playlist_media" >
+
+
+
+    </fragment>
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.bignerdranch.playlistmaker.search.ui.ui.SearchFragment"
@@ -68,4 +79,11 @@
         android:name="com.bignerdranch.playlistmaker.settings.ui.ui.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+
+
+    <fragment
+        android:id="@+id/newPlaylistFragment"
+        android:name="com.bignerdranch.playlistmaker.new_playlist.NewPlaylistFragment"
+        android:label="fragment_new_playlist"
+        tools:layout="@layout/fragment_new_playlist" />
 </navigation>

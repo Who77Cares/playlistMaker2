@@ -1,12 +1,12 @@
 package com.bignerdranch.playlistmaker.media.db_favorite.domain
 
-import com.bignerdranch.playlistmaker.media.db_favorite.data.FavoriteRepository
+import com.bignerdranch.playlistmaker.media.db_favorite.data.FavoriteTrackRepository
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
-class FavoriteInteractorImpl(
-    val repository: FavoriteRepository
-): FavoriteInteractor {
+class FavoriteTrackInteractorImpl(
+    val repository: FavoriteTrackRepository
+): FavoriteTrackInteractor {
 
     override suspend fun addToFavorite(track: Track) {
         repository.addTrack(track)
