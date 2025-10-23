@@ -7,7 +7,7 @@
 
     <fragment
     android:id="@+id/mediaFragment"
-    android:name="com.bignerdranch.playlistmaker.media.ui.MediaFragment"
+    android:name="com.bignerdranch.playlistmaker.media.MediaContainerFragment"
     android:label="fragment_media"
     tools:layout="@layout/fragment_media" >
 
@@ -29,7 +29,7 @@
 
     <fragment
         android:id="@+id/favoriteMediaFragment"
-        android:name="com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteMediaFragment"
+        android:name="com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteTracksFragment"
         android:label="fragment_favorite_media"
         tools:layout="@layout/fragment_favorite_media">
 
@@ -42,7 +42,7 @@
 
     <fragment
         android:id="@+id/playlistMediaFragment"
-        android:name="com.bignerdranch.playlistmaker.media.ui.PlaylistMediaFragment"
+        android:name="com.bignerdranch.playlistmaker.media.playlists.PlaylistFragment"
         android:label="fragment_playlist_media"
         tools:layout="@layout/fragment_playlist_media" >
 
@@ -83,7 +83,7 @@
 
     <fragment
         android:id="@+id/newPlaylistFragment"
-        android:name="com.bignerdranch.playlistmaker.new_playlist.NewPlaylistFragment"
+        android:name="com.bignerdranch.playlistmaker.media.new_playlist.ui.NewPlaylistFragment"
         android:label="fragment_new_playlist"
         tools:layout="@layout/fragment_new_playlist" />
 </navigation>

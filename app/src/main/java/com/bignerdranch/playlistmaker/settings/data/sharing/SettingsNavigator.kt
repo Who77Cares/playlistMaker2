@@ -1,6 +1,6 @@
 package com.bignerdranch.playlistmaker.settings.data.sharing
 
-interface ExternalNavigator {
+interface SettingsNavigator {
 
     fun shareLink(url: String)
     fun openEmail(email: String, subject: String, body: String)

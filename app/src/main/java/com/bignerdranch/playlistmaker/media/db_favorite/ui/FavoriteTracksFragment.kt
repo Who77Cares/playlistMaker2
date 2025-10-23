@@ -10,17 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentFavoriteMediaBinding
-import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteMediaViewModel
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FavoriteMediaFragment: Fragment() {
+class FavoriteTracksFragment: Fragment() {
 
-    private val adapter = MediaAdapter {track -> onTrackClicked(track) }
+    private val adapter = FavoriteAdapter { track -> onTrackClicked(track) }
 
     companion object {
-        fun newInstance(): FavoriteMediaFragment {
-            return FavoriteMediaFragment().apply {
+        fun newInstance(): FavoriteTracksFragment {
+            return FavoriteTracksFragment().apply {
                 arguments = Bundle().apply {
                     // если нужно будет передать данные — положим сюда
                 } } }
@@ -29,7 +28,7 @@ class FavoriteMediaFragment: Fragment() {
     private var _binding: FragmentFavoriteMediaBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: FavoriteMediaViewModel by viewModel()
+    private val viewModel: FavoriteTracksViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,10 +54,10 @@ class FavoriteMediaFragment: Fragment() {
 
     }
 
-    private fun render(state: MediaState) {
+    private fun render(state: FavoriteTrackState) {
         when(state) {
-            is MediaState.Content -> showContent(state.tracks)
-            is MediaState.Empty -> showEmpty()
+            is FavoriteTrackState.Content -> showContent(state.tracks)
+            is FavoriteTrackState.Empty -> showEmpty()
         }
     }
 

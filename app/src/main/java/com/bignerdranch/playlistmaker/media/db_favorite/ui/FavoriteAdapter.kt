@@ -1,20 +1,20 @@
 package com.bignerdranch.playlistmaker.media.db_favorite.ui
 
-import com.bignerdranch.playlistmaker.R
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class MediaAdapter(
+class FavoriteAdapter(
     private val onItemClick: (Track) -> Unit
-) : RecyclerView.Adapter<MediaAdapter.MediaViewHolder>() {
+) : RecyclerView.Adapter<FavoriteAdapter.MediaViewHolder>() {
 
     var tracks = ArrayList<Track>()
 
@@ -29,10 +29,10 @@ class MediaAdapter(
 
     override fun getItemCount(): Int = tracks.size
 
-    class MediaViewHolder(parent: ViewGroup,  private val onItemClick: (Track) -> Unit) : RecyclerView.ViewHolder(
+    class MediaViewHolder(parent: ViewGroup, private val onItemClick: (Track) -> Unit) : RecyclerView.ViewHolder(
         LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.track_view, parent, false)
+            .inflate(R.layout.item_track, parent, false)
     ) {
 
         private val trackNameView: TextView = itemView.findViewById(R.id.trackName)
@@ -64,4 +64,3 @@ class MediaAdapter(
     }
 
 }
-

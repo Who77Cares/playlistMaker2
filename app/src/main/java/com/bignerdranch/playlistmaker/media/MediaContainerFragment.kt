@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.media.ui
+package com.bignerdranch.playlistmaker.media
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.databinding.FragmentMediaBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MediaFragment: Fragment() {
+class MediaContainerFragment: Fragment() {
 
     private var _binding: FragmentMediaBinding? = null
     private val binding get() = _binding!!

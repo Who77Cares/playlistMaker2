@@ -1,7 +1,7 @@
 package com.bignerdranch.playlistmaker.media.db_favorite.data
 
-import com.bignerdranch.playlistmaker.TrackMapper
-import com.bignerdranch.playlistmaker.AppDatabase
+import com.bignerdranch.playlistmaker.util.TrackMapper
+import com.bignerdranch.playlistmaker.util.AppDatabase
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,7 +18,6 @@ class FavoriteTrackRepositoryImpl(
     override suspend fun removeTrack(track: Track) {
         db.trackDao().removeTrackFromFavorite(mapper.mapToEntity(track))
     }
-
 
     override suspend fun isTrackFavorite(trackId: Long): Boolean {
         return db.trackDao().isTrackFavorite(trackId)

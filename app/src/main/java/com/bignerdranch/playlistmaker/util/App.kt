@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker
+package com.bignerdranch.playlistmaker.util
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate

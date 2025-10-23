@@ -1,10 +1,11 @@
-package com.bignerdranch.playlistmaker.media.ui
+package com.bignerdranch.playlistmaker.media
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteMediaFragment
+import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteTracksFragment
+import com.bignerdranch.playlistmaker.media.playlists.PlaylistFragment
 
 class MediaViewPagerAdapter(
     fragmentManager: FragmentManager,
@@ -13,8 +14,8 @@ class MediaViewPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> FavoriteMediaFragment.Companion.newInstance()
-            else -> PlaylistMediaFragment.newInstance()
+            0 -> FavoriteTracksFragment.Companion.newInstance()
+            else -> PlaylistFragment.newInstance()
         }
     }
 

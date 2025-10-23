@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "track_favorite")
-data class TrackEntity(
+data class     TrackEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
 

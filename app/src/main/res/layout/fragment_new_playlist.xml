@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
-    tools:context=".new_playlist.NewPlaylistFragment"
+    tools:context=".media.new_playlist.ui.NewPlaylistFragment"
 
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/arrow_back" />
 
 <ImageView
-    android:id="@+id/imageViewShape"
+    android:id="@+id/imageSelectImageView"
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:background="@drawable/new_playlist_outline"
@@ -52,7 +52,7 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout1"
+        android:id="@+id/textInputLayoutName"
         style="@style/TextInputLayout"
         android:layout_marginTop="16dp"
         android:hint="@string/new_album_name"
@@ -63,7 +63,7 @@
         app:layout_constraintTop_toBottomOf="@+id/guideLine1">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/TextInputEditTextName"
+            android:id="@+id/textInputEditTextName"
             style="@style/TextInputEditText"
             android:layout_marginBottom="16dp" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -71,16 +71,17 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout2"
+        android:id="@+id/textInputLayoutDescription"
         style="@style/TextInputLayout"
         android:hint="@string/new_album_description"
         android:layout_height="wrap_content"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout1">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutName">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInputEditTextDescription"
         style="@style/TextInputEditText"  />
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteMediaFragment"
+    tools:context="com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteTracksFragment"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dimen24"
-        tools:listitem="@layout/track_view" />
+        tools:listitem="@layout/item_track" />
 
     <ImageView
         android:id="@+id/favoritePlaceholderImge"

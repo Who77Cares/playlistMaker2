@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 
-class ExternalNavigatorImpl(
+class SettingsNavigatorImpl(
     private val context: Context
-): ExternalNavigator {
+): SettingsNavigator {
     override fun shareLink(url: String) {
         val intent = Intent().apply {
             action = Intent.ACTION_SEND

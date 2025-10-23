@@ -1,13 +1,11 @@
-package com.bignerdranch.playlistmaker
+package com.bignerdranch.playlistmaker.util
 
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.databinding.ActivityRootBinding
 
 
