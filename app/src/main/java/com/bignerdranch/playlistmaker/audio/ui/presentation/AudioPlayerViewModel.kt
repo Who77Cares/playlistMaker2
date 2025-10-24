@@ -140,4 +140,9 @@ class AudioPlayerViewModel(
         }
     }
 
+
+    // логика добавления в плейлист
+
+
+
 }

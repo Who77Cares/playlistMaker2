@@ -13,7 +13,7 @@
     <color name="settings_add_icons">#FF000000</color>
 
     <color name="search_icon_color">#AEAFB4</color>
-    <color name="background_color">#FFFFFFFF</color>
+
     <color name="search_textInputLayout">#E6E8EB</color>
     <color name="search_hint">#AEAFB4</color>
 
@@ -41,4 +41,5 @@
     <color name="colors_AEAFB4_AEAFB4">#AEAFB4</color>
     <color name="color_AEAFB4_FFFFFFFF">#AEAFB4</color>
     <color name="color_3772E7_3772E7">#3772E7</color>
+    <color name="colors_FFFFFFFF_1A1B22">#FFFFFFFF</color>
 </resources>

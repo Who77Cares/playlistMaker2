@@ -74,8 +74,6 @@ class PlaylistFragment: Fragment() {
     }
 
     private fun showContent(playlists: List<PlaylistModel>) {
-
-
         adapter.playlists = playlists.toList()
         adapter.notifyDataSetChanged()
 
@@ -89,6 +87,5 @@ class PlaylistFragment: Fragment() {
         binding.noPlaylistImg.visibility = View.VISIBLE
         binding.playlistRecyclerView.visibility = View.GONE
     }
-
 
 }

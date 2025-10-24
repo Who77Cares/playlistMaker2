@@ -12,7 +12,7 @@
     <color name="settings_add_icons">#FFFFFFFF</color>
 
     <color name="search_icon_color">#1A1B22</color>
-    <color name="background_color"> #1A1B22</color>
+    <color name="colors_FFFFFFFF_1A1B22"> #1A1B22</color>
     <color name="search_textInputLayout">#FFFFFF</color>
     <color name="search_hint">#1A1B22</color>
 

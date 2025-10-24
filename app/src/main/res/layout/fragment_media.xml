@@ -10,7 +10,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:orientation="vertical"
-    android:backgroundTint="@color/background_color"
+    android:backgroundTint="@color/colors_FFFFFFFF_1A1B22"
 
     android:paddingTop="@dimen/dimen14"
     android:paddingEnd="@dimen/dimen16"

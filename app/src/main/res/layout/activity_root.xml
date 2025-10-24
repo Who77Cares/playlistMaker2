@@ -32,7 +32,7 @@
         android:id="@+id/bottomNavigationView"
 
 
-        app:backgroundTint="@color/background_color"
+        app:backgroundTint="@color/colors_FFFFFFFF_1A1B22"
 
         android:layout_width="0dp"
         android:layout_height="wrap_content"
