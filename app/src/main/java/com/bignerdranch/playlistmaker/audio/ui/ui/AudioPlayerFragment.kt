@@ -79,6 +79,12 @@ class AudioPlayerFragment(): Fragment() {
 
         setupBottomSheet()
 
+        viewModel.getPlaylistDataFromRoom()
+
+        viewModel.observePlaylistData().observe(viewLifecycleOwner) { data ->
+            playlistAdapter.updatePlaylists(data)
+        }
+
         val track = extractTrackFromBundle()
 
 
@@ -218,15 +224,6 @@ class AudioPlayerFragment(): Fragment() {
         }
         bottomSheetCallback?.let { bottomSheetBehavior.addBottomSheetCallback(it) }
 
-        //
-//    // Настройка адаптера для списка плейлистов
-//    playlistsAdapter = PlaylistBottomSheetAdapter(
-//    onPlaylistClick = { playlist ->
-//        currentTrack?.let { track ->
-//            viewModel.addTrackToPlaylist(track, playlist)
-//        }
-//    }
-//    )
 
     }
 

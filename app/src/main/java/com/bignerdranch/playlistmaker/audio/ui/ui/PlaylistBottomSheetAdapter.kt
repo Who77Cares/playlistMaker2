@@ -15,6 +15,13 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 class PlaylistBottomSheetAdapter(
     private var playlists: List<PlaylistModel> = emptyList()
 ) : RecyclerView.Adapter<PlaylistBottomSheetAdapter.PlaylistViewHolder>() {
+
+
+    fun updatePlaylists(newPlaylists: List<PlaylistModel>) {
+        playlists = newPlaylists
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int

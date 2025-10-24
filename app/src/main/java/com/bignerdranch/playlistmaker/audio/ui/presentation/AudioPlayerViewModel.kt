@@ -9,6 +9,9 @@ import com.bignerdranch.playlistmaker.util.TrackMapper
 import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
 import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
 import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteTrackInteractor
+import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
+import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
+import com.bignerdranch.playlistmaker.media.playlists.PlaylistViewModel.PlaylistState
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -20,7 +23,8 @@ import java.util.TimeZone
 class AudioPlayerViewModel(
     private val mapper: TrackMapper,
     private val mediaPlayer: MediaPlayer,
-    private val favoriteTrackInteractor: FavoriteTrackInteractor
+    private val favoriteTrackInteractor: FavoriteTrackInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
     private var previewUrl: String = ""
@@ -38,6 +42,9 @@ class AudioPlayerViewModel(
 
     private val _isFavoriteLiveData = MutableLiveData<Boolean>()
     val isFavoriteLiveData: LiveData<Boolean> = _isFavoriteLiveData
+
+    private val playlistDataFromRoom = MutableLiveData<List<PlaylistModel>>()
+    fun observePlaylistData(): LiveData<List<PlaylistModel>> = playlistDataFromRoom
 
 
     override fun onCleared() {
@@ -140,9 +147,15 @@ class AudioPlayerViewModel(
         }
     }
 
+    fun getPlaylistDataFromRoom() {
+        viewModelScope.launch {
+            playlistInteractor
+                .getPlaylists()
+                .collect { data ->
+                    playlistDataFromRoom.value = data
 
-    // логика добавления в плейлист
-
-
+                }
+        }
+    }
 
 }
