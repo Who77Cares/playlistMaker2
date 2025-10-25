@@ -13,7 +13,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 
 class PlaylistBottomSheetAdapter(
-    private var playlists: List<PlaylistModel> = emptyList()
+    private var playlists: List<PlaylistModel> = emptyList(),
+    private val onPlaylistClick: (PlaylistModel) -> Unit
 ) : RecyclerView.Adapter<PlaylistBottomSheetAdapter.PlaylistViewHolder>() {
 
 
@@ -51,6 +52,10 @@ class PlaylistBottomSheetAdapter(
 
 
         fun bind(playlist: PlaylistModel) {
+
+            itemView.setOnClickListener {
+                onPlaylistClick(playlist)
+            }
 
             binding.playlistName.text = playlist.name
 

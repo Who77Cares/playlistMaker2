@@ -5,6 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +19,7 @@ import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -57,9 +60,9 @@ class AudioPlayerFragment(): Fragment() {
 
 
 
-    private val playlistAdapter: PlaylistBottomSheetAdapter by lazy { PlaylistBottomSheetAdapter() }
+    private lateinit var playlistAdapter: PlaylistBottomSheetAdapter
     private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<android.widget.LinearLayout>
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,6 +75,17 @@ class AudioPlayerFragment(): Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        playlistAdapter = PlaylistBottomSheetAdapter(
+            playlists = emptyList(),
+            onPlaylistClick = { playlistModel ->
+                addTrackToPlaylist(playlistModel.id)
+            }
+        )
+
+        viewModel.observeAddTrackToPlaylistResult().observe(viewLifecycleOwner) {
+           showDialog(it)
+        }
 
         setupBottomSheet()
 
@@ -144,10 +158,11 @@ class AudioPlayerFragment(): Fragment() {
         }
 
         binding.newPlaylistButton.setOnClickListener {
-            // тут навигация на создание плейлиста
             hidePlaylistsBottomSheet()
+            findNavController().navigate(
+                R.id.action_audioPlayerFragment_to_newPlaylistFragment
+            )
         }
-
 
     }
 
@@ -214,8 +229,6 @@ class AudioPlayerFragment(): Fragment() {
             }
         }
         bottomSheetCallback?.let { bottomSheetBehavior.addBottomSheetCallback(it) }
-
-
     }
 
     private fun showPlaylistsBottomSheet() {
@@ -228,6 +241,30 @@ class AudioPlayerFragment(): Fragment() {
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         binding.overlay.visibility = View.GONE
+    }
+
+    private fun addTrackToPlaylist(playlistId: Long) {
+        val trackId = (arguments?.getInt(TRACK_ID, 0) ?: 0).toString() // по хорошему бы сохранять сразу Int, но для этого нужно перелдапатить половину бд
+        // отправляем запрос в бд: по айдишнику плейлиста ищем в поле tracks ищем трек по айдишнику
+        viewModel.addTrackToPlaylist(playlistId, trackId)
+    }
+
+    fun showDialog(value: String?) {
+        if (value == null) {
+            MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
+                .setTitle("Трек уже в плейлисте")
+
+
+                .setNeutralButton("Ок") { dialog, which ->
+                    Log.d("DIALOG", "Нажата отмена")
+                }
+
+                .show()
+
+        } else {
+            Toast.makeText(requireContext(), "Добавлено в плейлист $value", Toast.LENGTH_LONG).show()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
     }
 
 }

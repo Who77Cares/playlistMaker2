@@ -3,7 +3,7 @@ package com.bignerdranch.playlistmaker.media.new_playlist
 import androidx.core.net.toUri
 import androidx.room.TypeConverter
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
-import com.bignerdranch.playlistmaker.new_playlist.db_playlists.PlaylistEntity
+import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.PlaylistEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -27,6 +27,7 @@ object PlaylistMapper {
 
     fun mapToPlaylistModel(playlistData: PlaylistEntity): PlaylistModel {
         return PlaylistModel(
+            id = playlistData.id,
             coverUri = playlistData.coverUri.toUri(),
             name = playlistData.name,
             description = playlistData.description,
@@ -36,7 +37,7 @@ object PlaylistMapper {
 
     fun mapToPlaylistEntity(playlist: PlaylistModel): PlaylistEntity {
         return PlaylistEntity(
-            id = 0L,
+            id = playlist.id,
             creationTime = System.currentTimeMillis(),
             coverUri = playlist.coverUri.toString(),
             name = playlist.name,

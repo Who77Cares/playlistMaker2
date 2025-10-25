@@ -9,4 +9,6 @@ interface PlaylistRepository {
 
     fun getPlaylists(): Flow<List<PlaylistModel>>
 
+    fun addTrackToPlaylist(playlistId: Long, trackId: String): Flow<String?>
+
 }

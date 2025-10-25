@@ -16,6 +16,7 @@ import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.core.time.measureDurationForResult
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -45,6 +46,10 @@ class AudioPlayerViewModel(
 
     private val playlistDataFromRoom = MutableLiveData<List<PlaylistModel>>()
     fun observePlaylistData(): LiveData<List<PlaylistModel>> = playlistDataFromRoom
+
+
+    private val addTrackToPlaylistResult = MutableLiveData<String?>()
+    fun observeAddTrackToPlaylistResult(): LiveData<String?> = addTrackToPlaylistResult
 
 
     override fun onCleared() {
@@ -154,6 +159,15 @@ class AudioPlayerViewModel(
                 .collect { data ->
                     playlistDataFromRoom.value = data
 
+                }
+        }
+    }
+
+    fun addTrackToPlaylist(playlistId: Long, trackId: String) {
+        viewModelScope.launch {
+            playlistInteractor.addTrackToPlaylist(playlistId, trackId)
+                .collect { result ->
+                    addTrackToPlaylistResult.value = result
                 }
         }
     }

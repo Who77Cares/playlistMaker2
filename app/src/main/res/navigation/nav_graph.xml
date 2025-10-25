@@ -71,6 +71,9 @@
         android:label="fragment_audio_player"
         tools:layout="@layout/fragment_audio_player" >
 
+        <action
+            android:id="@+id/action_audioPlayerFragment_to_newPlaylistFragment"
+            app:destination="@id/newPlaylistFragment" />
     </fragment>
 
 

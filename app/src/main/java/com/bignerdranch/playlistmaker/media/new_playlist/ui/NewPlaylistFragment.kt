@@ -133,6 +133,8 @@ class NewPlaylistFragment: Fragment() {
 
         viewModel.savePlaylist(
             PlaylistModel(
+                // room должна за нас сгенеритьщ айдишник
+                id = 0L,
                 coverUri = viewModel.observeCurrentImgUri().value ?: Uri.EMPTY,
                 name = viewModel.observeCurrentName().value ?: "",
                 description = viewModel.observeCurrentName().value ?: ""
@@ -141,7 +143,7 @@ class NewPlaylistFragment: Fragment() {
 
         Toast.makeText(
             requireContext(),
-            "«Плейлист ${viewModel.observeCurrentName().value!!} создан»",
+            "Плейлист ${viewModel.observeCurrentName().value!!} создан",
             Toast.LENGTH_SHORT
         ).show()
 

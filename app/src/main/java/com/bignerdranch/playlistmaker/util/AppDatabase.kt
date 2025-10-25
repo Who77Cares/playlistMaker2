@@ -7,7 +7,7 @@ import com.bignerdranch.playlistmaker.media.db_favorite.data.TrackDao
 import com.bignerdranch.playlistmaker.media.db_favorite.data.TrackEntity
 import com.bignerdranch.playlistmaker.media.new_playlist.PlaylistMapper
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.PlaylistDao
-import com.bignerdranch.playlistmaker.new_playlist.db_playlists.PlaylistEntity
+import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.PlaylistEntity
 
 @Database(version = 2, entities = [TrackEntity::class, PlaylistEntity::class])
 @TypeConverters(PlaylistMapper::class)
