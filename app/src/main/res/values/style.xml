@@ -169,5 +169,10 @@
         <item name="android:maxLength">50</item>
         <item name="android:textSize">@dimen/sp16</item>
     </style>
+
+    <style name="RoundedImageStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
     
 </resources>

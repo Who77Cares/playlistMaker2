@@ -42,6 +42,8 @@ class NewPlaylistFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
         // инициализируемс начальное состояние кнопки
         binding.createNewPlaylistButton.isEnabled = false
         binding.createNewPlaylistButton.setBackgroundColor(disableColor)
@@ -68,7 +70,9 @@ class NewPlaylistFragment: Fragment() {
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
-                    binding.imageSelectImageView.setImageURI(uri)
+                    binding.imageSelectedImageView.setImageURI(uri)
+                    binding.imageSelectedImageView.visibility = View.VISIBLE
+                    binding.imageSelectImageView.visibility = View.GONE
 
                     // сохраняем картинку во внутренее хранилище
                     viewModel.saveImage(uri)
@@ -87,7 +91,7 @@ class NewPlaylistFragment: Fragment() {
             viewModel.savePlaylist(
                 PlaylistModel(
                     coverUri = viewModel.observeCurrentImgUri().value ?: Uri.EMPTY,
-                    name = binding.textInputLayoutName.editText?.text.toString() ,
+                    name = binding.textInputLayoutName.editText?.text.toString(),
                     description = binding.textInputLayoutDescription.editText?.text.toString(),
                 )
             )
