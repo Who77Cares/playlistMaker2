@@ -11,6 +11,7 @@ import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.Pla
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bignerdranch.playlistmaker.media.new_playlist.img_external_storage.ImgExternalStorageUseCase
 import kotlinx.coroutines.launch
+import org.koin.core.component.getScopeName
 
 
 class NewPlaylistViewModel(
@@ -30,6 +31,14 @@ class NewPlaylistViewModel(
 
     private val currentImgUri = MutableLiveData<Uri>()
     fun observeCurrentImgUri(): LiveData<Uri> = currentImgUri
+
+
+    private val currentName = MutableLiveData<String>()
+    fun observeCurrentName(): LiveData<String> = currentName
+
+    private val currentDescription = MutableLiveData<String>()
+    fun observeCurrentDescription(): LiveData<String> = currentDescription
+
 
 
      fun updateButtonState(text: String?, enabledColor: Int, disabledColor: Int) {
@@ -53,4 +62,24 @@ class NewPlaylistViewModel(
             playlistInteractor.createPlaylist(playlist)
         }
     }
+
+
+    fun updateName(name: String){
+        currentName.value = name
+    }
+
+    fun updateDescription(description: String){
+        currentDescription.value = description
+    }
+
+    fun updateUri(uri: Uri){
+        currentImgUri.value = uri
+    }
+
+    fun anyFieldFilled(): Boolean {
+        return currentImgUri.value != null ||
+                !currentName.value.isNullOrBlank() ||
+                !currentDescription.value.isNullOrBlank()
+    }
+
 }

@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -15,9 +17,8 @@ import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
-
 
 class NewPlaylistFragment: Fragment() {
 
@@ -43,14 +44,14 @@ class NewPlaylistFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-
         // инициализируемс начальное состояние кнопки
         binding.createNewPlaylistButton.isEnabled = false
         binding.createNewPlaylistButton.setBackgroundColor(disableColor)
 
-        binding.arrowBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
+
+
+        binding.arrowBack.setOnClickListener { showDialog() }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { showDialog() }
 
 
         viewModel.observeButtonState().observe(viewLifecycleOwner) { state ->
@@ -63,6 +64,11 @@ class NewPlaylistFragment: Fragment() {
 
         binding.textInputEditTextName.doAfterTextChanged { editable ->
             viewModel.updateButtonState(editable.toString(), enableColor, disableColor)
+            viewModel.updateName(editable.toString())
+        }
+
+        binding.textInputEditTextDescription.doAfterTextChanged { editable ->
+            viewModel.updateDescription(editable.toString())
         }
 
 
@@ -77,6 +83,8 @@ class NewPlaylistFragment: Fragment() {
                     // сохраняем картинку во внутренее хранилище
                     viewModel.saveImage(uri)
 
+                    viewModel.updateUri(uri)
+
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                 }
@@ -87,15 +95,9 @@ class NewPlaylistFragment: Fragment() {
         }
 
 
-        binding.createNewPlaylistButton.setOnClickListener {
-            viewModel.savePlaylist(
-                PlaylistModel(
-                    coverUri = viewModel.observeCurrentImgUri().value ?: Uri.EMPTY,
-                    name = binding.textInputLayoutName.editText?.text.toString(),
-                    description = binding.textInputLayoutDescription.editText?.text.toString(),
-                )
-            )
 
+        binding.createNewPlaylistButton.setOnClickListener {
+            createNewPlaylist()
         }
 
 
@@ -104,6 +106,46 @@ class NewPlaylistFragment: Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    // почему-то глючный риппл-эффект у кнопок Dialog
+    fun showDialog() {
+        if (viewModel.anyFieldFilled()) {
+            MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
+                .setTitle("Завершить создание плейлиста?")
+                .setMessage("Все несохраненные данные будут потеряны")
+
+                .setNeutralButton("Отмена") { dialog, which ->
+                    Log.d("DIALOG", "Нажата отмена")
+                }
+
+                .setPositiveButton("Завершить") { dialog, which ->
+                    findNavController().navigateUp()
+                }
+                .show()
+
+        } else {
+            findNavController().navigateUp()
+        }
+    }
+
+    fun createNewPlaylist() {
+
+        viewModel.savePlaylist(
+            PlaylistModel(
+                coverUri = viewModel.observeCurrentImgUri().value ?: Uri.EMPTY,
+                name = viewModel.observeCurrentName().value ?: "",
+                description = viewModel.observeCurrentName().value ?: "",
+            )
+        )
+
+        Toast.makeText(
+            requireContext(),
+            "«Плейлист ${viewModel.observeCurrentName().value!!} создан»",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        findNavController().navigateUp()
     }
 
 }

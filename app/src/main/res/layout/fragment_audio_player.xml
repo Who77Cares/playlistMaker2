@@ -99,7 +99,7 @@
         app:layout_constraintDimensionRatio="1:1"
         android:foreground="?attr/selectableItemBackground"
         android:background="@drawable/audio_shape"
-        android:backgroundTint="@color/text_error_color"
+        android:backgroundTint="@color/colors_1A1B22_FFFFFF"
         android:padding="15dp"
         android:scaleType="centerCrop"
         android:src="@drawable/play_arrow_icon"

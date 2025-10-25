@@ -20,7 +20,7 @@
     <color name="searh_box">#E6E8EB</color>
     <color name="close_button">#AEAFB4</color>
 
-    <color name="text_error_color">#1A1B22</color>
+
 
     <color name="track_off">#AEAFB4</color>
     <color name="thumb_off">#E6E8EB</color>
@@ -42,4 +42,12 @@
     <color name="color_AEAFB4_FFFFFFFF">#AEAFB4</color>
     <color name="color_3772E7_3772E7">#3772E7</color>
     <color name="colors_FFFFFFFF_1A1B22">#FFFFFFFF</color>
+    <color name="colors_1A1B22_FFFFFF">#1A1B22</color>
+
+    <color name="your_dialog_background">#3772E7</color>
+    <color name="your_title_color">#FF6200EE</color>
+    <color name="your_message_color">#FF4CAF50</color>
+    <color name="your_button_text_color">#FF4CAF50</color>
+    <color name="your_title_background">#FFFFFFFF</color>
+
 </resources>
