@@ -1,53 +1,63 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="3dp"
-    app:cardCornerRadius="15dp"
-    app:cardElevation="5dp">
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="13dp">
+        android:padding="4dp"
+        android:background="@color/colors_FFFFFFFF_1A1B22">
 
-        <TextView
-            android:id="@+id/titlePlaylistItem"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="Заголовок Заголовок" />
-
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imagePlaylist"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/titlePlaylistItem"
-            app:layout_constraintBottom_toTopOf="@id/descriptionPlaylistTextView"
+
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/RoundedImageStyle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/titlePlaylistItem"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintDimensionRatio="1:1"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/ic_launcher_foreground" />
+            tools:src="@drawable/placeholder" />
 
         <TextView
-            android:id="@+id/descriptionPlaylistTextView"
+            android:id="@+id/titlePlaylistItem"
+            style="@style/YS_Regular_13_for_values"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/imagePlaylist"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="0dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imagePlaylist"
+            tools:text="Заголовок Заголовок" />
+
+        <TextView
+            android:id="@+id/tracksNumberPlaylistTextView"
+            style="@style/YS_Regular_13_for_values"
+            android:layout_width="0dp"
+
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:textSize="12sp"
-            tools:text="Описание..." />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titlePlaylistItem"
+
+            tools:text="Описание... плейлиста" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
 
 
 

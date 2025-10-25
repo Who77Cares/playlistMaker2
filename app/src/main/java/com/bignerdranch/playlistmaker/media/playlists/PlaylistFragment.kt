@@ -27,6 +27,7 @@ class PlaylistFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: PlaylistViewModel by viewModel()
+
     private val adapter = PlaylistAdapter()
 
 

@@ -23,7 +23,7 @@
         android:id="@+id/line"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="@color/search_textInputLayout"
+        android:background="@color/colors_E6E8EB_FFFFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"/>

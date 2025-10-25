@@ -8,7 +8,6 @@
     android:layout_height="match_parent">
 
 <androidx.constraintlayout.widget.ConstraintLayout
-
     tools:context=".audio.ui.ui.AudioPlayerFragment"
 
     android:id="@+id/main"
@@ -46,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="@dimen/dimen24"
 
-        tools:src="@drawable/placeholder_search" />
+        tools:src="@drawable/placeholder" />
 
     <!-- Название трека -->
     <TextView
@@ -228,8 +227,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Россия" />
 
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -245,33 +242,48 @@
         android:id="@+id/bottom_sheet_playlists"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-
         android:background="@drawable/sheet_bottom"
         android:orientation="vertical"
-
         android:paddingHorizontal="8dp"
 
         app:behavior_hideable="true"
 
-        app:behavior_peekHeight="240dp"
+        app:behavior_peekHeight="200dp"
 
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <View
+            android:id="@+id/bottom_sheet_handle"
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="30dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/sheet_tap_shape"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
 
         <TextView
             style="@style/text_search_error"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+
+            android:layout_marginTop="0dp"
             android:gravity="center"
-            android:text="Тут текст ВОООООО" />
+            android:text="@string/addToPlaylist" />
 
         <Button
             android:id="@+id/newPlaylistButton"
             style="@style/button_for_updateButton_and_clearSearchList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Тут текст кнопки" />
+            android:layout_gravity="center"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/new_playlist" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/playlistInSheetRecyclerView"

@@ -22,8 +22,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 class AudioPlayerFragment(): Fragment() {
 
-
-
     companion object {
         const val TRACK_NAME = "trackName"
         const val ARTIST_NAME = "artistName"
@@ -59,11 +57,9 @@ class AudioPlayerFragment(): Fragment() {
 
 
 
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<android.widget.LinearLayout>
     private val playlistAdapter: PlaylistBottomSheetAdapter by lazy { PlaylistBottomSheetAdapter() }
     private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
-
-
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<android.widget.LinearLayout>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,8 +75,8 @@ class AudioPlayerFragment(): Fragment() {
 
         setupBottomSheet()
 
+        // получение данных о плейлистах из room и установка их в адаптер
         viewModel.getPlaylistDataFromRoom()
-
         viewModel.observePlaylistData().observe(viewLifecycleOwner) { data ->
             playlistAdapter.updatePlaylists(data)
         }
@@ -106,7 +102,6 @@ class AudioPlayerFragment(): Fragment() {
         }
 
         binding.PlayOrStopButton.setOnClickListener {
-            Log.d("AudioPlayerFragment", "Play button clicked!")
             viewModel.onPlayButtonClicked()
         }
 
@@ -123,7 +118,7 @@ class AudioPlayerFragment(): Fragment() {
                 .load(model.coverUrl)
                 .fitCenter()
                 .transform(RoundedCorners(20))
-                .placeholder(R.drawable.placeholder_search)
+                .placeholder(R.drawable.placeholder)
                 .into(binding.songCover)
         }
 
@@ -187,7 +182,8 @@ class AudioPlayerFragment(): Fragment() {
 
 
     private fun setupBottomSheet() {
-
+// Создаётся BottomSheetBehavior, «привязанный» к layout bottomSheetPlaylists.
+// По умолчанию лист скрыт (STATE_HIDDEN).
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylists)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
@@ -201,25 +197,20 @@ class AudioPlayerFragment(): Fragment() {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding.overlay.visibility = View.GONE
-//                        viewModel.clearAddToPlaylistResult()
                     }
-                    BottomSheetBehavior.STATE_EXPANDED,
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        binding.overlay.visibility = View.VISIBLE
-                    }
+
                     else -> {
-                        // Обработка других состояний
+                        binding.overlay.visibility = View.VISIBLE
                     }
                 }
             }
 
+            // По умолчанию slideOffset начинает меняться только после того, как шит "отлипнет" от peekHeight, то есть когда он выходит из состояния STATE_COLLAPSED.
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                val alpha = when {
-                    slideOffset < 0 -> 0f
-                    slideOffset > 1 -> 1f
-                    else -> slideOffset
+                binding.overlay.apply {
+                    visibility = View.VISIBLE
+                    alpha = slideOffset.coerceIn(0f, 0.7f)
                 }
-                binding.overlay.alpha = alpha
             }
         }
         bottomSheetCallback?.let { bottomSheetBehavior.addBottomSheetCallback(it) }
@@ -228,14 +219,13 @@ class AudioPlayerFragment(): Fragment() {
     }
 
     private fun showPlaylistsBottomSheet() {
-//        if (!isAdded) return
-//        viewModel.loadPlaylists()
+
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         binding.overlay.visibility = View.VISIBLE
     }
 
     private fun hidePlaylistsBottomSheet() {
-//        if (!isAdded) return
+
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         binding.overlay.visibility = View.GONE
     }

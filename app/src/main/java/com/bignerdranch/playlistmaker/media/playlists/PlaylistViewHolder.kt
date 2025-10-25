@@ -11,17 +11,19 @@ import com.bumptech.glide.Glide
 class PlaylistViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
     private val title: TextView = itemView.findViewById(R.id.titlePlaylistItem)
-    private val description: TextView = itemView.findViewById(R.id.descriptionPlaylistTextView)
+    private val tracksNumber: TextView = itemView.findViewById(R.id.tracksNumberPlaylistTextView)
     private val imgUri: ImageView = itemView.findViewById(R.id.imagePlaylist)
 
     fun bind(playlist: PlaylistModel) {
         title.text = playlist.name
-        description.text = playlist.description
+        val trackCount = playlist.tracks.size
+        tracksNumber.text = itemView.context.resources.getQuantityString(R.plurals.tracks_count, trackCount, trackCount)
 
         Glide.with(itemView)
             .load(playlist.coverUri)
             .centerCrop()
-            .placeholder(R.drawable.placeholder_search)
+            // тут, кстати, мы уже скруглили углы уже у самого imgUri через атрибут app:shapeAppearanceOverlay="@style/RoundedImageStyle"
+            .placeholder(R.drawable.placeholder)
             .into(imgUri)
     }
 

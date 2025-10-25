@@ -6,7 +6,7 @@ import android.view.ViewGroup
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.playlistmaker.R
-import com.bignerdranch.playlistmaker.databinding.ItemTrackForPlaylistBinding
+import com.bignerdranch.playlistmaker.databinding.ItemTrackForSheetBinding
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -26,7 +26,7 @@ class PlaylistBottomSheetAdapter(
         parent: ViewGroup,
         viewType: Int
     ): PlaylistViewHolder {
-        val binding = ItemTrackForPlaylistBinding.inflate(
+        val binding = ItemTrackForSheetBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -34,7 +34,6 @@ class PlaylistBottomSheetAdapter(
 
         return PlaylistViewHolder(binding)
     }
-
 
     override fun onBindViewHolder(
         holder: PlaylistViewHolder,
@@ -47,20 +46,24 @@ class PlaylistBottomSheetAdapter(
 
 
     inner class PlaylistViewHolder(
-        private val binding: ItemTrackForPlaylistBinding
+        private val binding: ItemTrackForSheetBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
 
         fun bind(playlist: PlaylistModel) {
 
             binding.playlistName.text = playlist.name
-            binding.playlistTrackCount.text = playlist.tracks.size.toString()
+
+            val trackCount = playlist.tracks.size
+            binding.playlistTrackCount.text =
+                itemView.context.resources.getQuantityString(R.plurals.tracks_count, trackCount, trackCount)
+
 
             Glide.with(itemView)
                 .load(playlist.coverUri.toString())
                 .centerCrop()
-                .transform(RoundedCorners(2))
-                .placeholder(R.drawable.placeholder_search)
+                .transform(RoundedCorners(4))
+                .placeholder(R.drawable.placeholder)
                 .into(binding.playlistCover)
 
         }

@@ -51,7 +51,7 @@ class FavoriteAdapter(
                 .load(model.artworkUrl100)
                 .centerCrop()
                 .transform(RoundedCorners(2))
-                .placeholder(R.drawable.placeholder_search)
+                .placeholder(R.drawable.placeholder)
                 .into(artworkUrl100View)
 
 
