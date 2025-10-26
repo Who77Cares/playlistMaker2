@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlin.io.path.Path
 
 class PlaylistRepositoryImpl(
     private val db: AppDatabase,
@@ -35,17 +36,20 @@ class PlaylistRepositoryImpl(
     override fun addTrackToPlaylist(
         playlistId: Long,
         trackId: String
-    ): Flow<String?> = flow {
+    ): Flow<Pair<String, Boolean>> = flow {
         val playlist = db.playlistDao().getPlaylistById(playlistId)
+
         if (trackId in playlist.tracks) {
-            emit(null)
+            emit(Pair(playlist.name, true))
         } else {
             playlist.tracks.add(trackId)
             db.playlistDao().updatePlaylist(playlist)
-            emit(playlist.name) // возвращаем имя плейлиста для вывода в тост если трек успешно добавлен
+            emit(Pair(playlist.name, false))
         }
     }.flowOn(Dispatchers.IO)
 
 }
+
+
 
 

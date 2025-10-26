@@ -25,6 +25,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 class AudioPlayerFragment(): Fragment() {
 
+
+
     companion object {
         const val TRACK_NAME = "trackName"
         const val ARTIST_NAME = "artistName"
@@ -56,6 +58,8 @@ class AudioPlayerFragment(): Fragment() {
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
+    private var isIn: Boolean? = null
+
     private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(get<TrackMapper>())  }
 
 
@@ -83,8 +87,21 @@ class AudioPlayerFragment(): Fragment() {
             }
         )
 
-        viewModel.observeAddTrackToPlaylistResult().observe(viewLifecycleOwner) {
-           showDialog(it)
+        viewModel.playlistAddStatus.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled()?.let { status ->
+                val name = status.playlistName!!
+                val isIn = status.isInPlaylist!!
+
+                if(isIn) {
+                    MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
+                        .setTitle("Трек уже в плейлисте $name")
+                        .setNeutralButton("Ок") { dialog, which -> }
+                        .show()
+                } else {
+                    Toast.makeText(requireContext(), "Добавлено в плейлист $name", Toast.LENGTH_LONG).show()
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                }
+            }
         }
 
         setupBottomSheet()
@@ -193,6 +210,8 @@ class AudioPlayerFragment(): Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        isIn = null
+
     }
 
 
@@ -247,24 +266,6 @@ class AudioPlayerFragment(): Fragment() {
         val trackId = (arguments?.getInt(TRACK_ID, 0) ?: 0).toString() // по хорошему бы сохранять сразу Int, но для этого нужно перелдапатить половину бд
         // отправляем запрос в бд: по айдишнику плейлиста ищем в поле tracks ищем трек по айдишнику
         viewModel.addTrackToPlaylist(playlistId, trackId)
-    }
-
-    fun showDialog(value: String?) {
-        if (value == null) {
-            MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
-                .setTitle("Трек уже в плейлисте")
-
-
-                .setNeutralButton("Ок") { dialog, which ->
-                    Log.d("DIALOG", "Нажата отмена")
-                }
-
-                .show()
-
-        } else {
-            Toast.makeText(requireContext(), "Добавлено в плейлист $value", Toast.LENGTH_LONG).show()
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        }
     }
 
 }

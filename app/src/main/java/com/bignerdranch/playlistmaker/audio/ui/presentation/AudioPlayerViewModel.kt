@@ -2,6 +2,7 @@ package com.bignerdranch.playlistmaker.audio.ui.presentation
 
 import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,6 +29,11 @@ class AudioPlayerViewModel(
     private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
+    data class PlaylistAddStatus(
+        val playlistName: String?,
+        val isInPlaylist: Boolean?
+    )
+
     private var previewUrl: String = ""
     private var timerJob: Job? = null
 
@@ -47,9 +53,10 @@ class AudioPlayerViewModel(
     private val playlistDataFromRoom = MutableLiveData<List<PlaylistModel>>()
     fun observePlaylistData(): LiveData<List<PlaylistModel>> = playlistDataFromRoom
 
+    private val _playlistAddStatus = MutableLiveData<Event<PlaylistAddStatus>>()
+    val playlistAddStatus: LiveData<Event<PlaylistAddStatus>> = _playlistAddStatus
 
-    private val addTrackToPlaylistResult = MutableLiveData<String?>()
-    fun observeAddTrackToPlaylistResult(): LiveData<String?> = addTrackToPlaylistResult
+
 
 
     override fun onCleared() {
@@ -167,9 +174,24 @@ class AudioPlayerViewModel(
         viewModelScope.launch {
             playlistInteractor.addTrackToPlaylist(playlistId, trackId)
                 .collect { result ->
-                    addTrackToPlaylistResult.value = result
+                    _playlistAddStatus.value = Event(
+                        PlaylistAddStatus(result.first, result.second)
+                    )
                 }
         }
     }
 
+}
+
+open class Event<out T>(private val content: T) {
+
+    private var hasBeenHandled = false
+
+    fun getContentIfNotHandled(): T? {
+        return if (hasBeenHandled) null
+        else {
+            hasBeenHandled = true
+            content
+        }
+    }
 }

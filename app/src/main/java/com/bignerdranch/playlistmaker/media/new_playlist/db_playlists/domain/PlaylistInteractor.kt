@@ -9,6 +9,6 @@ interface PlaylistInteractor {
 
     fun getPlaylists(): Flow<List<PlaylistModel>>
 
-    fun addTrackToPlaylist(playlistId: Long, trackId: String): Flow<String?>
+    fun addTrackToPlaylist(playlistId: Long, trackId: String): Flow<Pair<String, Boolean>>
 
 }

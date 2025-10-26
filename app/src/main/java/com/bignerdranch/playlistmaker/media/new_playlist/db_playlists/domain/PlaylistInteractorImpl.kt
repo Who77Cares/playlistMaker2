@@ -15,7 +15,7 @@ class PlaylistInteractorImpl(
     override fun getPlaylists(): Flow<List<PlaylistModel>> = repository.getPlaylists()
 
 
-    override fun addTrackToPlaylist(playlistId: Long, trackId: String): Flow<String?> {
+    override fun addTrackToPlaylist(playlistId: Long, trackId: String): Flow<Pair<String, Boolean>> {
         return repository.addTrackToPlaylist(playlistId, trackId)
     }
 
