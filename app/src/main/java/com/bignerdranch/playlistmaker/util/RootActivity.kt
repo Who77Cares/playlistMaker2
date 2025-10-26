@@ -4,6 +4,8 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.bignerdranch.playlistmaker.R
@@ -28,21 +30,24 @@ class RootActivity: AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
 
 
-        binding.root.viewTreeObserver.addOnGlobalLayoutListener {
-            val rect = Rect()
-            binding.root.getWindowVisibleDisplayFrame(rect)
-            val screenHeight = binding.root.rootView.height
-            val keypadHeight = screenHeight - rect.bottom
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val imeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
 
+
+            // Скрываем bottom navigation когда клавиатура открыта
             binding.bottomNavigationView.visibility =
-                if (keypadHeight > screenHeight * 0.15) View.GONE else View.VISIBLE
+                if (imeVisible) View.GONE else View.VISIBLE
+
+            // Также можно скрыть линию
+            binding.line.visibility =
+                if (imeVisible) View.GONE else View.VISIBLE
+
+            insets
         }
 
-
-
+// Навигационный слушатель остается без изменений
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-
                 in setOf(
                     R.id.audioPlayerFragment,
                     R.id.newPlaylistFragment
@@ -50,9 +55,6 @@ class RootActivity: AppCompatActivity() {
                     binding.bottomNavigationView.visibility = View.GONE
                     binding.line.visibility = View.GONE
                 }
-
-
-
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                     binding.line.visibility = View.VISIBLE
