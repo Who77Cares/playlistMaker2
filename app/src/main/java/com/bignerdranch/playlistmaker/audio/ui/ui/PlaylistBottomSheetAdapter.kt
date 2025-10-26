@@ -67,7 +67,7 @@ class PlaylistBottomSheetAdapter(
             Glide.with(itemView)
                 .load(playlist.coverUri.toString())
                 .centerCrop()
-                .transform(RoundedCorners(4))
+                .transform(RoundedCorners(2))
                 .placeholder(R.drawable.placeholder)
                 .into(binding.playlistCover)
 
