@@ -1,5 +1,6 @@
 package com.bignerdranch.playlistmaker.util
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +28,15 @@ class RootActivity: AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
 
 
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener {
+            val rect = Rect()
+            binding.root.getWindowVisibleDisplayFrame(rect)
+            val screenHeight = binding.root.rootView.height
+            val keypadHeight = screenHeight - rect.bottom
 
+            binding.bottomNavigationView.visibility =
+                if (keypadHeight > screenHeight * 0.15) View.GONE else View.VISIBLE
+        }
 
 
 
