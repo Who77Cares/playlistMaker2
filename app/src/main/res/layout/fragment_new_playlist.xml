@@ -80,7 +80,7 @@
         android:hint="@string/new_album_name"
 
         android:imeOptions="actionDone"
-        app:endIconMode="clear_text"
+
         app:endIconTint="@color/color_3772E7_3772E7"
 
         app:layout_constraintEnd_toEndOf="parent"
