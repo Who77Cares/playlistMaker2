@@ -16,7 +16,7 @@ class PlaylistViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
     fun bind(playlist: PlaylistModel) {
         title.text = playlist.name
-        val trackCount = playlist.tracks.size
+        val trackCount = playlist.tracksSize
         tracksNumber.text = itemView.context.resources.getQuantityString(R.plurals.tracks_count, trackCount, trackCount)
 
         Glide.with(itemView)

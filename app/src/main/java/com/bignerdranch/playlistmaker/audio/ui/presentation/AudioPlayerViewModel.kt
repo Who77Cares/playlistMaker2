@@ -2,7 +2,7 @@ package com.bignerdranch.playlistmaker.audio.ui.presentation
 
 import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,6 @@ import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
 import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteTrackInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
-import com.bignerdranch.playlistmaker.media.playlists.PlaylistViewModel.PlaylistState
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -20,7 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.koin.core.time.measureDurationForResult
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -181,15 +179,3 @@ class AudioPlayerViewModel(
 
 }
 
-//open class Event<out T>(private val content: T) {
-//
-//    private var hasBeenHandled = false
-//
-//    fun getContentIfNotHandled(): T? {
-//        return if (hasBeenHandled) null
-//        else {
-//            hasBeenHandled = true
-//            content
-//        }
-//    }
-//}

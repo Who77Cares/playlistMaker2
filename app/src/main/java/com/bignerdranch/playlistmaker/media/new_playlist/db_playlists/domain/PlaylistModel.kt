@@ -8,6 +8,6 @@ data class PlaylistModel(
     val coverUri: Uri,
     val name: String,
     val description: String,
-    val tracks: MutableList<String> = mutableListOf()
+    val tracksSize: Int = 0
 ) {
 }

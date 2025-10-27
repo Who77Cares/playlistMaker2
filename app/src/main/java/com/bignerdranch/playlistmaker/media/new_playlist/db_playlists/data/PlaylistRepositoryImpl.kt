@@ -65,6 +65,8 @@ class PlaylistRepositoryImpl(
            )
 
            db.crossRefDao().insertCrossRef(crossRef)
+           db.playlistDao().incrementTrackCount(playlistId)
+
            return@withContext true
        }
 
@@ -73,22 +75,6 @@ class PlaylistRepositoryImpl(
     private suspend fun findTrackById(trackId: Long): TrackToPlaylistEntity? {
         return db.trackToPlaylistDao().findTrackById(trackId)
     }
-
-
-//    override fun addTrackToPlaylist(
-//        playlistId: Long,
-//        trackId: String
-//    ): Flow<Pair<String, Boolean>> = flow {
-//        val playlist = db.playlistDao().getPlaylistById(playlistId)
-//
-//        if (trackId in playlist.tracks) {
-//            emit(Pair(playlist.name, true))
-//        } else {
-//            playlist.tracks.add(trackId)
-//            db.playlistDao().updatePlaylist(playlist)
-//            emit(Pair(playlist.name, false))
-//        }
-//    }.flowOn(Dispatchers.IO)
 
 }
 

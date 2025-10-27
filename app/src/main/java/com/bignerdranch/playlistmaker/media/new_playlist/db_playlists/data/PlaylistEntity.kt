@@ -15,6 +15,7 @@ data class PlaylistEntity(
     val coverUri: String,
     val name: String,
     val description: String,
+    val trackSize: Int
 
     ) {
 }

@@ -137,7 +137,8 @@ class NewPlaylistFragment: Fragment() {
                 id = 0L,
                 coverUri = viewModel.observeCurrentImgUri().value ?: Uri.EMPTY,
                 name = viewModel.observeCurrentName().value ?: "",
-                description = viewModel.observeCurrentName().value ?: ""
+                description = viewModel.observeCurrentName().value ?: "",
+                tracksSize = 0
             )
         )
 

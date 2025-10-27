@@ -59,7 +59,7 @@ class PlaylistBottomSheetAdapter(
 
             binding.playlistName.text = playlist.name
 
-            val trackCount = playlist.tracks.size
+            val trackCount = playlist.tracksSize
             binding.playlistTrackCount.text =
                 itemView.context.resources.getQuantityString(R.plurals.tracks_count, trackCount, trackCount)
 
