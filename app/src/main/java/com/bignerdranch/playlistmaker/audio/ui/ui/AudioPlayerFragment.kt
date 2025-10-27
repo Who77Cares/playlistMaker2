@@ -141,6 +141,7 @@ class AudioPlayerFragment(): Fragment() {
         }
 
         viewModel.observeTrackUiModel().observe(viewLifecycleOwner) { model ->
+
             binding.trackName.text = model.trackName
             binding.artistName.text = model.artistName
             binding.album.text = model.album
@@ -150,7 +151,7 @@ class AudioPlayerFragment(): Fragment() {
             binding.songCountry.text = model.country
 
             Glide.with(this)
-                .load(model.coverUrl)
+                .load(model.getHighQualityCover())
                 .fitCenter()
                 .transform(RoundedCorners(20))
                 .placeholder(R.drawable.placeholder)
