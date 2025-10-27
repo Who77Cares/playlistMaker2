@@ -2,6 +2,7 @@ package com.bignerdranch.playlistmaker.util
 
 import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
 import com.bignerdranch.playlistmaker.media.db_favorite.data.TrackEntity
+import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.many_to_many.TrackToPlaylistEntity
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -83,6 +84,38 @@ class TrackMapper {
             .parse(track.releaseDate)
 
         return SimpleDateFormat("yyyy", Locale.getDefault()).format(date!!)
+    }
+
+
+
+    fun mapToPlaylistTrackEntity(track: Track): TrackToPlaylistEntity {
+        return TrackToPlaylistEntity(
+            trackId = track.trackId.toLong(),
+            trackName = track.trackName,
+            artistName = track.artistName,
+            duration = formatDuration(track),
+            year = formatYear(track),
+            album = track.collectionName,
+            coverUrl = track.artworkUrl100,
+            style = track.primaryGenreName,
+            country = track.country,
+            previewUrl = track.previewUrl
+        )
+    }
+
+    fun mapToTrackModel(track: TrackToPlaylistEntity): Track {
+        return Track(
+            trackName = track.trackName,
+            artistName = track.artistName,
+            trackTimeMillis = parseDuration(track.duration).toInt(),
+            artworkUrl100 = track.coverUrl,
+            trackId = track.trackId.toInt(),
+            collectionName = track.album,
+            releaseDate = parseYear(track.year),
+            primaryGenreName = track.style,
+            country = track.country,
+            previewUrl = track.previewUrl
+        )
     }
 
 }

@@ -27,7 +27,7 @@ object PlaylistMapper {
 
     fun mapToPlaylistModel(playlistData: PlaylistEntity): PlaylistModel {
         return PlaylistModel(
-            id = playlistData.id,
+            id = playlistData.playlistId,
             coverUri = playlistData.coverUri.toUri(),
             name = playlistData.name,
             description = playlistData.description,
@@ -36,12 +36,14 @@ object PlaylistMapper {
 
     fun mapToPlaylistEntity(playlist: PlaylistModel): PlaylistEntity {
         return PlaylistEntity(
-            id = playlist.id,
+            playlistId = playlist.id,
             creationTime = System.currentTimeMillis(),
             coverUri = playlist.coverUri.toString(),
             name = playlist.name,
             description = playlist.description,
         )
     }
+
+
 
 }

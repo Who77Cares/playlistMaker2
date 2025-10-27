@@ -10,11 +10,11 @@ import com.bignerdranch.playlistmaker.media.new_playlist.PlaylistMapper
 @TypeConverters(PlaylistMapper::class)
 data class PlaylistEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val playlistId: Long,
     val creationTime: Long,
     val coverUri: String,
     val name: String,
     val description: String,
 
-) {
+    ) {
 }

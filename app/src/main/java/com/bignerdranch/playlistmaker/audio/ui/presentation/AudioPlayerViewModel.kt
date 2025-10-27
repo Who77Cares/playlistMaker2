@@ -16,6 +16,9 @@ import com.bignerdranch.playlistmaker.media.playlists.PlaylistViewModel.Playlist
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.time.measureDurationForResult
 import java.text.SimpleDateFormat
@@ -29,10 +32,6 @@ class AudioPlayerViewModel(
     private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
-    data class PlaylistAddStatus(
-        val playlistName: String?,
-        val isInPlaylist: Boolean?
-    )
 
     private var previewUrl: String = ""
     private var timerJob: Job? = null
@@ -53,9 +52,8 @@ class AudioPlayerViewModel(
     private val playlistDataFromRoom = MutableLiveData<List<PlaylistModel>>()
     fun observePlaylistData(): LiveData<List<PlaylistModel>> = playlistDataFromRoom
 
-//    private val _playlistAddStatus = MutableLiveData<Event<PlaylistAddStatus>>()
-//    val playlistAddStatus: LiveData<Event<PlaylistAddStatus>> = _playlistAddStatus
-
+    private val _addTrackState = MutableStateFlow<Boolean?>(null)
+    val addTrackState: StateFlow<Boolean?> = _addTrackState.asStateFlow()
 
 
 
@@ -170,28 +168,28 @@ class AudioPlayerViewModel(
         }
     }
 
-//    fun addTrackToPlaylist(playlistId: Long, trackId: String) {
-//        viewModelScope.launch {
-//            playlistInteractor.addTrackToPlaylist(playlistId, trackId)
-//                .collect { result ->
-//                    _playlistAddStatus.value = Event(
-//                        PlaylistAddStatus(result.first, result.second)
-//                    )
-//                }
-//        }
-//    }
-
-}
-
-open class Event<out T>(private val content: T) {
-
-    private var hasBeenHandled = false
-
-    fun getContentIfNotHandled(): T? {
-        return if (hasBeenHandled) null
-        else {
-            hasBeenHandled = true
-            content
+    // методы для работы с сохранением трека в плейлист
+    fun addTrackToPlaylist(track: Track, playlist: PlaylistModel) {
+        viewModelScope.launch {
+            _addTrackState.value = playlistInteractor.addTrackToPlaylist(track, playlist.id)
         }
     }
+
+    fun clearAddTrackState() {
+        _addTrackState.value = null
+    }
+
 }
+
+//open class Event<out T>(private val content: T) {
+//
+//    private var hasBeenHandled = false
+//
+//    fun getContentIfNotHandled(): T? {
+//        return if (hasBeenHandled) null
+//        else {
+//            hasBeenHandled = true
+//            content
+//        }
+//    }
+//}

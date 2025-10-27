@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.playlistmaker.R
@@ -15,11 +16,13 @@ import com.bignerdranch.playlistmaker.util.TrackMapper
 import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
 import com.bignerdranch.playlistmaker.audio.ui.presentation.AudioPlayerViewModel
 import com.bignerdranch.playlistmaker.databinding.FragmentAudioPlayerBinding
+import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -58,8 +61,6 @@ class AudioPlayerFragment(): Fragment() {
     private var _binding: FragmentAudioPlayerBinding? = null
     private val binding get() = _binding!!
 
-    private var isIn: Boolean? = null
-
     private val viewModel: AudioPlayerViewModel by viewModel { parametersOf(get<TrackMapper>())  }
 
 
@@ -67,6 +68,8 @@ class AudioPlayerFragment(): Fragment() {
     private lateinit var playlistAdapter: PlaylistBottomSheetAdapter
     private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
+    var lastClickedPlaylist: PlaylistModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,30 +83,29 @@ class AudioPlayerFragment(): Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val track = extractTrackFromBundle()
+
         playlistAdapter = PlaylistBottomSheetAdapter(
             playlists = emptyList(),
             onPlaylistClick = { playlistModel ->
-//                addTrackToPlaylist(playlistModel.id)
+                lastClickedPlaylist = playlistModel
+                viewModel.addTrackToPlaylist(track, playlistModel)
             }
         )
 
-        // тут тоже меняем логику при получении данных
-//        viewModel.playlistAddStatus.observe(viewLifecycleOwner) { event ->
-//            event.getContentIfNotHandled()?.let { status ->
-//                val name = status.playlistName!!
-//                val isIn = status.isInPlaylist!!
-//
-//                if(isIn) {
-//                    MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
-//                        .setTitle("Трек уже в плейлисте $name")
-//                        .setNeutralButton("Ок") { dialog, which -> }
-//                        .show()
-//                } else {
-//                    Toast.makeText(requireContext(), "Добавлено в плейлист $name", Toast.LENGTH_LONG).show()
-//                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-//                }
-//            }
-//        }
+        lifecycleScope.launch {
+            viewModel.addTrackState.collect { result ->
+
+                when(result) {
+                    false -> { showSuccessTrackAddToPlaylist(lastClickedPlaylist?.name ?: "")}
+                    true -> { showErrorTrackAddToPlaylist(lastClickedPlaylist?.name ?: "") }
+                    else -> {}
+                }
+                // Очищаем состояние после показа тоста
+                viewModel.clearAddTrackState()
+            }
+        }
+
 
         setupBottomSheet()
 
@@ -114,7 +116,7 @@ class AudioPlayerFragment(): Fragment() {
             playlistAdapter.updatePlaylists(data)
         }
 
-        val track = extractTrackFromBundle()
+
 
 
         viewModel.observePlayerState().observe(viewLifecycleOwner) {
@@ -212,7 +214,7 @@ class AudioPlayerFragment(): Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        isIn = null
+        lastClickedPlaylist = null
 
     }
 
@@ -265,5 +267,18 @@ class AudioPlayerFragment(): Fragment() {
     }
 
 
+    private fun showSuccessTrackAddToPlaylist(playlistName: String) {
+        MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
+            .setTitle("Трек уже в плейлисте $playlistName")
+            .setNeutralButton("Ок") { dialog, which -> }
+            .show()
+    }
 
+    private fun showErrorTrackAddToPlaylist(playlistName: String) {
+        Toast.makeText(requireContext(), "Добавлено в плейлист $playlistName", Toast.LENGTH_SHORT)
+            .show()
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    }
 }
+
+

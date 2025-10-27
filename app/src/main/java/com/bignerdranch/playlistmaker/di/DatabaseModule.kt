@@ -11,10 +11,9 @@ import com.bignerdranch.playlistmaker.media.new_playlist.PlaylistMapper
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.PlaylistRepository
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractorImpl
-import com.bignerdranch.playlistmaker.new_playlist.db_playlists.PlaylistRepositoryImpl
+import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.PlaylistRepositoryImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
-import kotlin.math.sin
 
 val dbRoomModule = module {
 
@@ -39,7 +38,7 @@ val dbRoomModule = module {
     factory { PlaylistMapper }
 
     single<PlaylistRepository> {
-        PlaylistRepositoryImpl(get(), get())
+        PlaylistRepositoryImpl(get(), get(), get())
     }
 
     single<PlaylistInteractor> {

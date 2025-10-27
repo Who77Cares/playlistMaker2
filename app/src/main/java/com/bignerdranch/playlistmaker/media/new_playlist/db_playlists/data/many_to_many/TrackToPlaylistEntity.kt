@@ -1,12 +1,13 @@
-package com.bignerdranch.playlistmaker.media.db_favorite.data
+package com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.many_to_many
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "track_favorite")
-data class TrackEntity(
+// по сути тот же класс что и TrackEntity, только для сохранения треков в плейлист
+@Entity(tableName = "tracks_in_playlist")
+data class TrackToPlaylistEntity(
     @PrimaryKey(autoGenerate = false)
-    val id: Long,
+    val trackId: Long,
 
     val trackName: String,
     val artistName: String,
@@ -18,5 +19,6 @@ data class TrackEntity(
     val country: String,
     val previewUrl: String,
     val createdAt: Long = System.currentTimeMillis()
-) {
-}
+)
+
+
