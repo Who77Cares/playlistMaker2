@@ -13,8 +13,9 @@ import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.Playl
 @TypeConverters(PlaylistMapper::class)
 abstract class AppDatabase: RoomDatabase() {
 
-    abstract fun trackDao(): TrackDao
+    abstract fun favoriteTrackDao(): TrackDao
 
     abstract fun playlistDao(): PlaylistDao
 
 }
+

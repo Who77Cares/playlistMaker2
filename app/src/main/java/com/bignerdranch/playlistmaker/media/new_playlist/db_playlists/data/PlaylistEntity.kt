@@ -6,7 +6,8 @@ import androidx.room.TypeConverters
 import com.bignerdranch.playlistmaker.media.new_playlist.PlaylistMapper
 
 @Entity(tableName = "playlists")
-@TypeConverters(PlaylistMapper::class) //метка, чтобы сконвертировать List<String> в JSON. Можно объявнить на уровне всего AppDatabase
+//метка, чтобы сконвертировать List<String> в JSON. Можно объявнить на уровне всего AppDatabase
+@TypeConverters(PlaylistMapper::class)
 data class PlaylistEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
@@ -14,6 +15,6 @@ data class PlaylistEntity(
     val coverUri: String,
     val name: String,
     val description: String,
-    val tracks: MutableList<String> = mutableListOf<String>()
+
 ) {
 }

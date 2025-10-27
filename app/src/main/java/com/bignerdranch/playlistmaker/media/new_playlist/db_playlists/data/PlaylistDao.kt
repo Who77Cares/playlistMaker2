@@ -20,7 +20,6 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlists WHERE id = :playlistId LIMIT 1")
     suspend fun getPlaylistById(playlistId: Long): PlaylistEntity
 
-    @Update
-    suspend fun updatePlaylist(playlist: PlaylistEntity)
+
 
 }

@@ -31,7 +31,6 @@ object PlaylistMapper {
             coverUri = playlistData.coverUri.toUri(),
             name = playlistData.name,
             description = playlistData.description,
-            tracks = playlistData.tracks
         )
     }
 
@@ -42,11 +41,7 @@ object PlaylistMapper {
             coverUri = playlist.coverUri.toString(),
             name = playlist.name,
             description = playlist.description,
-            tracks = playlist.tracks
         )
     }
-
-
-
 
 }

@@ -33,20 +33,20 @@ class PlaylistRepositoryImpl(
             }
     }
 
-    override fun addTrackToPlaylist(
-        playlistId: Long,
-        trackId: String
-    ): Flow<Pair<String, Boolean>> = flow {
-        val playlist = db.playlistDao().getPlaylistById(playlistId)
-
-        if (trackId in playlist.tracks) {
-            emit(Pair(playlist.name, true))
-        } else {
-            playlist.tracks.add(trackId)
-            db.playlistDao().updatePlaylist(playlist)
-            emit(Pair(playlist.name, false))
-        }
-    }.flowOn(Dispatchers.IO)
+//    override fun addTrackToPlaylist(
+//        playlistId: Long,
+//        trackId: String
+//    ): Flow<Pair<String, Boolean>> = flow {
+//        val playlist = db.playlistDao().getPlaylistById(playlistId)
+//
+//        if (trackId in playlist.tracks) {
+//            emit(Pair(playlist.name, true))
+//        } else {
+//            playlist.tracks.add(trackId)
+//            db.playlistDao().updatePlaylist(playlist)
+//            emit(Pair(playlist.name, false))
+//        }
+//    }.flowOn(Dispatchers.IO)
 
 }
 

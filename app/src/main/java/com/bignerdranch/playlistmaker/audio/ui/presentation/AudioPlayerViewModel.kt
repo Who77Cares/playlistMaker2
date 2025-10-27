@@ -53,8 +53,8 @@ class AudioPlayerViewModel(
     private val playlistDataFromRoom = MutableLiveData<List<PlaylistModel>>()
     fun observePlaylistData(): LiveData<List<PlaylistModel>> = playlistDataFromRoom
 
-    private val _playlistAddStatus = MutableLiveData<Event<PlaylistAddStatus>>()
-    val playlistAddStatus: LiveData<Event<PlaylistAddStatus>> = _playlistAddStatus
+//    private val _playlistAddStatus = MutableLiveData<Event<PlaylistAddStatus>>()
+//    val playlistAddStatus: LiveData<Event<PlaylistAddStatus>> = _playlistAddStatus
 
 
 
@@ -170,16 +170,16 @@ class AudioPlayerViewModel(
         }
     }
 
-    fun addTrackToPlaylist(playlistId: Long, trackId: String) {
-        viewModelScope.launch {
-            playlistInteractor.addTrackToPlaylist(playlistId, trackId)
-                .collect { result ->
-                    _playlistAddStatus.value = Event(
-                        PlaylistAddStatus(result.first, result.second)
-                    )
-                }
-        }
-    }
+//    fun addTrackToPlaylist(playlistId: Long, trackId: String) {
+//        viewModelScope.launch {
+//            playlistInteractor.addTrackToPlaylist(playlistId, trackId)
+//                .collect { result ->
+//                    _playlistAddStatus.value = Event(
+//                        PlaylistAddStatus(result.first, result.second)
+//                    )
+//                }
+//        }
+//    }
 
 }
 

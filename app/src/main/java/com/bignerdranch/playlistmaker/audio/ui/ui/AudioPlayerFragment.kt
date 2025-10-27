@@ -83,31 +83,33 @@ class AudioPlayerFragment(): Fragment() {
         playlistAdapter = PlaylistBottomSheetAdapter(
             playlists = emptyList(),
             onPlaylistClick = { playlistModel ->
-                addTrackToPlaylist(playlistModel.id)
+//                addTrackToPlaylist(playlistModel.id)
             }
         )
 
-        viewModel.playlistAddStatus.observe(viewLifecycleOwner) { event ->
-            event.getContentIfNotHandled()?.let { status ->
-                val name = status.playlistName!!
-                val isIn = status.isInPlaylist!!
-
-                if(isIn) {
-                    MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
-                        .setTitle("Трек уже в плейлисте $name")
-                        .setNeutralButton("Ок") { dialog, which -> }
-                        .show()
-                } else {
-                    Toast.makeText(requireContext(), "Добавлено в плейлист $name", Toast.LENGTH_LONG).show()
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                }
-            }
-        }
+        // тут тоже меняем логику при получении данных
+//        viewModel.playlistAddStatus.observe(viewLifecycleOwner) { event ->
+//            event.getContentIfNotHandled()?.let { status ->
+//                val name = status.playlistName!!
+//                val isIn = status.isInPlaylist!!
+//
+//                if(isIn) {
+//                    MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
+//                        .setTitle("Трек уже в плейлисте $name")
+//                        .setNeutralButton("Ок") { dialog, which -> }
+//                        .show()
+//                } else {
+//                    Toast.makeText(requireContext(), "Добавлено в плейлист $name", Toast.LENGTH_LONG).show()
+//                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+//                }
+//            }
+//        }
 
         setupBottomSheet()
 
         // получение данных о плейлистах из room и установка их в адаптер
         viewModel.getPlaylistDataFromRoom()
+
         viewModel.observePlaylistData().observe(viewLifecycleOwner) { data ->
             playlistAdapter.updatePlaylists(data)
         }
@@ -262,10 +264,6 @@ class AudioPlayerFragment(): Fragment() {
         binding.overlay.visibility = View.GONE
     }
 
-    private fun addTrackToPlaylist(playlistId: Long) {
-        val trackId = (arguments?.getInt(TRACK_ID, 0) ?: 0).toString() // по хорошему бы сохранять сразу Int, но для этого нужно перелдапатить половину бд
-        // отправляем запрос в бд: по айдишнику плейлиста ищем в поле tracks ищем трек по айдишнику
-        viewModel.addTrackToPlaylist(playlistId, trackId)
-    }
+
 
 }

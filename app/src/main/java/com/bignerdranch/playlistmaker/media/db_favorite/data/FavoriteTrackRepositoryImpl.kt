@@ -12,19 +12,19 @@ class FavoriteTrackRepositoryImpl(
 ): FavoriteTrackRepository {
 
     override suspend fun addTrack(track: Track) {
-        db.trackDao().addTrackToFavorite(mapper.mapToEntity(track))
+        db.favoriteTrackDao().addTrackToFavorite(mapper.mapToEntity(track))
     }
 
     override suspend fun removeTrack(track: Track) {
-        db.trackDao().removeTrackFromFavorite(mapper.mapToEntity(track))
+        db.favoriteTrackDao().removeTrackFromFavorite(mapper.mapToEntity(track))
     }
 
     override suspend fun isTrackFavorite(trackId: Long): Boolean {
-        return db.trackDao().isTrackFavorite(trackId)
+        return db.favoriteTrackDao().isTrackFavorite(trackId)
     }
 
     override fun getAllTracks(): Flow<List<Track>> {
-        return db.trackDao()
+        return db.favoriteTrackDao()
             .getAllTracks()// Flow<List<TrackEntity>>
             .map { list -> mapper.convertFromTrackEntity(list) } // map преобразует List<TrackEntity> -> List<Track>
     }
