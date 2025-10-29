@@ -7,7 +7,9 @@ import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 
 
-class PlaylistAdapter(): RecyclerView.Adapter<PlaylistViewHolder>() {
+class PlaylistAdapter(
+    private val onItemClick: (PlaylistModel) -> Unit
+): RecyclerView.Adapter<PlaylistViewHolder>() {
 
     var playlists: List<PlaylistModel> = emptyList()
 
@@ -16,7 +18,7 @@ class PlaylistAdapter(): RecyclerView.Adapter<PlaylistViewHolder>() {
         viewType: Int
     ): PlaylistViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_playlist, parent, false)
-        return PlaylistViewHolder(view)
+        return PlaylistViewHolder(view, onItemClick)
     }
 
     override fun onBindViewHolder(

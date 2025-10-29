@@ -12,5 +12,7 @@ interface PlaylistInteractor {
 
     suspend fun addTrackToPlaylist(trackModel: Track, playlistId: Long): Boolean
 
+    fun getTracksForPlaylist(playlistId: Long): Flow<List<Track>>
+
 
 }

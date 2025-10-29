@@ -4,8 +4,6 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -38,7 +36,8 @@ class RootActivity: AppCompatActivity() {
                 when (destination.id) {
                     in setOf(
                         R.id.audioPlayerFragment,
-                        R.id.newPlaylistFragment
+                        R.id.newPlaylistFragment,
+                        R.id.singlePlaylistFragment
                     ) -> {
                         binding.bottomNavigationView.visibility = View.GONE
                         binding.line.visibility = View.GONE

@@ -34,6 +34,8 @@ class PlaylistRepositoryImpl(
             }
     }
 
+
+
     override suspend fun addTrackToPlaylist(trackModel: Track, playlistId: Long): Boolean {
        return withContext(Dispatchers.IO) {
 
@@ -71,9 +73,19 @@ class PlaylistRepositoryImpl(
        }
 
     }
-
     private suspend fun findTrackById(trackId: Long): TrackToPlaylistEntity? {
         return db.trackToPlaylistDao().findTrackById(trackId)
+    }
+
+
+    override fun getTracksFromPlaylist(playlistId: Long): Flow<List<Track>> {
+        return db.crossRefDao()
+            .getTracksForPlaylist(playlistId)
+            .map { tracks ->
+                tracks.map { entity ->
+                    trackMapper.mapToTrackModel(entity)
+                }
+            }
     }
 
 }
