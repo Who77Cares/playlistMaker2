@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+<androidx.constraintlayout.widget.ConstraintLayout
     tools:context=".audio.ui.ui.AudioPlayerFragment"
 
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
+    android:background="@color/colors_FFFFFFFF_1A1B22"
     android:paddingTop="@dimen/dimen14"
     android:paddingEnd="@dimen/dimen16"
     android:paddingStart="@dimen/dimen16" >
@@ -19,7 +24,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
-
 
 
     <ImageView
@@ -41,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="@dimen/dimen24"
 
-        tools:src="@drawable/placeholder_search" />
+        tools:src="@drawable/placeholder" />
 
     <!-- Название трека -->
     <TextView
@@ -94,7 +98,7 @@
         app:layout_constraintDimensionRatio="1:1"
         android:foreground="?attr/selectableItemBackground"
         android:background="@drawable/audio_shape"
-        android:backgroundTint="@color/text_error_color"
+        android:backgroundTint="@color/colors_1A1B22_FFFFFF"
         android:padding="15dp"
         android:scaleType="centerCrop"
         android:src="@drawable/play_arrow_icon"
@@ -223,11 +227,72 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Россия" />
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/country"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!-- Bottom Sheet для плейлистов -->
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/bottom_sheet_playlists"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:background="@drawable/sheet_bottom"
+        android:orientation="vertical"
+        android:paddingHorizontal="8dp"
+
+        app:behavior_hideable="true"
+
+        app:behavior_peekHeight="200dp"
+
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <View
+            android:id="@+id/bottom_sheet_handle"
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="30dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/sheet_tap_shape"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+        <TextView
+            style="@style/text_search_error"
+            android:layout_width="match_parent"
+
+            android:layout_marginTop="0dp"
+            android:gravity="center"
+            android:text="@string/addToPlaylist" />
+
+        <Button
+            android:id="@+id/newPlaylistButton"
+            style="@style/button_for_updateButton_and_clearSearchList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/new_playlist" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/playlistInSheetRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_track"
+            tools:itemCount="3"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

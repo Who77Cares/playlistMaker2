@@ -1,6 +1,6 @@
 package com.bignerdranch.playlistmaker.search.data.repositoryImpl
 
-import com.bignerdranch.playlistmaker.Resource
+import com.bignerdranch.playlistmaker.util.Resource
 import com.bignerdranch.playlistmaker.search.data.client.StorageClient
 import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryRepository
 import com.bignerdranch.playlistmaker.search.domain.models.Track

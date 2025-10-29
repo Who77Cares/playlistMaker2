@@ -6,8 +6,8 @@ import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryInteractor
 import com.bignerdranch.playlistmaker.search.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.search.domain.interactorImpl.SearchHistoryInteractorImpl
 import com.bignerdranch.playlistmaker.search.domain.interactorImpl.TrackInteractorImpl
-import com.bignerdranch.playlistmaker.settings.data.sharing.ExternalNavigator
-import com.bignerdranch.playlistmaker.settings.data.sharing.ExternalNavigatorImpl
+import com.bignerdranch.playlistmaker.settings.data.sharing.SettingsNavigator
+import com.bignerdranch.playlistmaker.settings.data.sharing.SettingsNavigatorImpl
 import com.bignerdranch.playlistmaker.settings.domain.api.SettingsInteractor
 import com.bignerdranch.playlistmaker.settings.domain.api.SharingInteractor
 import com.bignerdranch.playlistmaker.settings.domain.interactorImpl.SettingsInteractorImpl
@@ -28,8 +28,8 @@ val domainModule = module {
         SettingsInteractorImpl(repository = get())
     }
 
-    single<ExternalNavigator> {
-        ExternalNavigatorImpl(context = get())
+    single<SettingsNavigator> {
+        SettingsNavigatorImpl(context = get())
     }
 
     single<SharingInteractor> {
@@ -46,5 +46,6 @@ val domainModule = module {
             termsUrl = res.getString(R.string.sendToSupport_text)
         )
     }
+
 
 }

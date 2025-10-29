@@ -48,7 +48,7 @@ class SearchAdapter(
     class SearchViewHolder(parent: ViewGroup): RecyclerView.ViewHolder(
         LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.track_view, parent, false)
+            .inflate(R.layout.item_track, parent, false)
     ) {
 
         private val trackNameView: TextView = itemView.findViewById(R.id.trackName)
@@ -67,7 +67,7 @@ class SearchAdapter(
                 .load(model.artworkUrl100)
                 .centerCrop()
                 .transform(RoundedCorners(2))
-                .placeholder(R.drawable.placeholder_search)
+                .placeholder(R.drawable.placeholder)
                 .into(artworkUrl100View)
         }
     }

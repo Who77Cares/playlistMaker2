@@ -11,4 +11,10 @@ data class TrackAudioModel(
     val style: String,
     val country: String,
     val previewUrl: String) {
+
+    // Функция для получения качественной обложки
+    fun getHighQualityCover(): String {
+        return coverUrl.replaceAfterLast('/', "512x512bb.jpg")
+    }
+
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RootActivity">
+    tools:context=".util.RootActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/rootFragmentContainerView"
@@ -23,7 +23,7 @@
         android:id="@+id/line"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="@color/search_textInputLayout"
+        android:background="@color/colors_E6E8EB_FFFFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"/>
@@ -32,7 +32,7 @@
         android:id="@+id/bottomNavigationView"
 
 
-        app:backgroundTint="@color/background_color"
+        app:backgroundTint="@color/colors_FFFFFFFF_1A1B22"
 
         android:layout_width="0dp"
         android:layout_height="wrap_content"

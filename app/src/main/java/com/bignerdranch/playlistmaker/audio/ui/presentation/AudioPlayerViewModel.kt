@@ -1,18 +1,23 @@
 package com.bignerdranch.playlistmaker.audio.ui.presentation
 
 import android.media.MediaPlayer
-import android.util.Log
 import androidx.lifecycle.LiveData
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bignerdranch.playlistmaker.TrackMapper
+import com.bignerdranch.playlistmaker.util.TrackMapper
 import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
 import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
-import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteInteractor
+import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteTrackInteractor
+import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
+import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -21,8 +26,10 @@ import java.util.TimeZone
 class AudioPlayerViewModel(
     private val mapper: TrackMapper,
     private val mediaPlayer: MediaPlayer,
-    private val favoriteInteractor: FavoriteInteractor
+    private val favoriteTrackInteractor: FavoriteTrackInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
+
 
     private var previewUrl: String = ""
     private var timerJob: Job? = null
@@ -39,6 +46,13 @@ class AudioPlayerViewModel(
 
     private val _isFavoriteLiveData = MutableLiveData<Boolean>()
     val isFavoriteLiveData: LiveData<Boolean> = _isFavoriteLiveData
+
+    private val playlistDataFromRoom = MutableLiveData<List<PlaylistModel>>()
+    fun observePlaylistData(): LiveData<List<PlaylistModel>> = playlistDataFromRoom
+
+    private val _addTrackState = MutableStateFlow<Boolean?>(null)
+    val addTrackState: StateFlow<Boolean?> = _addTrackState.asStateFlow()
+
 
 
     override fun onCleared() {
@@ -122,7 +136,7 @@ class AudioPlayerViewModel(
     // проверка да добавленность в избранное чтобы сразу отобразить нужную иконку
     fun checkIfFavorite(trackId: Long) {
         viewModelScope.launch {
-            val isFav = favoriteInteractor.isFavorite(trackId)
+            val isFav = favoriteTrackInteractor.isFavorite(trackId)
             _isFavoriteLiveData.postValue(isFav)
         }
     }
@@ -130,15 +144,38 @@ class AudioPlayerViewModel(
     // логика добавления в избранное
     fun toggleFavorite(track: Track) {
         viewModelScope.launch {
-            val isFav = favoriteInteractor.isFavorite(track.trackId.toLong())
+            val isFav = favoriteTrackInteractor.isFavorite(track.trackId.toLong())
             if (isFav) {
-                favoriteInteractor.removeTrack(track)
+                favoriteTrackInteractor.removeTrack(track)
             } else {
-                favoriteInteractor.addToFavorite(track)
+                favoriteTrackInteractor.addToFavorite(track)
             }
             // обновляем флажок LiveData
             _isFavoriteLiveData.postValue(!isFav)
         }
     }
 
+    fun getPlaylistDataFromRoom() {
+        viewModelScope.launch {
+            playlistInteractor
+                .getPlaylists()
+                .collect { data ->
+                    playlistDataFromRoom.value = data
+
+                }
+        }
+    }
+
+    // методы для работы с сохранением трека в плейлист
+    fun addTrackToPlaylist(track: Track, playlist: PlaylistModel) {
+        viewModelScope.launch {
+            _addTrackState.value = playlistInteractor.addTrackToPlaylist(track, playlist.id)
+        }
+    }
+
+    fun clearAddTrackState() {
+        _addTrackState.value = null
+    }
+
 }
+

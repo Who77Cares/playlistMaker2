@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/search_song_box_height"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/artworkUrl100"
+        android:layout_width="@dimen/song_pic"
+        android:layout_height="@dimen/song_pic"
+        android:layout_gravity="center_vertical"
+        tools:background="@color/color_3772E7_3772E7"/>
+
+    <LinearLayout
+        style="@style/text_track_view"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/text_track_view"
+            android:id="@+id/trackName"
+            android:layout_marginStart="@dimen/search_drawablePadding"
+            android:textColor="@color/main_text"
+            android:textSize="@dimen/sp16"
+            tools:text="Название песни" />
+
+        <LinearLayout
+            style="@style/text_track_view"
+            android:orientation="horizontal" >
+
+            <TextView
+                style="@style/text_track_view"
+                android:id="@+id/artistName"
+                android:layout_marginStart="@dimen/search_drawablePadding"
+                android:textColor="@color/color_AEAFB4_FFFFFFFF"
+                android:textSize="@dimen/text_group_name_and_duration"
+                tools:text="Название исполнителя песни" />
+
+            <ImageView
+                style="@style/text_track_view"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                app:tint="@color/color_AEAFB4_FFFFFFFF"
+                android:src="@drawable/ellipse_song_search" />
+
+            <TextView
+                style="@style/text_track_view"
+                android:id="@+id/trackTime"
+                android:textColor="@color/color_AEAFB4_FFFFFFFF"
+                android:layout_marginStart="0dp"
+                tools:text="1:11"
+                android:textSize="@dimen/text_group_name_and_duration" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_forward"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/search_drawablePadding"
+        app:tint="@color/color_AEAFB4_FFFFFFFF" />
+
+</LinearLayout>

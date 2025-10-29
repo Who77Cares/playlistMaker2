@@ -6,10 +6,11 @@
     <dimen name="text_group_name_and_duration">11sp</dimen>
 
     <dimen name="sp14">14sp</dimen>
-
-    <dimen name="text_small">16sp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="sp16">16sp</dimen>
     <dimen name="sp22">22sp</dimen>
+
+    <dimen name="fab_margin">16dp</dimen>
+
 
     <dimen name="paddingBottom">28dp</dimen>
     <dimen name="for_blocks">40dp</dimen>

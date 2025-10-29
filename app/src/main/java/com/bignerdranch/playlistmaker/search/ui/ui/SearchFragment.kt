@@ -74,6 +74,9 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
         }
 
 
+
+
+
         // Cлушатель TextWatcher (изменения текста) в едиттексте
         binding.searchEditText.addTextChangedListener(textWatcher)
 

@@ -1,9 +1,10 @@
 package com.bignerdranch.playlistmaker.di
 
-import com.bignerdranch.playlistmaker.TrackMapper
+import com.bignerdranch.playlistmaker.util.TrackMapper
 import com.bignerdranch.playlistmaker.audio.ui.presentation.AudioPlayerViewModel
-import com.bignerdranch.playlistmaker.media.db_favorite.FavoriteMediaViewModel
-import com.bignerdranch.playlistmaker.media.ui.PlaylistMediaViewModel
+import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteTracksViewModel
+import com.bignerdranch.playlistmaker.media.new_playlist.ui.NewPlaylistViewModel
+import com.bignerdranch.playlistmaker.media.playlists.PlaylistViewModel
 import com.bignerdranch.playlistmaker.search.ui.presentation.SearchViewModel
 import com.bignerdranch.playlistmaker.settings.ui.ui.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -16,7 +17,8 @@ val presentationModule = module {
         AudioPlayerViewModel(
             mapper = get(),
             mediaPlayer = get(),
-            favoriteInteractor = get()
+            favoriteTrackInteractor = get(),
+            playlistInteractor = get()
         )
     }
 
@@ -34,7 +36,11 @@ val presentationModule = module {
         )
     }
 
-    viewModel { FavoriteMediaViewModel(get()) }
-    viewModel { PlaylistMediaViewModel() }
+    viewModel { FavoriteTracksViewModel(get()) }
+
+
+    viewModel { NewPlaylistViewModel(get(), get()) }
+
+    viewModel { PlaylistViewModel(get()) }
 
 }

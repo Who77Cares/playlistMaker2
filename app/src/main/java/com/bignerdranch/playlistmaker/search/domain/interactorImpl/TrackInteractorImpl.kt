@@ -1,6 +1,6 @@
 package com.bignerdranch.playlistmaker.search.domain.interactorImpl
 
-import com.bignerdranch.playlistmaker.Resource
+import com.bignerdranch.playlistmaker.util.Resource
 import com.bignerdranch.playlistmaker.search.domain.api.TrackInteractor
 import com.bignerdranch.playlistmaker.search.domain.api.TrackRepository
 import com.bignerdranch.playlistmaker.search.domain.models.Track
