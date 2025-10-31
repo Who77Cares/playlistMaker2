@@ -64,6 +64,8 @@
     </plurals>
 
 
-
+    <string name="share">Поделиться</string>
+    <string name="edit_playlist_info">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
 
 </resources>

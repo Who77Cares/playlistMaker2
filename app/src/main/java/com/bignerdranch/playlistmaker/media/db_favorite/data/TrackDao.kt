@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,7 +14,7 @@ interface TrackDao {
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun addTrackToFavorite(track: FavoriteTrackEntity)
 
-    @Delete
+    @Delete()
     suspend fun removeTrackFromFavorite(track: FavoriteTrackEntity)
 
     // проверяем имеется ли уже трек в бд room

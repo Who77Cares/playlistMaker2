@@ -18,7 +18,7 @@ class SinglePlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor,
     private val sharingInteractor: SharingInteractor,
     private val context: Context
-): ViewModel() {
+) : ViewModel() {
 
     data class SinglePlaylistUiState(
         val tracks: List<Track> = emptyList(),
@@ -56,7 +56,6 @@ class SinglePlaylistViewModel(
             playlistInteractor.deleteTrackFromPlaylist(playlistId, trackId)
         }
     }
-
 
 
     fun sharePlaylist(playlistName: String, playlistDescription: String) {

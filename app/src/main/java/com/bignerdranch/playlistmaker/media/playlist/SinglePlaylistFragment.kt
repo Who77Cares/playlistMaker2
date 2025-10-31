@@ -36,7 +36,10 @@ class SinglePlaylistFragment : Fragment() {
     private lateinit var playlist: PlaylistModel
 
     private val viewModel: SinglePlaylistViewModel by viewModel()
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+
+    private lateinit var tracksSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var optionsSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
 
     private val tracksAdapter = FavoriteAdapter(
         onItemClick = { track -> onTrackClicked(track) },
@@ -76,10 +79,9 @@ class SinglePlaylistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         playlist = extractPlaylistFromBundle()
-        Log.d("PlaylistDebug", "Playlist name: ${playlist.name}, description: ${playlist.description}")
 
         setupFixedBottomSheet()
-
+        setupSettingsBottomSheet()
 
         binding.tracksInSheetRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.tracksInSheetRecyclerView.adapter = tracksAdapter
@@ -92,13 +94,13 @@ class SinglePlaylistFragment : Fragment() {
         viewModel.getTracksDataFromRoom(playlistId)
 
 
-        // 🔹 Показать текущее состояние сразу
+        //  Показать текущее состояние сразу
         setPlaylistParams(
             viewModel.uiState.value.tracks,
             viewModel.uiState.value.totalTracksTime
         )
 
-        // 🔹 А потом подписаться на обновления
+        //  А потом подписаться на обновления
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState
@@ -115,6 +117,11 @@ class SinglePlaylistFragment : Fragment() {
                 playlistName = playlist.name,
                 playlistDescription = playlist.description
             )
+        }
+
+        binding.threeDots.setOnClickListener {
+            optionsSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            binding.overlay.visibility = View.VISIBLE
         }
 
 
@@ -139,32 +146,45 @@ class SinglePlaylistFragment : Fragment() {
         val screenHeight = Resources.getSystem().displayMetrics.heightPixels
         val halfExpandedHeight = (screenHeight * 0.4f).toInt()
 
-        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylists)
-        bottomSheetBehavior.halfExpandedRatio = 0.4f
-        bottomSheetBehavior.peekHeight = halfExpandedHeight
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        tracksSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylists)
+        tracksSheetBehavior.halfExpandedRatio = 0.4f
+        tracksSheetBehavior.peekHeight = halfExpandedHeight
+        tracksSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
 
     private fun setPlaylistParams(track: List<Track>, songsDuration: Int) {
 
+        val songsNumber = resources.getQuantityString(R.plurals.tracks_count, track.size, track.size)
+
         binding.playlistName.text = playlist.name
         binding.playlistDescription.text = playlist.description
-        binding.songsNumber.text =
-            resources.getQuantityString(R.plurals.tracks_count, track.size, track.size)
+        binding.songsNumber.text = songsNumber
 
         binding.songsDuration.text = resources.getQuantityString(R.plurals.minutes_count, songsDuration, songsDuration)
-
-        Glide.with(this)
-            .load(playlist.coverUri)
-            .fitCenter()
-            .transform(RoundedCorners(20))
-            .placeholder(R.drawable.placeholder)
-            .into(binding.playlistCover)
 
         tracksAdapter.tracks.clear()
         tracksAdapter.tracks.addAll(track)
         tracksAdapter.notifyDataSetChanged()
+
+        Glide.with(this)
+            .load(playlist.coverUri)
+            .fitCenter()
+            .placeholder(R.drawable.placeholder)
+            .into(binding.playlistCover)
+
+
+        Glide.with(this)
+            .load(playlist.coverUri)
+            .fitCenter()
+            .placeholder(R.drawable.placeholder)
+            .into(binding.sheetPlaylistCover)
+
+        binding.sheetPlaylistName.text = playlist.name
+        binding.sheetTrackNumber.text = songsNumber
+
+
+
     }
 
     private fun onTrackClicked(track: Track) {
@@ -184,6 +204,48 @@ class SinglePlaylistFragment : Fragment() {
             }
             .setNegativeButton("НЕТ") { _, _ -> }
             .show()
+    }
+
+    private fun setupSettingsBottomSheet() {
+        optionsSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylistsOptions)
+        optionsSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                        tracksSheetBehavior.isDraggable = true
+
+                        binding.touchBlocker.visibility = View.GONE
+
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        binding.overlay.visibility = View.VISIBLE
+
+                        // при выезжании optionsSheet блокируем tracksSheet
+                        tracksSheetBehavior.isDraggable = false
+                        binding.touchBlocker.visibility = View.VISIBLE
+                    }
+                    else -> {
+                        // Обработка других состояний если нужно
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // slideOffset изменяется от -1 до 1
+                // При движении вверх: от 0 до 1, при движении вниз: от 0 до -1
+                val alpha = when {
+                    slideOffset > 0 -> slideOffset * 0.7f // При открытии
+                    else -> (1 + slideOffset) * 0.7f // При закрытии (slideOffset отрицательный)
+                }
+                binding.overlay.alpha = alpha.coerceIn(0f, 0.7f)
+            }
+        }
+
+        // без колбэка затемнение работать не будет
+        optionsSheetBehavior.addBottomSheetCallback(bottomSheetCallback!!)
     }
 
 }
