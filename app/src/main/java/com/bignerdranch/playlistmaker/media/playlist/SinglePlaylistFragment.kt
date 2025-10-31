@@ -110,6 +110,14 @@ class SinglePlaylistFragment : Fragment() {
         }
 
 
+        binding.playlistShare.setOnClickListener {
+            viewModel.sharePlaylist(
+                playlistName = playlist.name,
+                playlistDescription = playlist.description
+            )
+        }
+
+
     }
 
     override fun onDestroy() {

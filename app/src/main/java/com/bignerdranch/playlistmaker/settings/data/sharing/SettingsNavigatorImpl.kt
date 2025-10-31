@@ -7,10 +7,10 @@ import android.net.Uri
 class SettingsNavigatorImpl(
     private val context: Context
 ): SettingsNavigator {
-    override fun shareLink(url: String) {
+    override fun shareText(text: String) {
         val intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, url)
+            putExtra(Intent.EXTRA_TEXT, text)
             type = "text/plain"
         }
         val chooserIntent = Intent.createChooser(intent, "Поделиться через")

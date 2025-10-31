@@ -1,9 +1,12 @@
 package com.bignerdranch.playlistmaker.media.playlist
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
 import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.settings.domain.api.SharingInteractor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,13 +15,16 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 class SinglePlaylistViewModel(
-    private val playlistInteractor: PlaylistInteractor
+    private val playlistInteractor: PlaylistInteractor,
+    private val sharingInteractor: SharingInteractor,
+    private val context: Context
 ): ViewModel() {
 
     data class SinglePlaylistUiState(
         val tracks: List<Track> = emptyList(),
         val totalTracksTime: Int = 0
     )
+
 
     private val _uiState = MutableStateFlow(SinglePlaylistUiState())
     val uiState: StateFlow<SinglePlaylistUiState> = _uiState.asStateFlow()
@@ -52,4 +58,25 @@ class SinglePlaylistViewModel(
     }
 
 
+
+    fun sharePlaylist(playlistName: String, playlistDescription: String) {
+        val tracks = uiState.value.tracks
+        val tracksNumber =
+            context.resources.getQuantityString(R.plurals.tracks_count, tracks.size, tracks.size)
+
+        val message = buildString {
+            append("${playlistName}\n")
+            append("${playlistDescription}\n")
+            append("$tracksNumber\n\n")
+
+            tracks.forEachIndexed { index, track ->
+                append("${index + 1}. ${track.artistName} - ${track.trackName}\n")
+            }
+        }
+
+        sharingInteractor.shareText(message)
+
+    }
+
 }
+

@@ -8,6 +8,7 @@ import com.bignerdranch.playlistmaker.media.playlist.SinglePlaylistViewModel
 import com.bignerdranch.playlistmaker.media.playlists.PlaylistViewModel
 import com.bignerdranch.playlistmaker.search.ui.presentation.SearchViewModel
 import com.bignerdranch.playlistmaker.settings.ui.ui.SettingsViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 
 import org.koin.dsl.module
@@ -39,11 +40,10 @@ val presentationModule = module {
 
     viewModel { FavoriteTracksViewModel(get()) }
 
-
     viewModel { NewPlaylistViewModel(get(), get()) }
 
     viewModel { PlaylistViewModel(get()) }
 
-    viewModel { SinglePlaylistViewModel(get()) }
+    viewModel { SinglePlaylistViewModel(get(), get(), androidContext())}
 
 }
