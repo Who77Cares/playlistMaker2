@@ -20,6 +20,8 @@ interface PlaylistDao {
     @Query("UPDATE playlists SET trackSize = trackSize + 1 WHERE playlistId = :playlistId")
     suspend fun incrementTrackCount(playlistId: Long)
 
+    @Query("UPDATE playlists SET trackSize = trackSize - 1 WHERE playlistId = :playlistId")
+    suspend fun decrementTrackCount(playlistId: Long)
 
 
 }

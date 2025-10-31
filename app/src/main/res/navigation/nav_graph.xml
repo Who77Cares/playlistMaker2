@@ -89,5 +89,11 @@
         android:id="@+id/singlePlaylistFragment"
         android:name="com.bignerdranch.playlistmaker.media.playlist.SinglePlaylistFragment"
         android:label="fragment_playlist_single"
-        tools:layout="@layout/fragment_playlist_single" />
+        tools:layout="@layout/fragment_playlist_single" >
+
+
+        <action
+            android:id="@+id/action_singlePlaylistFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
+    </fragment>
 </navigation>

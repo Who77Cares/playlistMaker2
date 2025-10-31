@@ -27,7 +27,7 @@ class NewPlaylistFragment: Fragment() {
     private var _binding: FragmentNewPlaylistBinding? = null
     private val binding get() = _binding!!
 
-    private val enableColor: Int by lazy { ContextCompat.getColor(requireContext(), R.color.color_3772E7_3772E7) }
+    private val enableColor: Int by lazy { ContextCompat.getColor(requireContext(), R.color.color_3772E7) }
     private val disableColor: Int by lazy { ContextCompat.getColor(requireContext(), R.color.colors_AEAFB4_AEAFB4) }
 
     override fun onCreateView(
@@ -137,7 +137,7 @@ class NewPlaylistFragment: Fragment() {
                 id = 0L,
                 coverUri = viewModel.observeCurrentImgUri().value ?: Uri.EMPTY,
                 name = viewModel.observeCurrentName().value ?: "",
-                description = viewModel.observeCurrentName().value ?: "",
+                description = viewModel.observeCurrentDescription().value ?: "",
                 tracksSize = 0
             )
         )

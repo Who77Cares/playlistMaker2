@@ -50,7 +50,7 @@
             android:paddingBottom="8dp"
             android:textColor="@color/main_text_buttons"
             android:textColorHint="@color/search_hint"
-            android:textCursorDrawable="@color/color_3772E7_3772E7"
+            android:textCursorDrawable="@color/color_3772E7"
             android:textSize="@dimen/sp16"
 
             android:imeOptions="actionDone"
@@ -74,7 +74,7 @@
         android:layout_height="44dp"
         android:layout_gravity="center"
         android:layout_marginTop="140dp"
-        android:indeterminateTint="@color/color_3772E7_3772E7"
+        android:indeterminateTint="@color/color_3772E7"
         android:visibility="gone"
         />
 

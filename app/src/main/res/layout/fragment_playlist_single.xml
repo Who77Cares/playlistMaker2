@@ -42,7 +42,7 @@
             android:layout_marginTop="39dp"
             android:layout_marginBottom="@dimen/dimen24"
 
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toTopOf="@+id/playlistName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +54,7 @@
             android:id="@+id/playlistName"
             style="@style/YS_Medium_22"
             android:textSize="24sp"
+            android:textColor="@color/color_1A1B22"
             app:layout_constraintBottom_toTopOf="@+id/playlistDescription"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playlistCover"
@@ -65,7 +66,7 @@
             android:id="@+id/playlistDescription"
             style="@style/YS_Regular_13"
             android:layout_marginTop="8dp"
-            android:textColor="@color/colors_FF000000_FFFFFFFF"
+            android:textColor="@color/color_1A1B22"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/songsDuration"
             app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +77,7 @@
             android:id="@+id/songsDuration"
             style="@style/YS_Regular_13"
             android:layout_marginTop="8dp"
-            android:textColor="@color/colors_FF000000_FFFFFFFF"
+            android:textColor="@color/color_1A1B22"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/playlistShare"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,11 +102,10 @@
             style="@style/YS_Regular_13"
             android:layout_marginStart="5dp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/colors_FF000000_FFFFFFFF"
+            android:textColor="@color/color_1A1B22"
             android:textSize="18sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/songsDuration"
             app:layout_constraintStart_toEndOf="@+id/playlistDot"
-
             tools:text="100 песен" />
 
         <ImageView
@@ -166,7 +166,7 @@
             android:layout_height="4dp"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="12dp"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:background="@drawable/sheet_tap_shape"
@@ -175,26 +175,8 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
 
-        <TextView
-            style="@style/text_search_error"
-            android:layout_width="match_parent"
-
-            android:layout_marginTop="0dp"
-            android:gravity="center"
-            android:text="@string/addToPlaylist" />
-
-        <Button
-            android:id="@+id/newPlaylistButton"
-            style="@style/button_for_updateButton_and_clearSearchList"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="24dp"
-            android:text="@string/new_playlist" />
-
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/playlistInSheetRecyclerView"
+            android:id="@+id/tracksInSheetRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/item_track"

@@ -13,7 +13,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class FavoriteAdapter(
-    private val onItemClick: (Track) -> Unit
+    private val onItemClick: (Track) -> Unit,
+    private val onLongItemClick: (trackId: Int) -> Unit
 ) : RecyclerView.Adapter<FavoriteAdapter.MediaViewHolder>() {
 
     var tracks = ArrayList<Track>()
@@ -21,7 +22,7 @@ class FavoriteAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): MediaViewHolder = MediaViewHolder(parent, onItemClick)
+    ): MediaViewHolder = MediaViewHolder(parent, onItemClick, onLongItemClick)
 
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
         holder.bind(tracks[position])
@@ -29,7 +30,11 @@ class FavoriteAdapter(
 
     override fun getItemCount(): Int = tracks.size
 
-    class MediaViewHolder(parent: ViewGroup, private val onItemClick: (Track) -> Unit) : RecyclerView.ViewHolder(
+    class MediaViewHolder(
+        parent: ViewGroup,
+        private val onItemClick: (Track) -> Unit,
+        private val onLongItemClick: (trackId: Int) -> Unit
+    ) : RecyclerView.ViewHolder(
         LayoutInflater
             .from(parent.context)
             .inflate(R.layout.item_track, parent, false)
@@ -58,6 +63,11 @@ class FavoriteAdapter(
             // Клик по элементу
             itemView.setOnClickListener {
                 onItemClick(model)
+            }
+
+            itemView.setOnLongClickListener {
+                onLongItemClick(model.trackId)
+                return@setOnLongClickListener true
             }
         }
 

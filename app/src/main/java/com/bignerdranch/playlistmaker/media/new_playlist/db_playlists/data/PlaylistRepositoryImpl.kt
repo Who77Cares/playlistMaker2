@@ -23,6 +23,8 @@ class PlaylistRepositoryImpl(
         db.playlistDao().createPlaylist(playlistMapper.mapToPlaylistEntity(playlist))
     }
 
+
+
     // получаем в AudioPlayerViewModel и PlaylistViewModel
     override fun getPlaylists(): Flow<List<PlaylistModel>> {
         return db.playlistDao()
@@ -50,7 +52,8 @@ class PlaylistRepositoryImpl(
                    return@withContext false
                }
 
-               existingTrack.trackId // Возвращаем ID существующего трека
+               // если трека нет в плейлисте, но трек уже есть в бд - возвращаем ID существующего трека
+               existingTrack.trackId
 
            } else {
                // если трека нет в базе - создаем новый
@@ -78,6 +81,8 @@ class PlaylistRepositoryImpl(
     }
 
 
+
+
     override fun getTracksFromPlaylist(playlistId: Long): Flow<List<Track>> {
         return db.crossRefDao()
             .getTracksForPlaylist(playlistId)
@@ -86,6 +91,16 @@ class PlaylistRepositoryImpl(
                     trackMapper.mapToTrackModel(entity)
                 }
             }
+    }
+
+
+
+    override suspend fun deleteTrackFromPlaylist(playlistId: Long, trackId: Long) {
+        db.crossRefDao().deleteTrackFromPlaylist(playlistId, trackId)
+        db.playlistDao().decrementTrackCount(playlistId)
+
+        // Проверить, имеется ли трек хотя бы в 1 плейлисте - если нет - удалить из таблицы "tracks_in_playlist"
+        db.trackToPlaylistDao().deleteTrackIfUnused(trackId)
     }
 
 }

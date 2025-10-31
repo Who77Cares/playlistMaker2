@@ -1,6 +1,5 @@
 package com.bignerdranch.playlistmaker.media.playlist
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
@@ -10,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 class SinglePlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor
@@ -19,7 +19,6 @@ class SinglePlaylistViewModel(
         val tracks: List<Track> = emptyList(),
         val totalTracksTime: Int = 0
     )
-
 
     private val _uiState = MutableStateFlow(SinglePlaylistUiState())
     val uiState: StateFlow<SinglePlaylistUiState> = _uiState.asStateFlow()
@@ -42,7 +41,15 @@ class SinglePlaylistViewModel(
     }
 
     private fun calculateTotalMinutes(tracks: List<Track>): Int {
-        return tracks.sumOf { it.trackTimeMillis / 1000 / 60 }
+        val totalMillis = tracks.sumOf { it.trackTimeMillis.toLong() }
+        return (totalMillis / 1000.0 / 60.0).roundToInt()
     }
+
+    fun deleteTrackFromPlaylist(playlistId: Long, trackId: Long) {
+        viewModelScope.launch {
+            playlistInteractor.deleteTrackFromPlaylist(playlistId, trackId)
+        }
+    }
+
 
 }

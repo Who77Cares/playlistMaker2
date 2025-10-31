@@ -22,7 +22,13 @@ class PlaylistInteractorImpl(
         playlistId: Long
     ): Boolean = repository.addTrackToPlaylist(trackModel, playlistId)
 
+
     override fun getTracksForPlaylist(playlistId: Long): Flow<List<Track>> =
         repository.getTracksFromPlaylist(playlistId)
+
+
+    override suspend fun deleteTrackFromPlaylist(playlistId: Long, trackId: Long) {
+        repository.deleteTrackFromPlaylist(playlistId, trackId)
+    }
 
 }
