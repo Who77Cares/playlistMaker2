@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
+import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
+import com.bignerdranch.playlistmaker.media.playlists.PlaylistViewModel.PlaylistState
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bignerdranch.playlistmaker.settings.domain.api.SharingInteractor
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +33,10 @@ class SinglePlaylistViewModel(
     private val _uiState = MutableStateFlow(SinglePlaylistUiState())
     val uiState: StateFlow<SinglePlaylistUiState> = _uiState.asStateFlow()
 
+
+    private val _playlistData = MutableStateFlow<PlaylistModel?>(null)
+    val playlistData: StateFlow<PlaylistModel?> = _playlistData.asStateFlow()
+
     private val _deleteSuccess = MutableLiveData<Boolean?>()
     val deleteSuccess: LiveData<Boolean?> = _deleteSuccess
 
@@ -50,6 +56,18 @@ class SinglePlaylistViewModel(
                 }
         }
     }
+
+    fun getPlaylistDataById(playlistId: Long) {
+        viewModelScope.launch {
+            playlistInteractor
+                .getPlaylistById(playlistId)
+                .collect { data ->
+                    _playlistData.value = data
+                }
+        }
+    }
+
+
 
     private fun calculateTotalMinutes(tracks: List<Track>): Int {
         val totalMillis = tracks.sumOf { it.trackTimeMillis.toLong() }
@@ -92,6 +110,7 @@ class SinglePlaylistViewModel(
         sharingInteractor.shareText(message)
 
     }
+
 
 }
 

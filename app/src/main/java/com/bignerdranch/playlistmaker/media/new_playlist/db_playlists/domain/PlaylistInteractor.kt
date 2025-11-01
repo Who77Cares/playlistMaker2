@@ -8,6 +8,8 @@ interface PlaylistInteractor {
 
     suspend fun createPlaylist(playlist: PlaylistModel)
 
+    fun getPlaylistById(playlistId: Long): Flow<PlaylistModel>
+
     fun getPlaylists(): Flow<List<PlaylistModel>>
 
     suspend fun addTrackToPlaylist(trackModel: Track, playlistId: Long): Boolean
@@ -17,5 +19,7 @@ interface PlaylistInteractor {
     suspend fun deleteTrackFromPlaylist(playlistId: Long, trackId: Long)
 
     suspend fun deletePlaylist(playlistId: Long)
+
+    suspend fun updatePlaylist(playlist: PlaylistModel)
 
 }

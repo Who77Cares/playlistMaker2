@@ -23,6 +23,13 @@ class PlaylistRepositoryImpl(
         db.playlistDao().createPlaylist(playlistMapper.mapToPlaylistEntity(playlist))
     }
 
+    override fun getPlaylistById(playlistId: Long): Flow<PlaylistModel> {
+        return db.playlistDao()
+            .getPlaylistById(playlistId)
+            .map { playlistEntity ->
+                playlistMapper.mapToPlaylistModel(playlistEntity)
+            }
+    }
 
 
     // получаем в AudioPlayerViewModel и PlaylistViewModel
@@ -105,20 +112,25 @@ class PlaylistRepositoryImpl(
 
     override suspend fun deletePlaylist(playlistId: Long) {
 
-        // 1. Сначала получаем trackId из плейлиста
+        // получаем trackId из плейлиста
         val tracksIds = db.playlistDao().getTrackIdsFromPlaylist(playlistId)
 
-        // 2. УДАЛИТЬ СВЯЗИ из playlist_track_cross_ref
+        // УДАЛИТЬ СВЯЗИ из playlist_track_cross_ref
         db.playlistDao().deleteAllTracksFromPlaylist(playlistId)
 
-        // 3. Теперь удаляем сам плейлист
+        // удаляем сам плейлист
         db.playlistDao().deletePlaylist(playlistId)
 
-        // 4. Очищаем неиспользуемые треки
+        //  Очищаем неиспользуемые треки
         tracksIds.forEach { id ->
             db.trackToPlaylistDao().deleteTrackIfUnused(id)
         }
 
+    }
+
+
+    override suspend fun updatePlaylist(playlist: PlaylistModel) {
+        db.playlistDao().updatePlaylist(playlistMapper.mapToPlaylistEntity(playlist))
     }
 
 

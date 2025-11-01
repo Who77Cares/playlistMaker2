@@ -13,6 +13,9 @@ interface PlaylistDao {
     @Insert(onConflict = OnConflictStrategy.NONE)
     suspend fun createPlaylist(playlist: PlaylistEntity)
 
+    @Query("SELECT * FROM playlists WHERE playlistId = :playlistId")
+    fun getPlaylistById(playlistId: Long): Flow<PlaylistEntity>
+
     @Query("SELECT * FROM playlists ORDER BY creationTime DESC")
     fun getPlaylists(): Flow<List<PlaylistEntity>>
 
@@ -35,6 +38,9 @@ interface PlaylistDao {
     // метод для удаления связей
     @Query("DELETE FROM playlist_track_cross_ref WHERE playlistId = :playlistId")
     suspend fun deleteAllTracksFromPlaylist(playlistId: Long)
+
+    @Update(entity = PlaylistEntity::class)
+    suspend fun updatePlaylist(playlist: PlaylistEntity)
 
 
 }

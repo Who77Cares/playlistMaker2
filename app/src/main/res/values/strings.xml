@@ -44,6 +44,8 @@
     <string name="new_album_name">Название*</string>
     <string name="new_album_description">Описание</string>
     <string name="create">Создать</string>
+    <string name="savePlaylist">Сохранить</string>
+    <string name="change_playlist_title">Создание плейлиста</string>
 
     <string name="addToPlaylist">Добавить в плейлист</string>
 

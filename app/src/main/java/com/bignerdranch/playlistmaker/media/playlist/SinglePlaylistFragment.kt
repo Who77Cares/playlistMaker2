@@ -3,12 +3,10 @@ package com.bignerdranch.playlistmaker.media.playlist
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -21,16 +19,13 @@ import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentPlaylistSingleBinding
 import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteAdapter
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
+import com.bignerdranch.playlistmaker.media.new_playlist.ui.NewPlaylistFragment
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SinglePlaylistFragment : Fragment() {
@@ -51,17 +46,9 @@ class SinglePlaylistFragment : Fragment() {
 
     companion object {
         const val ID = "id"
-        const val COVER_URI = "coverUri"
-        const val NAME = "name"
-        const val DESCRIPTION = "description"
-        const val TRACK_SIZE = "track_size"
         fun createArgs(playlist: PlaylistModel): Bundle {
             return Bundle().apply {
                 putInt(ID, playlist.id.toInt())
-                putString(COVER_URI, playlist.coverUri.toString())
-                putString(NAME, playlist.name)
-                putString(DESCRIPTION, playlist.description)
-                putInt(TRACK_SIZE, playlist.tracksSize)
             }
         }
     }
@@ -80,7 +67,22 @@ class SinglePlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        playlist = extractPlaylistFromBundle()
+        val playlistId = arguments?.getInt(ID, 0)?.toLong()!!
+        viewModel.getPlaylistDataById(playlistId)
+
+
+
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.playlistData.collect { playlistData ->
+                    playlistData?.let {
+                        playlist = it // сохраняем в переменную
+                        setPlaylistParams()
+                    }
+                }
+            }
+        }
 
         setupFixedBottomSheet()
         setupSettingsBottomSheet()
@@ -92,12 +94,12 @@ class SinglePlaylistFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        val playlistId = arguments?.getInt(ID, 0)?.toLong()!!
+
         viewModel.getTracksDataFromRoom(playlistId)
 
 
         //  Показать текущее состояние сразу
-        setPlaylistParams(
+        setTracksParams(
             viewModel.uiState.value.tracks,
             viewModel.uiState.value.totalTracksTime
         )
@@ -108,7 +110,7 @@ class SinglePlaylistFragment : Fragment() {
                 viewModel.uiState
                     .drop(1)
                     .collect { state ->
-                        setPlaylistParams(state.tracks, state.totalTracksTime)
+                        setTracksParams(state.tracks, state.totalTracksTime)
                     }
             }
         }
@@ -131,23 +133,19 @@ class SinglePlaylistFragment : Fragment() {
             binding.overlay.visibility = View.VISIBLE
         }
 
+        binding.sheetEditPlaylistInfo.setOnClickListener {
+            navigateToEditPlaylist()
+        }
+
 
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
 
-    private fun extractPlaylistFromBundle(): PlaylistModel {
-        return PlaylistModel(
-            id = arguments?.getInt(ID)?.toLong() ?: 0L,
-            coverUri = arguments?.getString(COVER_URI)?.toUri() ?: Uri.EMPTY,
-            name = arguments?.getString(NAME) ?: "",
-            description = arguments?.getString(DESCRIPTION) ?: "",
-            tracksSize = arguments?.getInt(TRACK_SIZE) ?: 0
-        )
-    }
 
 
     private fun sharePlaylist() {
@@ -158,19 +156,22 @@ class SinglePlaylistFragment : Fragment() {
     }
 
 
-    private fun setPlaylistParams(track: List<Track>, songsDuration: Int) {
-
-        val songsNumber = resources.getQuantityString(R.plurals.tracks_count, track.size, track.size)
-
-        binding.playlistName.text = playlist.name
-        binding.playlistDescription.text = playlist.description
-        binding.songsNumber.text = songsNumber
+    private fun setTracksParams(track: List<Track>, songsDuration: Int) {
 
         binding.songsDuration.text = resources.getQuantityString(R.plurals.minutes_count, songsDuration, songsDuration)
 
         tracksAdapter.tracks.clear()
         tracksAdapter.tracks.addAll(track)
         tracksAdapter.notifyDataSetChanged()
+    }
+
+    private fun setPlaylistParams() {
+
+        val songsNumber = resources.getQuantityString(R.plurals.tracks_count, playlist.tracksSize, playlist.tracksSize)
+
+        binding.playlistName.text = playlist.name
+        binding.playlistDescription.text = playlist.description
+        binding.songsNumber.text = songsNumber
 
         Glide.with(this)
             .load(playlist.coverUri)
@@ -225,6 +226,14 @@ class SinglePlaylistFragment : Fragment() {
             .show()
     }
 
+    private fun navigateToEditPlaylist() {
+            findNavController().navigate(
+                R.id.action_singlePlaylistFragment_to_newPlaylistFragment,
+                NewPlaylistFragment.Companion.createArgs(playlist)
+            )
+
+    }
+
     private fun setupSettingsBottomSheet() {
         optionsSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylistsOptions)
         optionsSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -267,7 +276,7 @@ class SinglePlaylistFragment : Fragment() {
         optionsSheetBehavior.addBottomSheetCallback(bottomSheetCallback!!)
     }
 
-    fun setupFixedBottomSheet() {
+    private fun setupFixedBottomSheet() {
         val screenHeight = Resources.getSystem().displayMetrics.heightPixels
         val halfExpandedHeight = (screenHeight * 0.4f).toInt()
 
@@ -278,3 +287,4 @@ class SinglePlaylistFragment : Fragment() {
     }
 
 }
+
