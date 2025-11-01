@@ -26,9 +26,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SinglePlaylistFragment : Fragment() {
@@ -113,10 +115,15 @@ class SinglePlaylistFragment : Fragment() {
 
 
         binding.playlistShare.setOnClickListener {
-            viewModel.sharePlaylist(
-                playlistName = playlist.name,
-                playlistDescription = playlist.description
-            )
+            sharePlaylist()
+        }
+
+        binding.sheetShare.setOnClickListener {
+            sharePlaylist()
+        }
+
+        binding.sheetDeletePlaylist.setOnClickListener {
+            deletePlaylist()
         }
 
         binding.threeDots.setOnClickListener {
@@ -142,14 +149,12 @@ class SinglePlaylistFragment : Fragment() {
         )
     }
 
-    fun setupFixedBottomSheet() {
-        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
-        val halfExpandedHeight = (screenHeight * 0.4f).toInt()
 
-        tracksSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylists)
-        tracksSheetBehavior.halfExpandedRatio = 0.4f
-        tracksSheetBehavior.peekHeight = halfExpandedHeight
-        tracksSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    private fun sharePlaylist() {
+        viewModel.sharePlaylist(
+            playlistName = playlist.name,
+            playlistDescription = playlist.description
+        )
     }
 
 
@@ -182,9 +187,6 @@ class SinglePlaylistFragment : Fragment() {
 
         binding.sheetPlaylistName.text = playlist.name
         binding.sheetTrackNumber.text = songsNumber
-
-
-
     }
 
     private fun onTrackClicked(track: Track) {
@@ -201,6 +203,23 @@ class SinglePlaylistFragment : Fragment() {
             .setPositiveButton("ДА") { _, _ ->
                 viewModel.deleteTrackFromPlaylist(playlist.id, trackId.toLong())
                 tracksAdapter.notifyDataSetChanged()
+            }
+            .setNegativeButton("НЕТ") { _, _ -> }
+            .show()
+    }
+
+    private fun deletePlaylist() {
+        MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
+            .setTitle("Хотите удалить плейлист ${playlist.name}?")
+            .setPositiveButton("ДА") { _, _ ->
+                viewModel.deletePlaylist(playlist.id)
+
+                // Наблюдаем за состоянием удаления
+                viewModel.deleteSuccess.observe(viewLifecycleOwner) { success ->
+                    if (success == true) {
+                        findNavController().navigateUp()
+                    }
+                }
             }
             .setNegativeButton("НЕТ") { _, _ -> }
             .show()
@@ -246,6 +265,16 @@ class SinglePlaylistFragment : Fragment() {
 
         // без колбэка затемнение работать не будет
         optionsSheetBehavior.addBottomSheetCallback(bottomSheetCallback!!)
+    }
+
+    fun setupFixedBottomSheet() {
+        val screenHeight = Resources.getSystem().displayMetrics.heightPixels
+        val halfExpandedHeight = (screenHeight * 0.4f).toInt()
+
+        tracksSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetPlaylists)
+        tracksSheetBehavior.halfExpandedRatio = 0.4f
+        tracksSheetBehavior.peekHeight = halfExpandedHeight
+        tracksSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
 }

@@ -1,6 +1,8 @@
 package com.bignerdranch.playlistmaker.media.playlist
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.playlistmaker.R
@@ -29,6 +31,9 @@ class SinglePlaylistViewModel(
     private val _uiState = MutableStateFlow(SinglePlaylistUiState())
     val uiState: StateFlow<SinglePlaylistUiState> = _uiState.asStateFlow()
 
+    private val _deleteSuccess = MutableLiveData<Boolean?>()
+    val deleteSuccess: LiveData<Boolean?> = _deleteSuccess
+
     fun getTracksDataFromRoom(playlistId: Long) {
         viewModelScope.launch {
             playlistInteractor.getTracksForPlaylist(playlistId)
@@ -54,6 +59,17 @@ class SinglePlaylistViewModel(
     fun deleteTrackFromPlaylist(playlistId: Long, trackId: Long) {
         viewModelScope.launch {
             playlistInteractor.deleteTrackFromPlaylist(playlistId, trackId)
+        }
+    }
+
+    fun deletePlaylist(playlistId: Long) {
+        viewModelScope.launch {
+            try {
+                playlistInteractor.deletePlaylist(playlistId)
+                _deleteSuccess.value = true
+            } catch (e: Exception) {
+                _deleteSuccess.value = false
+            }
         }
     }
 

@@ -219,7 +219,7 @@
         app:behavior_fitToContents="true"
         app:behavior_hideable="true"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        tools:visibility="gone">
+        >
 
         <View
             android:id="@+id/bottom_sheet_handle33"

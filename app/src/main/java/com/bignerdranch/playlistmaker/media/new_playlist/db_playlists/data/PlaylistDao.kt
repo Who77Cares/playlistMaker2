@@ -24,4 +24,17 @@ interface PlaylistDao {
     suspend fun decrementTrackCount(playlistId: Long)
 
 
+    // Удалить плейлист по ID
+    @Query("DELETE FROM playlists WHERE playlistId = :playlistId")
+    suspend fun deletePlaylist(playlistId: Long)
+
+    // Получить все trackId из определенного плейлиста
+    @Query("SELECT trackId FROM playlist_track_cross_ref WHERE playlistId = :playlistId")
+    suspend fun getTrackIdsFromPlaylist(playlistId: Long): List<Long>
+
+    // метод для удаления связей
+    @Query("DELETE FROM playlist_track_cross_ref WHERE playlistId = :playlistId")
+    suspend fun deleteAllTracksFromPlaylist(playlistId: Long)
+
+
 }

@@ -18,7 +18,7 @@ class PlaylistRepositoryImpl(
     private val trackMapper: TrackMapper
 ): PlaylistRepository {
 
-    // создаем в NewPlaylistViewModel
+    // создаем плейлист в NewPlaylistViewModel
     override suspend fun createPlaylist(playlist: PlaylistModel) {
         db.playlistDao().createPlaylist(playlistMapper.mapToPlaylistEntity(playlist))
     }
@@ -102,6 +102,25 @@ class PlaylistRepositoryImpl(
         // Проверить, имеется ли трек хотя бы в 1 плейлисте - если нет - удалить из таблицы "tracks_in_playlist"
         db.trackToPlaylistDao().deleteTrackIfUnused(trackId)
     }
+
+    override suspend fun deletePlaylist(playlistId: Long) {
+
+        // 1. Сначала получаем trackId из плейлиста
+        val tracksIds = db.playlistDao().getTrackIdsFromPlaylist(playlistId)
+
+        // 2. УДАЛИТЬ СВЯЗИ из playlist_track_cross_ref
+        db.playlistDao().deleteAllTracksFromPlaylist(playlistId)
+
+        // 3. Теперь удаляем сам плейлист
+        db.playlistDao().deletePlaylist(playlistId)
+
+        // 4. Очищаем неиспользуемые треки
+        tracksIds.forEach { id ->
+            db.trackToPlaylistDao().deleteTrackIfUnused(id)
+        }
+
+    }
+
 
 }
 

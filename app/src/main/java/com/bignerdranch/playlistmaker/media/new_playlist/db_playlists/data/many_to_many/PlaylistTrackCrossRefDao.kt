@@ -33,7 +33,6 @@ interface PlaylistTrackCrossRefDao {
     fun getTracksForPlaylist(playlistId: Long): Flow<List<TrackToPlaylistEntity>>
 
 
-
     @Query("DELETE FROM playlist_track_cross_ref WHERE playlistId = :playlistId AND trackId = :trackId")
     suspend fun deleteTrackFromPlaylist(playlistId: Long, trackId: Long)
 
