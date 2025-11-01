@@ -1,5 +1,6 @@
 package com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data
 
+import android.net.Uri
 import com.bignerdranch.playlistmaker.media.new_playlist.PlaylistMapper
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.many_to_many.PlaylistTrackCrossEntity
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.many_to_many.TrackToPlaylistEntity
@@ -27,7 +28,17 @@ class PlaylistRepositoryImpl(
         return db.playlistDao()
             .getPlaylistById(playlistId)
             .map { playlistEntity ->
-                playlistMapper.mapToPlaylistModel(playlistEntity)
+                if (playlistEntity != null) {
+                    playlistMapper.mapToPlaylistModel(playlistEntity)
+                } else {
+                    PlaylistModel(
+                        id = 0L,
+                        coverUri = Uri.EMPTY,
+                        name = "Playlist not found",
+                        description = "",
+                        tracksSize = 0
+                    )
+                }
             }
     }
 
