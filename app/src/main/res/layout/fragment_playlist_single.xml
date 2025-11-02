@@ -15,9 +15,7 @@
         android:background="@color/colors_FFFFFFFF_1A1B22"
 
         android:backgroundTint="@color/color_E6E8EB"
-        android:paddingStart="@dimen/dimen16"
-        android:paddingTop="@dimen/dimen14"
-        android:paddingEnd="@dimen/dimen16">
+       >
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideLine"
@@ -26,28 +24,35 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.6" />
 
+
+        <ImageView
+            android:id="@+id/playlistCover"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+
+
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toTopOf="@+id/playlistName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            tools:src="@drawable/placeholder" />
+
         <ImageView
             android:id="@+id/arrow_back"
             style="@style/arrow_back"
             app:tint="@color/color_FF000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/ripple_circle"/>
+            android:background="@drawable/ripple_circle"
 
-        <ImageView
-            android:id="@+id/playlistCover"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="39dp"
-            android:layout_marginBottom="@dimen/dimen24"
+            android:layout_marginStart="@dimen/dimen16"
+            android:layout_marginTop="@dimen/dimen14"
+            android:layout_marginEnd="@dimen/dimen16"
 
-            android:scaleType="fitCenter"
-            app:layout_constraintBottom_toTopOf="@+id/playlistName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/arrow_back"
-
-            tools:src="@drawable/placeholder" />
+            />
 
         <TextView
             android:id="@+id/playlistName"
@@ -57,17 +62,26 @@
             app:layout_constraintBottom_toTopOf="@+id/playlistDescription"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playlistCover"
-
+            android:layout_marginStart="@dimen/dimen16"
+            android:layout_marginTop="@dimen/dimen24"
+            android:layout_marginEnd="@dimen/dimen16"
 
             tools:text="Еее бой" />
 
         <TextView
             android:id="@+id/playlistDescription"
             style="@style/YS_Regular_13"
+            android:layout_width="0dp"
+            android:layout_marginStart="@dimen/dimen16"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/dimen16"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/color_1A1B22"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/songsDuration"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playlistName"
             tools:text="Описание альбома" />
@@ -75,7 +89,9 @@
         <TextView
             android:id="@+id/songsDuration"
             style="@style/YS_Regular_13"
+            android:layout_marginStart="@dimen/dimen16"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/dimen16"
             android:textColor="@color/color_1A1B22"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/playlistShare"
@@ -111,6 +127,9 @@
             android:id="@+id/playlistShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen16"
+
+            android:layout_marginEnd="@dimen/dimen16"
             android:layout_marginTop="19dp"
             android:layout_marginBottom="27dp"
             android:background="@drawable/ripple_circle"

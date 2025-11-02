@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -141,18 +143,28 @@ class SinglePlaylistFragment : Fragment() {
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 
 
 
     private fun sharePlaylist() {
-        viewModel.sharePlaylist(
-            playlistName = playlist.name,
-            playlistDescription = playlist.description
-        )
+        if (playlist.tracksSize != 0) {
+            viewModel.sharePlaylist(
+                playlistName = playlist.name,
+                playlistDescription = playlist.description
+            )
+        } else {
+            MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
+                .setTitle("В плейлисте нет песен")
+                .setNeutralButton("ОК") {_, _, ->}
+                .show()
+
+            optionsSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        }
     }
 
 
@@ -161,7 +173,7 @@ class SinglePlaylistFragment : Fragment() {
         binding.songsDuration.text = resources.getQuantityString(R.plurals.minutes_count, songsDuration, songsDuration)
 
         tracksAdapter.tracks.clear()
-        tracksAdapter.tracks.addAll(track)
+        tracksAdapter.tracks.addAll(track.reversed())
         tracksAdapter.notifyDataSetChanged()
     }
 
@@ -173,11 +185,22 @@ class SinglePlaylistFragment : Fragment() {
         binding.playlistDescription.text = playlist.description
         binding.songsNumber.text = songsNumber
 
-        Glide.with(this)
-            .load(playlist.coverUri)
-            .fitCenter()
-            .placeholder(R.drawable.placeholder)
-            .into(binding.playlistCover)
+
+        val layoutParams = binding.playlistCover.layoutParams as ConstraintLayout.LayoutParams
+        if (playlist.coverUri != "".toUri()) {
+            binding.playlistCover.setImageURI(playlist.coverUri)
+            binding.playlistCover.scaleType = ImageView.ScaleType.FIT_XY
+
+            layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            binding.playlistCover.layoutParams = layoutParams
+
+        } else {
+            binding.playlistCover.setImageResource(R.drawable.placeholder)
+            binding.playlistCover.scaleType = ImageView.ScaleType.FIT_CENTER
+
+            layoutParams.topToTop = R.id.arrow_back
+            binding.playlistCover.layoutParams = layoutParams
+        }
 
 
         Glide.with(this)

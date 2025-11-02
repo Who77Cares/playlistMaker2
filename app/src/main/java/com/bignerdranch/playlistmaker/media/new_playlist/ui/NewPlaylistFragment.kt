@@ -21,6 +21,7 @@ import com.bignerdranch.playlistmaker.search.domain.models.Track
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.core.net.toUri
+import com.bumptech.glide.Glide
 
 class NewPlaylistFragment: Fragment() {
 
@@ -99,13 +100,18 @@ class NewPlaylistFragment: Fragment() {
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
-                    binding.imageSelectedImageView.setImageURI(uri)
+                    // ВСЕГДА используем Glide для загрузки картинки
+                    Glide.with(this)
+                        .load(uri)
+                        .fitCenter()
+                        .placeholder(R.drawable.placeholder)
+                        .into(binding.imageSelectedImageView)
+
                     binding.imageSelectedImageView.visibility = View.VISIBLE
                     binding.imageSelectImageView.visibility = View.GONE
 
                     // сохраняем картинку во внутренее хранилище
                     viewModel.saveImage(uri)
-
                     viewModel.updateUri(uri)
 
                 } else {
@@ -217,9 +223,16 @@ class NewPlaylistFragment: Fragment() {
 
         // Устанавливаем обложку
         viewModel.observeCurrentImgUri().value?.let { uri ->
-            binding.imageSelectedImageView.setImageURI(uri)
-            binding.imageSelectedImageView.visibility = View.VISIBLE
-            binding.imageSelectImageView.visibility = View.GONE
+
+                Glide.with(this)
+                    .load(uri)
+                    .fitCenter()
+                    .placeholder(R.drawable.placeholder)
+                    .into(binding.imageSelectedImageView)
+
+                binding.imageSelectedImageView.visibility = View.VISIBLE
+                binding.imageSelectImageView.visibility = View.GONE
+
         }
 
         // Обновляем состояние кнопки
