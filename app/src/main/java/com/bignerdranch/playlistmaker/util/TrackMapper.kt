@@ -1,7 +1,7 @@
 package com.bignerdranch.playlistmaker.util
 
 import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
-import com.bignerdranch.playlistmaker.media.db_favorite.data.TrackEntity
+import com.bignerdranch.playlistmaker.media.db_favorite.data.FavoriteTrackEntity
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.many_to_many.TrackToPlaylistEntity
 import com.bignerdranch.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
@@ -10,8 +10,8 @@ import java.util.Locale
 
 class TrackMapper {
 
-    fun mapToEntity(track: Track): TrackEntity {
-        return TrackEntity(
+    fun mapToEntity(track: Track): FavoriteTrackEntity {
+        return FavoriteTrackEntity(
             id = track.trackId.toLong(),
             trackName = track.trackName,
             artistName = track.artistName,
@@ -25,7 +25,7 @@ class TrackMapper {
         )
     }
 
-    fun mapToTrackFromEntity(track: TrackEntity): Track {
+    fun mapToTrackFromEntity(track: FavoriteTrackEntity): Track {
         return Track(
             trackName = track.trackName,
             artistName = track.artistName,
@@ -57,7 +57,7 @@ class TrackMapper {
         )
     }
 
-    fun convertFromTrackEntity(tracks: List<TrackEntity>): List<Track> {
+    fun convertFromTrackEntity(tracks: List<FavoriteTrackEntity>): List<Track> {
         return tracks.map { track -> mapToTrackFromEntity(track) }
     }
 

@@ -82,4 +82,12 @@ class NewPlaylistViewModel(
                 !currentDescription.value.isNullOrBlank()
     }
 
+
+    fun updatePlaylist(playlist: PlaylistModel) {
+        viewModelScope.launch {
+            playlistInteractor.updatePlaylist(playlist)
+        }
+    }
+
+
 }

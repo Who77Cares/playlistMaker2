@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/mediaFragment">
 
     <fragment
-    android:id="@+id/mediaFragment"
-    android:name="com.bignerdranch.playlistmaker.media.MediaContainerFragment"
-    android:label="fragment_media"
-    tools:layout="@layout/fragment_media" >
+        android:id="@+id/mediaFragment"
+        android:name="com.bignerdranch.playlistmaker.media.MediaContainerFragment"
+        android:label="fragment_media"
+        tools:layout="@layout/fragment_media">
 
         <action
             android:id="@+id/action_mediaFragment_to_audioPlayerFragment"
@@ -18,11 +18,12 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-
-
         <action
             android:id="@+id/action_favoriteMediaFragment_to_newPlaylistFragment"
             app:destination="@id/newPlaylistFragment" />
+        <action
+            android:id="@+id/action_mediaFragment_to_singlePlaylistFragment"
+            app:destination="@id/singlePlaylistFragment" />
 
     </fragment>
 
@@ -33,10 +34,6 @@
         android:label="fragment_favorite_media"
         tools:layout="@layout/fragment_favorite_media">
 
-
-
-
-
     </fragment>
 
 
@@ -44,8 +41,7 @@
         android:id="@+id/playlistMediaFragment"
         android:name="com.bignerdranch.playlistmaker.media.playlists.PlaylistFragment"
         android:label="fragment_playlist_media"
-        tools:layout="@layout/fragment_playlist_media" >
-
+        tools:layout="@layout/fragment_playlist_media">
 
 
     </fragment>
@@ -54,14 +50,14 @@
         android:id="@+id/searchFragment"
         android:name="com.bignerdranch.playlistmaker.search.ui.ui.SearchFragment"
         android:label="fragment_search"
-        tools:layout="@layout/fragment_search" >
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_searchFragment_to_audioPlayerFragment"
             app:destination="@id/audioPlayerFragment"
 
-            app:popEnterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_left"
             app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
@@ -69,7 +65,7 @@
         android:id="@+id/audioPlayerFragment"
         android:name="com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment"
         android:label="fragment_audio_player"
-        tools:layout="@layout/fragment_audio_player" >
+        tools:layout="@layout/fragment_audio_player">
 
         <action
             android:id="@+id/action_audioPlayerFragment_to_newPlaylistFragment"
@@ -89,4 +85,18 @@
         android:name="com.bignerdranch.playlistmaker.media.new_playlist.ui.NewPlaylistFragment"
         android:label="fragment_new_playlist"
         tools:layout="@layout/fragment_new_playlist" />
+    <fragment
+        android:id="@+id/singlePlaylistFragment"
+        android:name="com.bignerdranch.playlistmaker.media.playlist.SinglePlaylistFragment"
+        android:label="fragment_playlist_single"
+        tools:layout="@layout/fragment_playlist_single" >
+
+
+        <action
+            android:id="@+id/action_singlePlaylistFragment_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment" />
+        <action
+            android:id="@+id/action_singlePlaylistFragment_to_newPlaylistFragment"
+            app:destination="@id/newPlaylistFragment" />
+    </fragment>
 </navigation>

@@ -5,14 +5,13 @@ import com.bignerdranch.playlistmaker.settings.domain.api.SharingInteractor
 
 class SharingInteractorImpl(
     private val navigator: SettingsNavigator,
-    private val shareUrl: String,
     private val supportEmail: String,
     private val supportSubject: String,
     private val supportBody: String,
     private val termsUrl: String
 ): SharingInteractor {
-    override fun shareApp() {
-        navigator.shareLink(shareUrl)
+    override fun shareText(text: String) {
+        navigator.shareText(text)
     }
 
     override fun openSupport() {

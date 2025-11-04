@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.VIEW_MODEL_STORE_OWNER_KEY
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.databinding.FragmentPlaylistMediaBinding
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
+import com.bignerdranch.playlistmaker.media.playlist.SinglePlaylistFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistFragment: Fragment() {
@@ -28,7 +28,11 @@ class PlaylistFragment: Fragment() {
 
     private val viewModel: PlaylistViewModel by viewModel()
 
-    private val adapter = PlaylistAdapter()
+    private val adapter = PlaylistAdapter(
+        onItemClick = { playlist ->
+            onPlaylistClick(playlist)
+        }
+    )
 
 
     override fun onCreateView(
@@ -87,6 +91,14 @@ class PlaylistFragment: Fragment() {
         binding.noPlaylistText.visibility = View.VISIBLE
         binding.noPlaylistImg.visibility = View.VISIBLE
         binding.playlistRecyclerView.visibility = View.GONE
+    }
+
+    private fun onPlaylistClick(playlist: PlaylistModel) {
+        findNavController().navigate(
+            R.id.action_mediaFragment_to_singlePlaylistFragment,
+            SinglePlaylistFragment.Companion.createArgs(playlist)
+        )
+
     }
 
 }

@@ -1,5 +1,6 @@
 package com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data
 
+import android.net.Uri
 import com.bignerdranch.playlistmaker.media.new_playlist.PlaylistMapper
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.many_to_many.PlaylistTrackCrossEntity
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.many_to_many.TrackToPlaylistEntity
@@ -18,10 +19,29 @@ class PlaylistRepositoryImpl(
     private val trackMapper: TrackMapper
 ): PlaylistRepository {
 
-    // создаем в NewPlaylistViewModel
+    // создаем плейлист в NewPlaylistViewModel
     override suspend fun createPlaylist(playlist: PlaylistModel) {
         db.playlistDao().createPlaylist(playlistMapper.mapToPlaylistEntity(playlist))
     }
+
+    override fun getPlaylistById(playlistId: Long): Flow<PlaylistModel> {
+        return db.playlistDao()
+            .getPlaylistById(playlistId)
+            .map { playlistEntity ->
+                if (playlistEntity != null) {
+                    playlistMapper.mapToPlaylistModel(playlistEntity)
+                } else {
+                    PlaylistModel(
+                        id = 0L,
+                        coverUri = Uri.EMPTY,
+                        name = "Playlist not found",
+                        description = "",
+                        tracksSize = 0
+                    )
+                }
+            }
+    }
+
 
     // получаем в AudioPlayerViewModel и PlaylistViewModel
     override fun getPlaylists(): Flow<List<PlaylistModel>> {
@@ -33,6 +53,8 @@ class PlaylistRepositoryImpl(
                 }
             }
     }
+
+
 
     override suspend fun addTrackToPlaylist(trackModel: Track, playlistId: Long): Boolean {
        return withContext(Dispatchers.IO) {
@@ -48,7 +70,8 @@ class PlaylistRepositoryImpl(
                    return@withContext false
                }
 
-               existingTrack.trackId // Возвращаем ID существующего трека
+               // если трека нет в плейлисте, но трек уже есть в бд - возвращаем ID существующего трека
+               existingTrack.trackId
 
            } else {
                // если трека нет в базе - создаем новый
@@ -71,10 +94,56 @@ class PlaylistRepositoryImpl(
        }
 
     }
-
     private suspend fun findTrackById(trackId: Long): TrackToPlaylistEntity? {
         return db.trackToPlaylistDao().findTrackById(trackId)
     }
+
+
+
+
+    override fun getTracksFromPlaylist(playlistId: Long): Flow<List<Track>> {
+        return db.crossRefDao()
+            .getTracksForPlaylist(playlistId)
+            .map { tracks ->
+                tracks.map { entity ->
+                    trackMapper.mapToTrackModel(entity)
+                }
+            }
+    }
+
+
+
+    override suspend fun deleteTrackFromPlaylist(playlistId: Long, trackId: Long) {
+        db.crossRefDao().deleteTrackFromPlaylist(playlistId, trackId)
+        db.playlistDao().decrementTrackCount(playlistId)
+
+        // Проверить, имеется ли трек хотя бы в 1 плейлисте - если нет - удалить из таблицы "tracks_in_playlist"
+        db.trackToPlaylistDao().deleteTrackIfUnused(trackId)
+    }
+
+    override suspend fun deletePlaylist(playlistId: Long) {
+
+        // получаем trackId из плейлиста
+        val tracksIds = db.playlistDao().getTrackIdsFromPlaylist(playlistId)
+
+        // УДАЛИТЬ СВЯЗИ из playlist_track_cross_ref
+        db.playlistDao().deleteAllTracksFromPlaylist(playlistId)
+
+        // удаляем сам плейлист
+        db.playlistDao().deletePlaylist(playlistId)
+
+        //  Очищаем неиспользуемые треки
+        tracksIds.forEach { id ->
+            db.trackToPlaylistDao().deleteTrackIfUnused(id)
+        }
+
+    }
+
+
+    override suspend fun updatePlaylist(playlist: PlaylistModel) {
+        db.playlistDao().updatePlaylist(playlistMapper.mapToPlaylistEntity(playlist))
+    }
+
 
 }
 

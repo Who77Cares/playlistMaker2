@@ -11,7 +11,7 @@
         android:layout_width="@dimen/song_pic"
         android:layout_height="@dimen/song_pic"
         android:layout_gravity="center_vertical"
-        tools:background="@color/color_3772E7_3772E7"/>
+        tools:background="@color/color_3772E7"/>
 
     <LinearLayout
         style="@style/text_track_view"
@@ -23,7 +23,7 @@
             style="@style/text_track_view"
             android:id="@+id/trackName"
             android:layout_marginStart="@dimen/search_drawablePadding"
-            android:textColor="@color/main_text"
+            android:textColor="@color/colors_FF000000_FFFFFFFF"
             android:textSize="@dimen/sp16"
             tools:text="Название песни" />
 
@@ -43,8 +43,8 @@
                 style="@style/text_track_view"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                app:tint="@color/color_AEAFB4_FFFFFFFF"
-                android:src="@drawable/ellipse_song_search" />
+                android:src="@drawable/ellipse_song_search"
+                app:tint="@color/color_AEAFB4_FFFFFFFF" />
 
             <TextView
                 style="@style/text_track_view"

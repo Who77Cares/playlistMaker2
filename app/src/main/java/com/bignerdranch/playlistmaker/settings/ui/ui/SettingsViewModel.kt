@@ -29,7 +29,7 @@ class SettingsViewModel(
         theme.value = newSettings
     }
 
-    fun shareApp() = sharingInteractor.shareApp()
+    fun shareApp(url: String) = sharingInteractor.shareText(text = url)
     fun openSupport() = sharingInteractor.openSupport()
     fun openTerms() = sharingInteractor.openTerms()
 

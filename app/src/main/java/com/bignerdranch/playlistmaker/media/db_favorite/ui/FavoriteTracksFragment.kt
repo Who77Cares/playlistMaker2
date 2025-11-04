@@ -15,7 +15,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteTracksFragment: Fragment() {
 
-    private val adapter = FavoriteAdapter { track -> onTrackClicked(track) }
+    private val adapter = FavoriteAdapter(
+        onItemClick = { track -> onTrackClicked(track) },
+        onLongItemClick = {  }
+    )
+
 
     companion object {
         fun newInstance(): FavoriteTracksFragment {

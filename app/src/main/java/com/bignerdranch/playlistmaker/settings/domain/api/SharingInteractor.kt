@@ -2,7 +2,7 @@ package com.bignerdranch.playlistmaker.settings.domain.api
 
 interface SharingInteractor {
 
-    fun shareApp()
+    fun shareText(text: String)
     fun openSupport()
     fun openTerms()
 

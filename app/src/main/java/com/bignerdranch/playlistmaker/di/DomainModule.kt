@@ -39,7 +39,6 @@ val domainModule = module {
 
         SharingInteractorImpl(
             navigator = get(),
-            shareUrl = res.getString(R.string.share_url),
             supportEmail = res.getString(R.string.sendToSupport_email),
             supportSubject = res.getString(R.string.sendToSupport_theme),
             supportBody = res.getString(R.string.sendToSupport_text),

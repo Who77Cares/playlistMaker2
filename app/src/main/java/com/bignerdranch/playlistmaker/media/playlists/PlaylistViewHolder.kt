@@ -8,7 +8,10 @@ import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bumptech.glide.Glide
 
-class PlaylistViewHolder(view: View): RecyclerView.ViewHolder(view) {
+class PlaylistViewHolder(
+    view: View,
+    private val onItemClick: (PlaylistModel) -> Unit
+): RecyclerView.ViewHolder(view) {
 
     private val title: TextView = itemView.findViewById(R.id.titlePlaylistItem)
     private val tracksNumber: TextView = itemView.findViewById(R.id.tracksNumberPlaylistTextView)
@@ -25,6 +28,10 @@ class PlaylistViewHolder(view: View): RecyclerView.ViewHolder(view) {
             // тут, кстати, мы уже скруглили углы уже у самого imgUri через атрибут app:shapeAppearanceOverlay="@style/RoundedImageStyle"
             .placeholder(R.drawable.placeholder)
             .into(imgUri)
+
+        itemView.setOnClickListener {
+            onItemClick(playlist)
+        }
     }
 
 }
