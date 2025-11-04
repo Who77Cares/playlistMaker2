@@ -14,26 +14,21 @@ import com.bignerdranch.playlistmaker.databinding.ActivityRootBinding
 class RootActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityRootBinding
-    private var isKeyboardOpen = false
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
-        navController = navHostFragment.navController // ← ИСПОЛЬЗУЙ ЭТУ ПЕРЕМЕННУЮ
+        navController = navHostFragment.navController
         binding.bottomNavigationView.setupWithNavController(navController)
 
-        setupKeyboardListener()
+
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (isKeyboardOpen) {
-                binding.bottomNavigationView.visibility = View.GONE
-                binding.line.visibility = View.GONE
-            } else {
-                when (destination.id) {
+             when (destination.id) {
                     in setOf(
                         R.id.audioPlayerFragment,
                         R.id.newPlaylistFragment,
@@ -45,42 +40,7 @@ class RootActivity: AppCompatActivity() {
                     else -> {
                         binding.bottomNavigationView.visibility = View.VISIBLE
                         binding.line.visibility = View.VISIBLE
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setupKeyboardListener() {
-        binding.root.viewTreeObserver.addOnGlobalLayoutListener {
-            val rect = Rect()
-            binding.root.getWindowVisibleDisplayFrame(rect)
-            val screenHeight = binding.root.rootView.height
-            val keypadHeight = screenHeight - rect.bottom
-
-            val keyboardNowOpen = keypadHeight > screenHeight * 0.15
-
-            if (keyboardNowOpen != isKeyboardOpen) {
-                isKeyboardOpen = keyboardNowOpen
-
-                if (isKeyboardOpen) {
-                    binding.bottomNavigationView.visibility = View.GONE
-                    binding.line.visibility = View.GONE
-                } else {
-                    // Теперь navController доступен
-                    val currentDestination = navController.currentDestination?.id
-                    when (currentDestination) {
-                        in setOf(R.id.audioPlayerFragment, R.id.newPlaylistFragment) -> {
-                            // Оставляем скрытым
-                        }
-                        else -> {
-                            binding.bottomNavigationView.visibility = View.VISIBLE
-                            binding.line.visibility = View.VISIBLE
-                        }
-                    }
-                }
-            }
-        }
+                    } } }
     }
 
 

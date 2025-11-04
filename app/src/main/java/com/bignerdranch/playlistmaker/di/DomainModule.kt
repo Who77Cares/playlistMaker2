@@ -8,6 +8,7 @@ import com.bignerdranch.playlistmaker.search.domain.interactorImpl.SearchHistory
 import com.bignerdranch.playlistmaker.search.domain.interactorImpl.TrackInteractorImpl
 import com.bignerdranch.playlistmaker.settings.data.sharing.SettingsNavigator
 import com.bignerdranch.playlistmaker.settings.data.sharing.SettingsNavigatorImpl
+import com.bignerdranch.playlistmaker.settings.domain.ShareTextProvider
 import com.bignerdranch.playlistmaker.settings.domain.api.SettingsInteractor
 import com.bignerdranch.playlistmaker.settings.domain.api.SharingInteractor
 import com.bignerdranch.playlistmaker.settings.domain.interactorImpl.SettingsInteractorImpl
@@ -32,17 +33,15 @@ val domainModule = module {
         SettingsNavigatorImpl(context = get())
     }
 
+
+    single<ShareTextProvider> {
+        ShareTextProvider(resources = get<Context>().resources)
+    }
+
     single<SharingInteractor> {
-
-        val ctx = get<Context>()
-        val res = ctx.resources
-
         SharingInteractorImpl(
             navigator = get(),
-            supportEmail = res.getString(R.string.sendToSupport_email),
-            supportSubject = res.getString(R.string.sendToSupport_theme),
-            supportBody = res.getString(R.string.sendToSupport_text),
-            termsUrl = res.getString(R.string.sendToSupport_text)
+            textProvider = get()
         )
     }
 

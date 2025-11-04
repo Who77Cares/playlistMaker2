@@ -19,15 +19,20 @@ class SettingsNavigatorImpl(
     }
 
     override fun openEmail(email: String, subject: String, body: String) {
-        val intent = Intent().apply {
-            action = Intent.ACTION_SENDTO
-            data = Uri.parse("mailto:$email")
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, body)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        val chooserIntent = Intent.createChooser(intent, "Отправить по почте:")
-        chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        val chooserIntent = Intent.createChooser(intent, "Отправить по почте:").apply {
+            // Флаг должен быть добавлен и к выборщику!
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         context.startActivity(chooserIntent)
+
     }
 
 

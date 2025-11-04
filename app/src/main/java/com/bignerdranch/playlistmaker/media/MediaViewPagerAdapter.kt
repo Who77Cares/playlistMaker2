@@ -8,9 +8,8 @@ import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteTracksFragmen
 import com.bignerdranch.playlistmaker.media.playlists.PlaylistFragment
 
 class MediaViewPagerAdapter(
-    fragmentManager: FragmentManager,
-    lifecycle: Lifecycle
-) : FragmentStateAdapter(fragmentManager, lifecycle) {
+    hostFragment: Fragment
+) : FragmentStateAdapter(hostFragment) {
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
