@@ -3,9 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-
     tools:context="com.bignerdranch.playlistmaker.settings.ui.ui.SettingsFragment"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -29,7 +27,6 @@
             android:text="@string/settings"
             android:textColor="@color/colors_FF000000_FFFFFFFF"
             android:textSize="@dimen/sp22" />
-
     </LinearLayout>
 
     <com.google.android.material.switchmaterial.SwitchMaterial
@@ -57,5 +54,4 @@
         style="@style/text_settings_style"
         android:drawableEnd="@drawable/arrow_forward"
         android:text="@string/user_agreement" />
-
 </LinearLayout>

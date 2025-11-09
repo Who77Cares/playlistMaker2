@@ -7,6 +7,7 @@ import com.bignerdranch.playlistmaker.di.domainModule
 import com.bignerdranch.playlistmaker.di.audioModule
 import com.bignerdranch.playlistmaker.di.dbRoomModule
 import com.bignerdranch.playlistmaker.di.presentationModule
+import com.bignerdranch.playlistmaker.di.settingsModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -25,7 +26,9 @@ class App: Application() {
 
         startKoin{
             androidContext(this@App)
-            modules(listOf(dataModule, domainModule, presentationModule, audioModule, dbRoomModule))
+            modules(listOf(dataModule, domainModule, presentationModule, audioModule, dbRoomModule,
+                settingsModule
+            ))
         }
 
         // Получение SharedPreferences

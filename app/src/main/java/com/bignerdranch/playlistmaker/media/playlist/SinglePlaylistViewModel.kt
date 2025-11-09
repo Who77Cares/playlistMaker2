@@ -107,7 +107,7 @@ class SinglePlaylistViewModel(
             }
         }
 
-        sharingInteractor.shareText(message)
+        sharingInteractor.sharePlaylistText(message)
 
     }
 

@@ -31,12 +31,7 @@ val presentationModule = module {
         )
     }
 
-    viewModel {
-        SettingsViewModel(
-            settingsInteractor = get(),
-            sharingInteractor = get()
-        )
-    }
+
 
     viewModel { FavoriteTracksViewModel(get()) }
 

@@ -1,9 +1,7 @@
-package com.bignerdranch.playlistmaker.settings.data.sharing
+package com.bignerdranch.playlistmaker.settings.data.api
 
-interface SettingsNavigator {
-
+interface SharingRepository {
     fun shareText(text: String)
     fun openEmail(email: String, subject: String, body: String)
     fun openLink(url: String)
-
 }

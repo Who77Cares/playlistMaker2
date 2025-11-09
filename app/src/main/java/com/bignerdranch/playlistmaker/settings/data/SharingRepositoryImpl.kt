@@ -1,12 +1,13 @@
-package com.bignerdranch.playlistmaker.settings.data.sharing
+package com.bignerdranch.playlistmaker.settings.data
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.bignerdranch.playlistmaker.settings.data.api.SharingRepository
 
-class SettingsNavigatorImpl(
+class SharingRepositoryImpl(
     private val context: Context
-): SettingsNavigator {
+): SharingRepository {
     override fun shareText(text: String) {
         val intent = Intent().apply {
             action = Intent.ACTION_SEND

@@ -13,9 +13,6 @@ import com.bignerdranch.playlistmaker.search.data.storage.PrefsStorageClient
 import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryRepository
 import com.bignerdranch.playlistmaker.search.domain.api.TrackRepository
 import com.bignerdranch.playlistmaker.search.domain.models.Track
-import com.bignerdranch.playlistmaker.settings.data.settings.SettingsRepository
-import com.bignerdranch.playlistmaker.settings.data.settings.SettingsRepositoryImpl
-import com.bignerdranch.playlistmaker.settings.domain.model.ThemeSettings
 import com.google.gson.reflect.TypeToken
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -52,18 +49,6 @@ val dataModule = module {
             )
         )
     }
-
-    single<SettingsRepository> {
-        SettingsRepositoryImpl(
-            PrefsStorageClient(
-                context = get(),
-                dataKey = "theme_settings",
-                type = object : TypeToken<ThemeSettings>() {}.type
-            )
-        )
-    }
-
-
 
 
     single<ImgExternalStorage> {

@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.settings.domain
+package com.bignerdranch.playlistmaker.settings
 
 import android.content.res.Resources
 import com.bignerdranch.playlistmaker.R
@@ -10,4 +10,6 @@ class ShareTextProvider(
     fun getSupportSubject() = resources.getString(R.string.sendToSupport_theme)
     fun getSupportBody() = resources.getString(R.string.sendToSupport_text)
     fun getTermsUrl() = resources.getString(R.string.userAgreement_url)
+
+    fun getShareUrl() = resources.getString(R.string.share_url)
 }

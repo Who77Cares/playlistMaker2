@@ -28,15 +28,20 @@ class SettingsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.observeTheme().observe(viewLifecycleOwner) { settings ->
-            binding.switchCompat.isChecked = settings.isDarkTheme
+        viewModel.observeTheme().observe(viewLifecycleOwner) { isDark ->
+            binding.switchCompat.isChecked = isDark
         }
+
+        binding.switchCompat.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.toggleTheme(isChecked)
+        }
+
+
 
 
         binding.share.setOnClickListener {
-            viewModel.shareApp(getString(R.string.share_url))
+            viewModel.shareApp()
         }
-
 
         binding.support.setOnClickListener {
             viewModel.openSupport()
@@ -45,14 +50,6 @@ class SettingsFragment: Fragment() {
         binding.userAgreement.setOnClickListener {
             viewModel.openTerms()
         }
-
-        binding.switchCompat.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.updateTheme(isChecked)
-
-            val app = requireActivity().application as App
-            app.switchTheme(isChecked)
-        }
-
 
     }
 
