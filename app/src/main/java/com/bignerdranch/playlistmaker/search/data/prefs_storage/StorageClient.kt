@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.search.data.client
+package com.bignerdranch.playlistmaker.search.data.prefs_storage
 
 interface StorageClient<T> {
 

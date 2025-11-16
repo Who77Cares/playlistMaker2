@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
 
-    tools:context="com.bignerdranch.playlistmaker.search.ui.ui.SearchFragment"
+    tools:context="com.bignerdranch.playlistmaker.search.ui.SearchFragment"
 
     android:background="@color/colors_FFFFFFFF_1A1B22"
     android:orientation="vertical"
@@ -75,9 +75,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="140dp"
         android:indeterminateTint="@color/color_3772E7"
-        android:visibility="gone"
-        />
-
+        android:visibility="gone" />
 
     <FrameLayout
         android:layout_width="match_parent"

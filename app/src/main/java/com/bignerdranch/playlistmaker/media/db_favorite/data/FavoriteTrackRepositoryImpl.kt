@@ -2,7 +2,7 @@ package com.bignerdranch.playlistmaker.media.db_favorite.data
 
 import com.bignerdranch.playlistmaker.util.TrackMapper
 import com.bignerdranch.playlistmaker.util.AppDatabase
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

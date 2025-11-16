@@ -1,12 +1,8 @@
-package com.bignerdranch.playlistmaker.search.domain.interactorImpl
+package com.bignerdranch.playlistmaker.search.domain.network
 
 import com.bignerdranch.playlistmaker.util.Resource
-import com.bignerdranch.playlistmaker.search.domain.api.TrackInteractor
-import com.bignerdranch.playlistmaker.search.domain.api.TrackRepository
-import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-
 
 class TrackInteractorImpl(
     private val repository: TrackRepository

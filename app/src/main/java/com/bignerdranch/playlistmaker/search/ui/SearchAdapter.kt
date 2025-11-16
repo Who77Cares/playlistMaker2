@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.search.ui.ui
+package com.bignerdranch.playlistmaker.search.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,22 +6,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.playlistmaker.R
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class SearchAdapter(
-    private val isHistory: Boolean, // обновляем историю только при клике на трек из сети
-    private val itemClickListener: OnItemClickListener // интерфейс для обработки клика в SearchActivity
+    private val onTrackClick: (Track) -> Unit
+
 ) : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
-    fun interface OnItemClickListener {
-        fun onItemClick(track: Track, trackFromHistory: Boolean)
-    }
-
     var tracks = ArrayList<Track>()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder =
         SearchViewHolder(parent)
@@ -30,18 +27,11 @@ class SearchAdapter(
         holder.bind(tracks[position])
 
         holder.itemView.setOnClickListener {
-
-            itemClickListener.onItemClick(
-                track = tracks[position],
-                trackFromHistory = isHistory
-            )
-
+            onTrackClick(tracks[position])
         }
-
     }
 
     override fun getItemCount(): Int = tracks.size
-
 
 
 
@@ -69,6 +59,4 @@ class SearchAdapter(
                 .transform(RoundedCorners(2))
                 .placeholder(R.drawable.placeholder)
                 .into(artworkUrl100View)
-        }
-    }
-}
+        } } }

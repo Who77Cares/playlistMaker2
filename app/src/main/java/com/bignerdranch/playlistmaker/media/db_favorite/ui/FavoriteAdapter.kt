@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.playlistmaker.R
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat

@@ -3,13 +3,10 @@ package com.bignerdranch.playlistmaker.search.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.bignerdranch.playlistmaker.search.data.client.NetworkClient
-import com.bignerdranch.playlistmaker.search.data.models.Response
-import com.bignerdranch.playlistmaker.search.data.models.TrackRequest
+import com.bignerdranch.playlistmaker.search.data.network.models.Response
+import com.bignerdranch.playlistmaker.search.data.network.models.TrackRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitNetworkClient(
     private val context: Context,

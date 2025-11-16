@@ -1,8 +1,6 @@
-package com.bignerdranch.playlistmaker.search.domain.interactorImpl
+package com.bignerdranch.playlistmaker.search.domain.prefs_storage
 
-import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryInteractor
-import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryRepository
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 
 class SearchHistoryInteractorImpl(
     private val repository: SearchHistoryRepository

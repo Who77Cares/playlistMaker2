@@ -12,7 +12,7 @@ import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
 import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteTrackInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

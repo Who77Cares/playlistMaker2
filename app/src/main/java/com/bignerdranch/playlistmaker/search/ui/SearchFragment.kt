@@ -1,6 +1,6 @@
-package com.bignerdranch.playlistmaker.search.ui.ui
+package com.bignerdranch.playlistmaker.search.ui
 
-import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,40 +8,36 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentSearchBinding
-import com.bignerdranch.playlistmaker.search.domain.models.Track
-import com.bignerdranch.playlistmaker.search.ui.models.TrackState
-import com.bignerdranch.playlistmaker.search.ui.presentation.SearchViewModel
+import com.bignerdranch.playlistmaker.search.domain.network.Track
+import com.bignerdranch.playlistmaker.search.ui.SearchAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.concurrent.atomic.AtomicBoolean
 
-
-class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
+class SearchFragment: Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding  get() = _binding!!
 
     private val viewModel: SearchViewModel by viewModel()
 
+    private lateinit var iTunesAdapter: SearchAdapter
+    private lateinit var prefsHistoryAdapter: SearchAdapter
 
-    private val adapter = SearchAdapter(false, this)
-    private val adapterForHistoryTracks = SearchAdapter(true, this)
-    private var isClickAllowed = true
+
+    private val isClickAllowed = AtomicBoolean(true)
     private var searchText = ""
 
-    private var isHistoryLoaded = false
-
-
-    private val tracks = ArrayList<Track>()
-    private val historyTracks = ArrayList<Track>()
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY = 2000L
     }
 
 
@@ -50,6 +46,33 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        iTunesAdapter = SearchAdapter(
+            onTrackClick = { track ->
+
+                if (clickDebounce()) {
+                    findNavController().navigate(
+                        R.id.action_searchFragment_to_audioPlayerFragment,
+                        AudioPlayerFragment.Companion.createArgs(track)
+                    )
+
+                    viewModel.addTrackToHistory(track)
+                }
+            }
+        )
+
+        prefsHistoryAdapter = SearchAdapter(
+            onTrackClick = { track ->
+                if (clickDebounce()) {
+                    findNavController().navigate(
+                        R.id.action_searchFragment_to_audioPlayerFragment,
+                        AudioPlayerFragment.Companion.createArgs(track)
+                    )
+                }
+            }
+        )
+
+
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -58,23 +81,18 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         // логика работы RecycleView
-        adapter.tracks = tracks
-        binding.trackRecycleView.adapter = adapter
-
-        adapterForHistoryTracks.tracks = historyTracks
-        binding.trackHistoryRecycleView.adapter = adapterForHistoryTracks
+        binding.trackRecycleView.adapter = iTunesAdapter
+        binding.trackHistoryRecycleView.adapter = prefsHistoryAdapter
 
 
-        // костыли чтобы не показывалась история поиска после возврата из AdioPlayerFragment
-        if (!isHistoryLoaded) {
+        // загружаем историю из префов если экран первый раз запущен - иначе восстанавливаем поиск из сети
+        viewModel.getCurrentState()?.let { state ->
+            render(state)
+        } ?: run {
+            // Если состояния нет - загружаем историю
             viewModel.loadHistory()
-            isHistoryLoaded = true
         }
-
-
-
 
 
         // Cлушатель TextWatcher (изменения текста) в едиттексте
@@ -93,7 +111,6 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
 
         binding.tracksHistoryClearButton.setOnClickListener {
             viewModel.clearHistory()
-
         }
 
 
@@ -108,37 +125,18 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
     }
 
 
-    override fun onItemClick(
-        track: Track,
-        trackFromHistory: Boolean
-    )  {
-
-        if (clickDebounce()) {
-
-            findNavController().navigate(
-                R.id.action_searchFragment_to_audioPlayerFragment,
-                AudioPlayerFragment.createArgs(track)
-            )
-        }
-
-        if (trackFromHistory) return
-        viewModel.addTrackToHistory(track)
-    }
-
     // отмена случайного двойного нажатия
     private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-
+        return if (isClickAllowed.getAndSet(false)) {
             lifecycleScope.launch {
                 delay(CLICK_DEBOUNCE_DELAY)
-                isClickAllowed = true
+                isClickAllowed.set(true)
             }
+            true
+        } else {
+            false
         }
-        return current
     }
-
 
 
 
@@ -156,8 +154,6 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
             viewModel.searchDebounce(newText = searchText)
 
 
-
-
             if (searchText.isEmpty()) {
                 viewModel.loadHistory()
             }
@@ -165,11 +161,9 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
     }
 
 
-
-
     private fun hideKeyboard() {
         val inputMethodManager =
-            requireActivity().getSystemService(INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         val view = requireActivity().currentFocus
         if (view != null) {
             inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
@@ -199,9 +193,9 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
             progressBar.visibility = View.GONE
         }
 
-        adapter.tracks.clear()
-        adapter.tracks.addAll(tracks)
-        adapter.notifyDataSetChanged()
+        iTunesAdapter.tracks.clear()
+        iTunesAdapter.tracks.addAll(tracks)
+        iTunesAdapter.notifyDataSetChanged()
     }
 
     private fun showEmpty(emptyMessage: String) {
@@ -240,9 +234,9 @@ class SearchFragment: Fragment(), SearchAdapter.OnItemClickListener {
     private fun showHistory(historyTracks: List<Track>) {
         if (historyTracks.isNotEmpty()) {
             binding.layoutForHistoryTracks.visibility = View.VISIBLE
-            adapterForHistoryTracks.tracks.clear()
-            adapterForHistoryTracks.tracks.addAll(historyTracks)
-            adapterForHistoryTracks.notifyDataSetChanged()
+            prefsHistoryAdapter.tracks.clear()
+            prefsHistoryAdapter.tracks.addAll(historyTracks)
+            prefsHistoryAdapter.notifyDataSetChanged()
         } else {
             binding.layoutForHistoryTracks.visibility = View.GONE
         }

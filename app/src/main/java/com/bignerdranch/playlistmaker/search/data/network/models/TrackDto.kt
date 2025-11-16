@@ -1,6 +1,6 @@
-package com.bignerdranch.playlistmaker.search.domain.models
+package com.bignerdranch.playlistmaker.search.data.network.models
 
-data class Track (
+data class TrackDto(
     val trackName: String,
     val artistName: String,
     val trackTimeMillis: Int,
@@ -11,4 +11,7 @@ data class Track (
     val releaseDate: String,
     val primaryGenreName: String,
     val country: String,
-    val previewUrl: String)
+
+    val previewUrl: String
+){
+}

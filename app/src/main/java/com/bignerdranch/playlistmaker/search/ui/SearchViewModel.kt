@@ -1,15 +1,13 @@
-package com.bignerdranch.playlistmaker.search.ui.presentation
+package com.bignerdranch.playlistmaker.search.ui
 
-import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bignerdranch.playlistmaker.search.ui.models.TrackState
-import com.bignerdranch.playlistmaker.search.domain.api.TrackInteractor
-import com.bignerdranch.playlistmaker.search.domain.models.Track
-import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryInteractor
+import com.bignerdranch.playlistmaker.search.domain.prefs_storage.SearchHistoryInteractor
+import com.bignerdranch.playlistmaker.search.domain.network.TrackInteractor
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,7 +16,6 @@ class SearchViewModel(
     private val trackInteractor: TrackInteractor,
     private val historyTrackInteractor: SearchHistoryInteractor
 ) : ViewModel() {
-
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
@@ -29,8 +26,9 @@ class SearchViewModel(
     private val stateLiveData = MutableLiveData<TrackState>()
     fun observerState(): LiveData<TrackState> = stateLiveData
 
+    // метод для получения текущего состояния
+    fun getCurrentState(): TrackState? = stateLiveData.value
 
-    private val tracks = ArrayList<Track>()
     private var lastSearchText: String = ""
 
 
@@ -44,7 +42,9 @@ class SearchViewModel(
             return
         }
 
-        if (lastSearchText != newText || forceUpdate) {    // костыли чтобы не происходил повторный запрос после возврата из AdioPlayerFragment + запрос при нажатии кнопки "обновить"
+        // костыли чтобы не происходил повторный запрос после возврата из AdioPlayerFragment
+        // + запрос при нажатии кнопки "обновить"
+        if (lastSearchText != newText || forceUpdate) {
 
             lastSearchText = newText
             searchJob = viewModelScope.launch {
@@ -110,9 +110,7 @@ class SearchViewModel(
         historyTrackInteractor.getHistory(
             object : SearchHistoryInteractor.HistoryConsumer {
                 override fun consume(searchHistory: List<Track>?) {
-                    tracks.clear()
-                    tracks.addAll(searchHistory ?: emptyList())
-                    renderState(TrackState.History(tracks))
+                    renderState(TrackState.History(searchHistory?: emptyList()))
                 }
 
             }

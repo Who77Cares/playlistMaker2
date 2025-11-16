@@ -17,7 +17,7 @@ import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
 import com.bignerdranch.playlistmaker.audio.ui.presentation.AudioPlayerViewModel
 import com.bignerdranch.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior

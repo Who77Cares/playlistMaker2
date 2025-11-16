@@ -1,6 +1,6 @@
-package com.bignerdranch.playlistmaker.search.ui.models
+package com.bignerdranch.playlistmaker.search.ui
 
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 
 sealed interface TrackState {
 

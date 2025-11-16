@@ -1,7 +1,6 @@
-package com.bignerdranch.playlistmaker.search.domain.api
+package com.bignerdranch.playlistmaker.search.domain.network
 
 import com.bignerdranch.playlistmaker.util.Resource
-import com.bignerdranch.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 interface TrackRepository {

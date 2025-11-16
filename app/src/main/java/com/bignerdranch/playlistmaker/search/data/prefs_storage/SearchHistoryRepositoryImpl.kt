@@ -1,9 +1,8 @@
-package com.bignerdranch.playlistmaker.search.data.repositoryImpl
+package com.bignerdranch.playlistmaker.search.data.prefs_storage
 
 import com.bignerdranch.playlistmaker.util.Resource
-import com.bignerdranch.playlistmaker.search.data.client.StorageClient
-import com.bignerdranch.playlistmaker.search.domain.api.SearchHistoryRepository
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.prefs_storage.SearchHistoryRepository
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 
 class SearchHistoryRepositoryImpl(
     private val storage: StorageClient<ArrayList<Track>>

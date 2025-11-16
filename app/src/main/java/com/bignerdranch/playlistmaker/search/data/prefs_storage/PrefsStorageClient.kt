@@ -1,8 +1,7 @@
-package com.bignerdranch.playlistmaker.search.data.storage
+package com.bignerdranch.playlistmaker.search.data.prefs_storage
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.bignerdranch.playlistmaker.search.data.client.StorageClient
 import com.google.gson.Gson
 import java.lang.reflect.Type
 
