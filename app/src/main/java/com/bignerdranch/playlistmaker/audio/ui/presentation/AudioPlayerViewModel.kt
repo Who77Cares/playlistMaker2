@@ -53,6 +53,8 @@ class AudioPlayerViewModel(
     private val _addTrackState = MutableStateFlow<Boolean?>(null)
     val addTrackState: StateFlow<Boolean?> = _addTrackState.asStateFlow()
 
+    private var currentTrack: Track? = null
+
 
 
     override fun onCleared() {
@@ -61,6 +63,14 @@ class AudioPlayerViewModel(
     }
 
     fun setTrack(track: Track) {
+
+        // заглушка для убирания краша когда возвращаемся из экрана нового плейлиста
+        if (currentTrack?.trackId == track.trackId) {
+            return
+        }
+        currentTrack = track
+
+
 
         val uiModel = mapper.mapToAudioModel(track)
 
@@ -80,16 +90,19 @@ class AudioPlayerViewModel(
     }
 
     private fun preparePlayer() {
-            mediaPlayer.setDataSource(previewUrl)
-            mediaPlayer.prepareAsync()
-            mediaPlayer.setOnPreparedListener {
-                playerStateLiveData.postValue(PlayerState.Prepared())
-            }
 
-            mediaPlayer.setOnCompletionListener {
-                mediaPlayer.seekTo(0)
-                playerStateLiveData.postValue(PlayerState.Prepared())
-            }
+
+
+        mediaPlayer.setDataSource(previewUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playerStateLiveData.postValue(PlayerState.Prepared())
+        }
+
+        mediaPlayer.setOnCompletionListener {
+            mediaPlayer.seekTo(0)
+            playerStateLiveData.postValue(PlayerState.Prepared())
+        }
     }
 
 

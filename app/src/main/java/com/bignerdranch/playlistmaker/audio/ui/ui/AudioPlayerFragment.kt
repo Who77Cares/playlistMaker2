@@ -119,14 +119,13 @@ class AudioPlayerFragment(): Fragment() {
 
 
 
-        viewModel.observePlayerState().observe(viewLifecycleOwner) {
-            binding.PlayOrStopButton.isEnabled = it.isPlayButtonEnabled
-            binding.durationInRealTime.text = it.progress
+        viewModel.observePlayerState().observe(viewLifecycleOwner) {state ->
+            binding.PlayOrStopButton.isEnabled = state.isPlayButtonEnabled
+            binding.durationInRealTime.text = state.progress
 
-            binding.PlayOrStopButton.setImageResource(
-                if (it is PlayerState.Playing) R.drawable.pause_icon
-                else R.drawable.play_arrow_icon
-            )
+
+            val isPlaying = state is PlayerState.Playing
+            binding.PlayOrStopButton.setPlaybackState(isPlaying)
         }
 
         viewModel.isFavoriteLiveData.observe(viewLifecycleOwner) { isFavorite ->
@@ -136,7 +135,8 @@ class AudioPlayerFragment(): Fragment() {
             )
         }
 
-        binding.PlayOrStopButton.setOnClickListener {
+        binding.PlayOrStopButton.onPlaybackStateChanged = { shouldPlay ->
+            // shouldPlay = true когда нужно играть, false когда нужно пауза
             viewModel.onPlayButtonClicked()
         }
 
