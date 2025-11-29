@@ -1,7 +1,7 @@
 package com.bignerdranch.playlistmaker.media.db_favorite.domain
 
 import com.bignerdranch.playlistmaker.media.db_favorite.data.FavoriteTrackRepository
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import kotlinx.coroutines.flow.Flow
 
 class FavoriteTrackInteractorImpl(

@@ -1,7 +1,6 @@
 package com.bignerdranch.playlistmaker.search.data.network
 
-import com.bignerdranch.playlistmaker.search.data.models.TrackResponse
-import retrofit2.Call
+import com.bignerdranch.playlistmaker.search.data.network.models.TrackResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

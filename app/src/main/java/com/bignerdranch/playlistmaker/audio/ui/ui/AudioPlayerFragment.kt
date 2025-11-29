@@ -17,7 +17,7 @@ import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
 import com.bignerdranch.playlistmaker.audio.ui.presentation.AudioPlayerViewModel
 import com.bignerdranch.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -119,14 +119,13 @@ class AudioPlayerFragment(): Fragment() {
 
 
 
-        viewModel.observePlayerState().observe(viewLifecycleOwner) {
-            binding.PlayOrStopButton.isEnabled = it.isPlayButtonEnabled
-            binding.durationInRealTime.text = it.progress
+        viewModel.observePlayerState().observe(viewLifecycleOwner) {state ->
+            binding.PlayOrStopButton.isEnabled = state.isPlayButtonEnabled
+            binding.durationInRealTime.text = state.progress
 
-            binding.PlayOrStopButton.setImageResource(
-                if (it is PlayerState.Playing) R.drawable.pause_icon
-                else R.drawable.play_arrow_icon
-            )
+
+            val isPlaying = state is PlayerState.Playing
+            binding.PlayOrStopButton.setPlaybackState(isPlaying)
         }
 
         viewModel.isFavoriteLiveData.observe(viewLifecycleOwner) { isFavorite ->
@@ -136,7 +135,8 @@ class AudioPlayerFragment(): Fragment() {
             )
         }
 
-        binding.PlayOrStopButton.setOnClickListener {
+        binding.PlayOrStopButton.onPlaybackStateChanged = { shouldPlay ->
+            // shouldPlay = true когда нужно играть, false когда нужно пауза
             viewModel.onPlayButtonClicked()
         }
 

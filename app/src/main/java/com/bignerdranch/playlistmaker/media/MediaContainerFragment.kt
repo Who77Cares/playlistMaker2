@@ -29,7 +29,7 @@ class MediaContainerFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.viewPager.adapter = MediaViewPagerAdapter(childFragmentManager, lifecycle)
+        binding.viewPager.adapter = MediaViewPagerAdapter(this)
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when (position) {
@@ -47,9 +47,5 @@ class MediaContainerFragment: Fragment() {
         _binding = null
 
     }
-
-
-
-
 
 }

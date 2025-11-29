@@ -12,7 +12,7 @@ import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
 import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteTrackInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,6 +53,8 @@ class AudioPlayerViewModel(
     private val _addTrackState = MutableStateFlow<Boolean?>(null)
     val addTrackState: StateFlow<Boolean?> = _addTrackState.asStateFlow()
 
+    private var currentTrack: Track? = null
+
 
 
     override fun onCleared() {
@@ -61,6 +63,14 @@ class AudioPlayerViewModel(
     }
 
     fun setTrack(track: Track) {
+
+        // заглушка для убирания краша когда возвращаемся из экрана нового плейлиста
+        if (currentTrack?.trackId == track.trackId) {
+            return
+        }
+        currentTrack = track
+
+
 
         val uiModel = mapper.mapToAudioModel(track)
 
@@ -80,16 +90,19 @@ class AudioPlayerViewModel(
     }
 
     private fun preparePlayer() {
-            mediaPlayer.setDataSource(previewUrl)
-            mediaPlayer.prepareAsync()
-            mediaPlayer.setOnPreparedListener {
-                playerStateLiveData.postValue(PlayerState.Prepared())
-            }
 
-            mediaPlayer.setOnCompletionListener {
-                mediaPlayer.seekTo(0)
-                playerStateLiveData.postValue(PlayerState.Prepared())
-            }
+
+
+        mediaPlayer.setDataSource(previewUrl)
+        mediaPlayer.prepareAsync()
+        mediaPlayer.setOnPreparedListener {
+            playerStateLiveData.postValue(PlayerState.Prepared())
+        }
+
+        mediaPlayer.setOnCompletionListener {
+            mediaPlayer.seekTo(0)
+            playerStateLiveData.postValue(PlayerState.Prepared())
+        }
     }
 
 

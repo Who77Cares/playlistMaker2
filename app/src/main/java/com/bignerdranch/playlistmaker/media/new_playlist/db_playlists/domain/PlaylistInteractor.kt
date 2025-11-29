@@ -1,7 +1,7 @@
 package com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain
 
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.PlaylistEntity
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistInteractor {

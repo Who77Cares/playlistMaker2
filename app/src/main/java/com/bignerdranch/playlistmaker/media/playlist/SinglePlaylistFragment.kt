@@ -22,7 +22,7 @@ import com.bignerdranch.playlistmaker.databinding.FragmentPlaylistSingleBinding
 import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteAdapter
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bignerdranch.playlistmaker.media.new_playlist.ui.NewPlaylistFragment
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder

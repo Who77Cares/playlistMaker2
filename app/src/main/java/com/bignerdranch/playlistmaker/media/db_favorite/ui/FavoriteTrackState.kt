@@ -1,6 +1,6 @@
 package com.bignerdranch.playlistmaker.media.db_favorite.ui
 
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 
 sealed interface FavoriteTrackState {
 

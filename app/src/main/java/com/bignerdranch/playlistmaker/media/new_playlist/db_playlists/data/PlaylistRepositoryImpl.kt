@@ -5,7 +5,7 @@ import com.bignerdranch.playlistmaker.media.new_playlist.PlaylistMapper
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.many_to_many.PlaylistTrackCrossEntity
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.many_to_many.TrackToPlaylistEntity
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
-import com.bignerdranch.playlistmaker.search.domain.models.Track
+import com.bignerdranch.playlistmaker.search.domain.network.Track
 import com.bignerdranch.playlistmaker.util.AppDatabase
 import com.bignerdranch.playlistmaker.util.TrackMapper
 import kotlinx.coroutines.Dispatchers
