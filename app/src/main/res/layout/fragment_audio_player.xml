@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
 <androidx.constraintlayout.widget.ConstraintLayout
-    tools:context=".audio.ui.ui.AudioPlayerFragment"
+    tools:context=".audio.ui.AudioPlayerFragment"
 
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -90,7 +90,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/PlayOrStopButton"
         app:layout_constraintTop_toTopOf="@+id/PlayOrStopButton" />
 
-    <com.bignerdranch.playlistmaker.audio.ui.ui.PlaybackButtonView
+    <com.bignerdranch.playlistmaker.audio.ui.PlaybackButtonView
         android:id="@+id/PlayOrStopButton"
         android:layout_width="0dp"
         android:layout_height="0dp"

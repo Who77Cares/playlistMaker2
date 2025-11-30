@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.audio.ui.models
+package com.bignerdranch.playlistmaker.audio.models
 
 sealed class PlayerState(
     val isPlayButtonEnabled: Boolean,

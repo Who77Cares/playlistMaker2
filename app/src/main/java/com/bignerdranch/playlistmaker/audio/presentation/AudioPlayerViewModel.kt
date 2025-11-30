@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.audio.ui.presentation
+package com.bignerdranch.playlistmaker.audio.presentation
 
 import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.playlistmaker.util.TrackMapper
-import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
-import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
+import com.bignerdranch.playlistmaker.audio.models.PlayerState
+import com.bignerdranch.playlistmaker.audio.models.TrackAudioModel
 import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteTrackInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel

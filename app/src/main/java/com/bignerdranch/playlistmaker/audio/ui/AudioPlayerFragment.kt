@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.audio.ui.ui
+package com.bignerdranch.playlistmaker.audio.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.util.TrackMapper
-import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
-import com.bignerdranch.playlistmaker.audio.ui.presentation.AudioPlayerViewModel
+import com.bignerdranch.playlistmaker.audio.models.PlayerState
+import com.bignerdranch.playlistmaker.audio.presentation.AudioPlayerViewModel
 import com.bignerdranch.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bignerdranch.playlistmaker.search.domain.network.Track

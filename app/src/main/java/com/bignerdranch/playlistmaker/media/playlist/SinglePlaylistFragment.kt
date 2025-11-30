@@ -1,7 +1,6 @@
 package com.bignerdranch.playlistmaker.media.playlist
 
 import android.content.res.Resources
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.playlistmaker.R
-import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment
+import com.bignerdranch.playlistmaker.audio.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentPlaylistSingleBinding
 import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteAdapter
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel

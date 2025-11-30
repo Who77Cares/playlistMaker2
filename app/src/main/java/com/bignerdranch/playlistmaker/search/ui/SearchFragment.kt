@@ -13,10 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
-import com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment
+import com.bignerdranch.playlistmaker.audio.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentSearchBinding
 import com.bignerdranch.playlistmaker.search.domain.network.Track
-import com.bignerdranch.playlistmaker.search.ui.SearchAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel

@@ -1,6 +1,6 @@
 package com.bignerdranch.playlistmaker.util
 
-import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
+import com.bignerdranch.playlistmaker.audio.models.TrackAudioModel
 import com.bignerdranch.playlistmaker.media.db_favorite.data.FavoriteTrackEntity
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.data.many_to_many.TrackToPlaylistEntity
 import com.bignerdranch.playlistmaker.search.domain.network.Track

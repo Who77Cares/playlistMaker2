@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.audio.ui.models
+package com.bignerdranch.playlistmaker.audio.models
 
 // берем за основу для Entity
 data class TrackAudioModel(

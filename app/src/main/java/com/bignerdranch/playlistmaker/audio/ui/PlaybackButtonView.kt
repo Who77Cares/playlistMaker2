@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.audio.ui.ui
+package com.bignerdranch.playlistmaker.audio.ui
 
 import android.content.Context
 import android.graphics.Bitmap

@@ -63,7 +63,7 @@
 
     <fragment
         android:id="@+id/audioPlayerFragment"
-        android:name="com.bignerdranch.playlistmaker.audio.ui.ui.AudioPlayerFragment"
+        android:name="com.bignerdranch.playlistmaker.audio.ui.AudioPlayerFragment"
         android:label="fragment_audio_player"
         tools:layout="@layout/fragment_audio_player">
 
