@@ -103,6 +103,7 @@ class AudioPlayerFragment(): Fragment() {
             service: IBinder?
         ) {
             val binder = service as AudioService.AudioServiceBinder
+
             viewModel.setAudioPlayerControl(binder.getService())
 
         }
@@ -241,10 +242,24 @@ class AudioPlayerFragment(): Fragment() {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        // Устанавливаем флаг что приложение уходит в фон через ViewModel
+        viewModel.setAppInBackground(true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Устанавливаем флаг что приложение возвращается через ViewModel
+        viewModel.setAppInBackground(false)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
         lastClickedPlaylist = null
+        // Сбрасываем флаг через ViewModel
+        viewModel.setAppInBackground(false)
         unbindMusicService()
     }
 
@@ -290,6 +305,7 @@ class AudioPlayerFragment(): Fragment() {
         )
             .apply {
                 putExtra("song_url", track.previewUrl)
+                putExtra("song_info", "${track.artistName} - ${track.trackName}")
             }
 
         requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)

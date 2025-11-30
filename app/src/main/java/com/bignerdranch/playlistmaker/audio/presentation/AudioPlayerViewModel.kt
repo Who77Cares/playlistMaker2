@@ -1,7 +1,6 @@
 package com.bignerdranch.playlistmaker.audio.presentation
 
-import android.media.MediaPlayer
-import android.util.Log
+
 import androidx.lifecycle.LiveData
 
 import androidx.lifecycle.MutableLiveData
@@ -10,12 +9,13 @@ import androidx.lifecycle.viewModelScope
 import com.bignerdranch.playlistmaker.util.TrackMapper
 import com.bignerdranch.playlistmaker.audio.models.PlayerState
 import com.bignerdranch.playlistmaker.audio.models.TrackAudioModel
+import com.bignerdranch.playlistmaker.audio.service.AudioService
 import com.bignerdranch.playlistmaker.audio.service.AudioServiceControl
 import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteTrackInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bignerdranch.playlistmaker.search.domain.network.Track
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,6 +28,8 @@ class AudioPlayerViewModel(
 ) : ViewModel() {
 
     private var audioServiceControl: AudioServiceControl? = null
+
+    private var playerStateJob: Job? = null
 
 
     // состояние плеера
@@ -55,6 +57,9 @@ class AudioPlayerViewModel(
 
     private var currentTrack: Track? = null
 
+    fun setAppInBackground(isBackground: Boolean) {
+        (audioServiceControl as? AudioService)?.setAppInBackground(isBackground)
+    }
 
     fun setTrack(track: Track) {
         // заглушка для убирания краша когда возвращаемся из экрана нового плейлиста
@@ -72,9 +77,13 @@ class AudioPlayerViewModel(
     fun setAudioPlayerControl(audioServiceControl: AudioServiceControl) {
         this.audioServiceControl = audioServiceControl
 
-        viewModelScope.launch {
-            audioServiceControl.playerState.collect {
-                playerState.postValue(it)
+        // Отменяем предыдущую корутину, если она была
+        playerStateJob?.cancel()
+
+        // Запускаем новую корутину и сохраняем её Job
+        playerStateJob = viewModelScope.launch {
+            audioServiceControl.playerState.collect { state ->
+                playerState.postValue(state)
             }
         }
     }
@@ -90,11 +99,13 @@ class AudioPlayerViewModel(
 
     fun removeAudioPlayerControl() {
         audioServiceControl = null
+        playerStateJob?.cancel()
     }
 
     override fun onCleared() {
         super.onCleared()
         audioServiceControl = null
+        playerStateJob?.cancel()
     }
 
 
