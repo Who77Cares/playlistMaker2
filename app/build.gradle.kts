@@ -89,4 +89,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview:1.6.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
 
+    implementation("io.insert-koin:koin-androidx-compose:3.5.0")
+
 }

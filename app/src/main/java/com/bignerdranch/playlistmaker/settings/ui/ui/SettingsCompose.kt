@@ -2,6 +2,7 @@ package com.bignerdranch.playlistmaker.settings.ui.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,8 @@ import androidx.compose.ui.res.dimensionResource
 import com.bignerdranch.playlistmaker.R
 
 import androidx.compose.material.Text
+import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -33,15 +36,18 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun SettingsCompose(
-    viewModel: SettingsViewModel,
+
     onShareClicked: () -> Unit,
     onSupportClicked: () -> Unit,
     onTermsClicked: () -> Unit
 ) {
+
+    val viewModel: SettingsViewModel = koinViewModel()
     // Просто наблюдаем за состоянием темы
     val isDarkTheme by viewModel.observeTheme().observeAsState(initial = false)
 
@@ -82,7 +88,7 @@ fun SettingsCompose(
       SimpleSettingsItem(
           text = stringResource(id = R.string.share_with_app),
           icon = ImageVector.vectorResource(id = R.drawable.share),
-          onClick = onShareClicked
+          onIconClick = onShareClicked
       )
 
       Spacer(modifier = Modifier.height(12.dp))
@@ -91,7 +97,7 @@ fun SettingsCompose(
       SimpleSettingsItem(
           text = stringResource(id = R.string.support),
           icon = ImageVector.vectorResource(id = R.drawable.support),
-          onClick = onSupportClicked
+          onIconClick = onSupportClicked
       )
 
       Spacer(modifier = Modifier.height(12.dp))
@@ -100,7 +106,7 @@ fun SettingsCompose(
       SimpleSettingsItem(
           text = stringResource(id = R.string.user_agreement),
           icon = ImageVector.vectorResource(id = R.drawable.arrow_forward),
-          onClick = onTermsClicked
+          onIconClick = onTermsClicked
       )
   }
 }
@@ -148,13 +154,12 @@ private fun SwitchSettingsItem(
 private fun SimpleSettingsItem(
     text: String,
     icon: ImageVector,
-    onClick: () -> Unit,
+    onIconClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp)
-            .clickable(onClick = onClick),
+            .height(48.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -169,7 +174,13 @@ private fun SimpleSettingsItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = colorResource(id = R.color.color_AEAFB4_FFFFFFFF)
+            tint = colorResource(id = R.color.color_AEAFB4_FFFFFFFF),
+            modifier = Modifier
+                .clickable(
+                    onClick = onIconClick,
+                    indication = rememberRipple(bounded = true), // эффект пульсации
+                    interactionSource = remember { MutableInteractionSource() }
+                )
         )
     }
 

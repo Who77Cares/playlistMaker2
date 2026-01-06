@@ -26,7 +26,6 @@ class SettingsFragment: Fragment() {
 
             setContent {
                 SettingsCompose(
-                    viewModel = viewModel,
                     onShareClicked = {
                         viewModel.shareApp()
                     },
