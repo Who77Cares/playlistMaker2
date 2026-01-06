@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
 <androidx.constraintlayout.widget.ConstraintLayout
-    tools:context=".audio.ui.ui.AudioPlayerFragment"
+    tools:context=".audio.ui.AudioPlayerFragment"
 
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -84,14 +84,14 @@
 
         android:src="@drawable/add_to_play_list_icon"
 
-        app:layout_constraintEnd_toStartOf="@+id/PlayOrStopButton"
+        app:layout_constraintEnd_toStartOf="@+id/play_button"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/PlayOrStopButton"
-        app:layout_constraintTop_toTopOf="@+id/PlayOrStopButton" />
+        app:layout_constraintBottom_toBottomOf="@+id/play_button"
+        app:layout_constraintTop_toTopOf="@+id/play_button" />
 
-    <com.bignerdranch.playlistmaker.audio.ui.ui.PlaybackButtonView
-        android:id="@+id/PlayOrStopButton"
+    <com.bignerdranch.playlistmaker.audio.ui.PlaybackButtonView
+        android:id="@+id/play_button"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintWidth_percent="0.25"
@@ -119,10 +119,10 @@
         android:padding="15dp"
         android:scaleType="centerCrop"
 
-        app:layout_constraintBottom_toBottomOf="@+id/PlayOrStopButton"
+        app:layout_constraintBottom_toBottomOf="@+id/play_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/PlayOrStopButton"
-        app:layout_constraintTop_toTopOf="@+id/PlayOrStopButton"/>
+        app:layout_constraintStart_toEndOf="@+id/play_button"
+        app:layout_constraintTop_toTopOf="@+id/play_button"/>
 
 
     <!-- Время проигрыша трека -->
@@ -133,9 +133,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen12"
         android:text="00:00"
-        app:layout_constraintTop_toBottomOf="@+id/PlayOrStopButton"
-        app:layout_constraintStart_toStartOf="@+id/PlayOrStopButton"
-        app:layout_constraintEnd_toEndOf="@+id/PlayOrStopButton" />
+        app:layout_constraintTop_toBottomOf="@+id/play_button"
+        app:layout_constraintStart_toStartOf="@+id/play_button"
+        app:layout_constraintEnd_toEndOf="@+id/play_button" />
 
     <!-- Длительность -->
     <TextView

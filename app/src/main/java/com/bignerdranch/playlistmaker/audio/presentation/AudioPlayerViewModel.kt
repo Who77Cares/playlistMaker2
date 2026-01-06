@@ -1,51 +1,52 @@
-package com.bignerdranch.playlistmaker.audio.ui.presentation
+package com.bignerdranch.playlistmaker.audio.presentation
 
-import android.media.MediaPlayer
+
 import androidx.lifecycle.LiveData
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.playlistmaker.util.TrackMapper
-import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
-import com.bignerdranch.playlistmaker.audio.ui.models.TrackAudioModel
+import com.bignerdranch.playlistmaker.audio.models.PlayerState
+import com.bignerdranch.playlistmaker.audio.models.TrackAudioModel
+import com.bignerdranch.playlistmaker.audio.service.AudioService
+import com.bignerdranch.playlistmaker.audio.service.AudioServiceControl
 import com.bignerdranch.playlistmaker.media.db_favorite.domain.FavoriteTrackInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistInteractor
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bignerdranch.playlistmaker.search.domain.network.Track
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
 
 class AudioPlayerViewModel(
     private val mapper: TrackMapper,
-    private val mediaPlayer: MediaPlayer,
     private val favoriteTrackInteractor: FavoriteTrackInteractor,
     private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
+    private var audioServiceControl: AudioServiceControl? = null
 
-    private var previewUrl: String = ""
-    private var timerJob: Job? = null
+    private var playerStateJob: Job? = null
 
-    private val timeFormatter = SimpleDateFormat("mm:ss", Locale.getDefault()).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
-    }
 
-    private val playerStateLiveData = MutableLiveData<PlayerState>(PlayerState.Default())
-    fun observePlayerState(): LiveData<PlayerState> = playerStateLiveData
+    // состояние плеера
+    private val playerState = MutableLiveData<PlayerState>(PlayerState.Default())
+    fun observePlayerState(): LiveData<PlayerState> = playerState
 
+
+    // данные для трека
     private val trackAudioModel = MutableLiveData<TrackAudioModel>()
     fun observeTrackUiModel(): LiveData<TrackAudioModel> = trackAudioModel
 
+
+
     private val _isFavoriteLiveData = MutableLiveData<Boolean>()
     val isFavoriteLiveData: LiveData<Boolean> = _isFavoriteLiveData
+
+
 
     private val playlistDataFromRoom = MutableLiveData<List<PlaylistModel>>()
     fun observePlaylistData(): LiveData<List<PlaylistModel>> = playlistDataFromRoom
@@ -53,97 +54,61 @@ class AudioPlayerViewModel(
     private val _addTrackState = MutableStateFlow<Boolean?>(null)
     val addTrackState: StateFlow<Boolean?> = _addTrackState.asStateFlow()
 
+
     private var currentTrack: Track? = null
 
-
-
-    override fun onCleared() {
-        super.onCleared()
-        resetTimer()
+    fun setAppInBackground(isBackground: Boolean) {
+        (audioServiceControl as? AudioService)?.setAppInBackground(isBackground)
     }
 
     fun setTrack(track: Track) {
-
         // заглушка для убирания краша когда возвращаемся из экрана нового плейлиста
         if (currentTrack?.trackId == track.trackId) {
             return
         }
         currentTrack = track
 
-
-
-        val uiModel = mapper.mapToAudioModel(track)
-
-        trackAudioModel.value = uiModel
-        previewUrl = track.previewUrl
+        trackAudioModel.value = mapper.mapToAudioModel(track)
 
         checkIfFavorite(track.trackId.toLong())
-        preparePlayer()
-    }
-
-    fun onPlayButtonClicked() {
-        when(playerStateLiveData.value) {
-            is PlayerState.Playing -> pausePlayer()
-            is PlayerState.Prepared, is PlayerState.Paused -> startPlayer()
-            else -> { }
-        }
-    }
-
-    private fun preparePlayer() {
-
-
-
-        mediaPlayer.setDataSource(previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playerStateLiveData.postValue(PlayerState.Prepared())
-        }
-
-        mediaPlayer.setOnCompletionListener {
-            mediaPlayer.seekTo(0)
-            playerStateLiveData.postValue(PlayerState.Prepared())
-        }
     }
 
 
+    fun setAudioPlayerControl(audioServiceControl: AudioServiceControl) {
+        this.audioServiceControl = audioServiceControl
 
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playerStateLiveData.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
-        startTimer()
-    }
+        // Отменяем предыдущую корутину, если она была
+        playerStateJob?.cancel()
 
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        timerJob?.cancel()
-        playerStateLiveData.postValue(PlayerState.Paused(getCurrentPlayerPosition()))
-    }
-
-
-    private fun resetTimer() {
-        mediaPlayer.stop()
-        mediaPlayer.release()
-        playerStateLiveData.value = PlayerState.Default()
-    }
-
-    // пауза при соврачивания приложения
-    fun onPause() {
-        pausePlayer()
-    }
-
-    private fun startTimer() {
-        timerJob = viewModelScope.launch {
-            while (mediaPlayer.isPlaying) {
-                playerStateLiveData.postValue(PlayerState.Playing(getCurrentPlayerPosition()))
-                val pos = mediaPlayer.currentPosition
-                delay(1000L - (pos % 1000L)) // синхронизация на каждую секунду
+        // Запускаем новую корутину и сохраняем её Job
+        playerStateJob = viewModelScope.launch {
+            audioServiceControl.playerState.collect { state ->
+                playerState.postValue(state)
             }
         }
     }
 
-    private fun getCurrentPlayerPosition(): String {
-        return timeFormatter.format(mediaPlayer.currentPosition.toLong())
+    fun onPlayerButtonClicked() {
+
+        if (playerState.value is PlayerState.Playing) {
+            audioServiceControl?.pausePlayer()
+        } else {
+            audioServiceControl?.startPlayer()
+        }
     }
+
+    fun removeAudioPlayerControl() {
+        audioServiceControl = null
+        playerStateJob?.cancel()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        audioServiceControl = null
+        playerStateJob?.cancel()
+    }
+
+
 
 
     // проверка да добавленность в избранное чтобы сразу отобразить нужную иконку
@@ -191,4 +156,3 @@ class AudioPlayerViewModel(
     }
 
 }
-

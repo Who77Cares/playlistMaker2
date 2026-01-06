@@ -1,20 +1,31 @@
-package com.bignerdranch.playlistmaker.audio.ui.ui
+package com.bignerdranch.playlistmaker.audio.ui
 
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.util.TrackMapper
-import com.bignerdranch.playlistmaker.audio.ui.models.PlayerState
-import com.bignerdranch.playlistmaker.audio.ui.presentation.AudioPlayerViewModel
+import com.bignerdranch.playlistmaker.audio.models.PlayerState
+import com.bignerdranch.playlistmaker.audio.presentation.AudioPlayerViewModel
+import com.bignerdranch.playlistmaker.audio.service.AudioService
 import com.bignerdranch.playlistmaker.databinding.FragmentAudioPlayerBinding
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bignerdranch.playlistmaker.search.domain.network.Track
@@ -27,8 +38,6 @@ import org.koin.android.ext.android.get
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 class AudioPlayerFragment(): Fragment() {
-
-
 
     companion object {
         const val TRACK_NAME = "trackName"
@@ -69,7 +78,43 @@ class AudioPlayerFragment(): Fragment() {
     private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
+
+    // используется только для того чтобы по id находить такой же PlaylistEntity в room
     var lastClickedPlaylist: PlaylistModel? = null
+
+    private val track by lazy { extractTrackFromBundle() }
+
+
+    // для работы Service
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Если выдали разрешение — привязываемся к сервису.
+            bindMusicService()
+        } else {
+            // Иначе просто покажем ошибку
+            Toast.makeText(requireContext(), "Can't bind service!", Toast.LENGTH_LONG).show()
+        }
+    }
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(
+            name: ComponentName?,
+            service: IBinder?
+        ) {
+            val binder = service as AudioService.AudioServiceBinder
+
+            viewModel.setAudioPlayerControl(binder.getService())
+
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            viewModel.removeAudioPlayerControl()
+        }
+
+    }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,10 +125,24 @@ class AudioPlayerFragment(): Fragment() {
         return binding.root
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val track = extractTrackFromBundle()
+        // Устанавливаем трек во ViewModel
+        viewModel.setTrack(track)
+
+        // Прежде чем привязаться к сервису, который будет показывать уведомление
+        // Мы должны проверить, выданы ли соответствующие разрешения
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            // На версиях ниже Android 13 —
+            // можно сразу привязаться к сервису.
+            bindMusicService()
+        }
+
 
         playlistAdapter = PlaylistBottomSheetAdapter(
             playlists = emptyList(),
@@ -92,6 +151,8 @@ class AudioPlayerFragment(): Fragment() {
                 viewModel.addTrackToPlaylist(track, playlistModel)
             }
         )
+
+        setupBottomSheet()
 
         lifecycleScope.launch {
             viewModel.addTrackState.collect { result ->
@@ -107,8 +168,6 @@ class AudioPlayerFragment(): Fragment() {
         }
 
 
-        setupBottomSheet()
-
         // получение данных о плейлистах из room и установка их в адаптер
         viewModel.getPlaylistDataFromRoom()
 
@@ -117,16 +176,18 @@ class AudioPlayerFragment(): Fragment() {
         }
 
 
-
-
-        viewModel.observePlayerState().observe(viewLifecycleOwner) {state ->
-            binding.PlayOrStopButton.isEnabled = state.isPlayButtonEnabled
-            binding.durationInRealTime.text = state.progress
-
-
-            val isPlaying = state is PlayerState.Playing
-            binding.PlayOrStopButton.setPlaybackState(isPlaying)
+        viewModel.observePlayerState().observe(viewLifecycleOwner) {
+            updateButtonAndProgress(it)
         }
+
+
+
+        binding.playButton.onPlaybackStateChanged = { shouldPlay ->
+
+            viewModel.onPlayerButtonClicked()
+        }
+
+
 
         viewModel.isFavoriteLiveData.observe(viewLifecycleOwner) { isFavorite ->
             binding.addToLike.setImageResource(
@@ -135,10 +196,6 @@ class AudioPlayerFragment(): Fragment() {
             )
         }
 
-        binding.PlayOrStopButton.onPlaybackStateChanged = { shouldPlay ->
-            // shouldPlay = true когда нужно играть, false когда нужно пауза
-            viewModel.onPlayButtonClicked()
-        }
 
         viewModel.observeTrackUiModel().observe(viewLifecycleOwner) { model ->
 
@@ -157,9 +214,6 @@ class AudioPlayerFragment(): Fragment() {
                 .placeholder(R.drawable.placeholder)
                 .into(binding.songCover)
         }
-
-        // Устанавливаем трек во ViewModel
-        viewModel.setTrack(track)
 
 
         binding.arrowBack.setOnClickListener {
@@ -188,6 +242,26 @@ class AudioPlayerFragment(): Fragment() {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        // Устанавливаем флаг что приложение уходит в фон через ViewModel
+        viewModel.setAppInBackground(true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Устанавливаем флаг что приложение возвращается через ViewModel
+        viewModel.setAppInBackground(false)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        lastClickedPlaylist = null
+        // Сбрасываем флаг через ViewModel
+        viewModel.setAppInBackground(false)
+        unbindMusicService()
+    }
 
     private fun extractTrackFromBundle(): Track {
         val track = Track(
@@ -207,19 +281,43 @@ class AudioPlayerFragment(): Fragment() {
         return track
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.onPause()
+
+    // методы для работы с воспроизведением и Service
+    private fun updateButtonAndProgress(playerState: PlayerState) {
+
+        binding.playButton.apply {
+            isEnabled = playerState.isPlayButtonEnabled
+        }
+
+        binding.durationInRealTime.text = playerState.progress
+
+        val isPlaying = playerState is PlayerState.Playing
+        binding.playButton.setPlaybackState(isPlaying)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-        lastClickedPlaylist = null
+    private fun bindMusicService() {
 
+        val track = extractTrackFromBundle()
+
+        val intent = Intent(
+            requireContext(),
+            AudioService::class.java
+        )
+            .apply {
+                putExtra("song_url", track.previewUrl)
+                putExtra("song_info", "${track.artistName} - ${track.trackName}")
+            }
+
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindMusicService() {
+        requireContext().unbindService(serviceConnection)
     }
 
 
+
+// Методы для работы с Sheet
     private fun setupBottomSheet() {
 // Создаётся BottomSheetBehavior, «привязанный» к layout bottomSheetPlaylists.
 // По умолчанию лист скрыт (STATE_HIDDEN).
@@ -268,6 +366,7 @@ class AudioPlayerFragment(): Fragment() {
     }
 
 
+    // методы для работы логики, связанной с Room
     private fun showSuccessTrackAddToPlaylist(playlistName: String) {
         MaterialAlertDialogBuilder(requireContext(), R.style.CustomAlertDialogTheme)
             .setTitle("Трек уже в плейлисте $playlistName")

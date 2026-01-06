@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.audio.ui.ui
+package com.bignerdranch.playlistmaker.audio.ui
 
 
 import android.view.LayoutInflater
@@ -9,7 +9,6 @@ import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.databinding.ItemTrackForSheetBinding
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 
 
 class PlaylistBottomSheetAdapter(
