@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -72,7 +73,8 @@ fun FavoriteTracksList(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = dimensionResource(R.dimen.dimen24))
+            .padding(top = dimensionResource(R.dimen.dimen24)),
+
     ) {
         items(tracks) { track ->
             TrackItem(track = track, onClick = { onTrackClicked(track) })
@@ -88,27 +90,27 @@ fun TrackItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
-            .clickable(onClick = onClick ),
+            .wrapContentHeight()
+            .padding(vertical = 4.dp)
+            .clickable(onClick = onClick),
+
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Обложка трека (ImageView artworkUrl100)
+        // Обложка трека
         AsyncImage(
             model = track.artworkUrl100,
             contentDescription = null,
             modifier = Modifier
                 .size(50.dp)
-                .clip(RoundedCornerShape(2.dp))
+                .padding(end = 8.dp)
         )
 
-        // Основной контент (с весом 1)
+        // Основной контент
         Column(
             modifier = Modifier
-                .weight(1f)
-                .padding(start = 8.dp),
-            verticalArrangement = Arrangement.Center
+                .weight(1f),
+            verticalArrangement = Arrangement.Center // Центрируем содержимое
         ) {
-            // Название трека (trackName)
             Text(
                 text = track.trackName,
                 color = colorResource(R.color.colors_FF000000_FFFFFFFF),
@@ -119,12 +121,11 @@ fun TrackItem(
                 overflow = TextOverflow.Ellipsis
             )
 
-            // Строка с исполнителем и временем
+            // Исполнитель и время
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(top = 4.dp)
             ) {
-                // Исполнитель (artistName)
                 Text(
                     text = track.artistName,
                     color = colorResource(R.color.color_AEAFB4_FFFFFFFF),
@@ -134,7 +135,6 @@ fun TrackItem(
                     overflow = TextOverflow.Ellipsis
                 )
 
-                // Точка разделитель
                 Spacer(modifier = Modifier.width(5.dp))
                 Box(
                     modifier = Modifier
@@ -146,23 +146,23 @@ fun TrackItem(
                 )
                 Spacer(modifier = Modifier.width(5.dp))
 
-                // Время трека (trackTime)
                 Text(
-                    text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis),
+                    text = SimpleDateFormat("mm:ss", Locale.getDefault())
+                        .format(track.trackTimeMillis),
                     color = colorResource(R.color.color_AEAFB4_FFFFFFFF),
-                    fontSize = 12.sp, // @dimen/text_group_name_and_duration
+                    fontSize = 12.sp,
                     fontFamily = FontFamily(Font(R.font.ys_display_regular))
                 )
             }
         }
 
-        // Стрелка справа
+        // Стрелка
         Icon(
             painter = painterResource(R.drawable.arrow_forward),
             contentDescription = null,
             tint = colorResource(R.color.color_AEAFB4_FFFFFFFF),
             modifier = Modifier
-                .size(35.dp)
+                .size(30.dp)
                 .padding(start = 8.dp)
         )
     }
