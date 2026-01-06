@@ -11,9 +11,10 @@ import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentMediaBinding
+import com.bignerdranch.playlistmaker.media.playlist.SinglePlaylistFragment
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MediaContainerFragment: Fragment() {
+class MediaContainerFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,15 +37,17 @@ class MediaContainerFragment: Fragment() {
                     onPlaylistClicked = { playlist ->
                         findNavController().navigate(
                             R.id.action_mediaFragment_to_singlePlaylistFragment,
-                            // передайте аргументы плейлиста
+                            SinglePlaylistFragment.Companion.createArgs(playlist)
                         )
                     },
-                    onCreatePlaylistClicked = {
-//                        findNavController().navigate(
-//                            R.id.action_mediaFragment_to_newPlaylistFragment
-//                        )
+
+                    onCreatePlaylistClicked = { // ← теперь есть этот параметр!
+                        findNavController().navigate(
+                            R.id.action_favoriteMediaFragment_to_newPlaylistFragment
+                        )
                     }
-                )
+
+                    )
             }
         }
     }

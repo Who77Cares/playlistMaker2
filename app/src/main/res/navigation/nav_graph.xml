@@ -39,8 +39,7 @@
     <fragment
         android:id="@+id/playlistMediaFragment"
         android:name="com.bignerdranch.playlistmaker.media.playlists.PlaylistFragment"
-        android:label="fragment_playlist_media"
-        tools:layout="@layout/fragment_playlist_media">
+        android:label="fragment_playlist_media">
 
 
     </fragment>

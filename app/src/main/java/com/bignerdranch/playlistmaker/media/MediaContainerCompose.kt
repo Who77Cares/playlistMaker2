@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteTracksCompose
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
+import com.bignerdranch.playlistmaker.media.playlists.PlaylistsCompose
 
 import com.bignerdranch.playlistmaker.search.domain.network.Track
 import kotlinx.coroutines.launch
@@ -36,6 +37,7 @@ fun MediaContainerCompose(
     onTrackClicked: (Track) -> Unit,
     onPlaylistClicked: (PlaylistModel) -> Unit,
     onCreatePlaylistClicked: () -> Unit
+
 ) {
 
     Column(
@@ -153,7 +155,7 @@ fun MediaTabs(
             0 -> FavoriteTracksCompose(onTrackClicked = onTrackClicked)
             1 -> PlaylistsCompose(
                 onPlaylistClicked = onPlaylistClicked,
-                onCreatePlaylistClicked = onCreatePlaylistClicked
+                onCreatePlaylistClicked = onCreatePlaylistClicked,
             )
         }
     }
