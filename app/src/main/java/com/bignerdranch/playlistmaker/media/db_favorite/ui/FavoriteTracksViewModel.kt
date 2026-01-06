@@ -16,27 +16,25 @@ class FavoriteTracksViewModel(
     private val stateLiveData = MutableLiveData<FavoriteTrackState>()
     fun observeState(): LiveData<FavoriteTrackState> = stateLiveData
 
+    init {
+        // Автоматически загружаем при создании ViewModel
+        fillData()
+    }
 
     fun fillData() {
         viewModelScope.launch {
             favoriteTrackInteractor
                 .getAllTrack()
                 .collect { tracks ->
-                    processResult(tracks)
+                    stateLiveData.postValue(
+                        if (tracks.isEmpty()) {
+                            FavoriteTrackState.Empty("empty")
+                        } else {
+                            FavoriteTrackState.Content(tracks)
+                        }
+                    )
                 }
         }
     }
 
-
-    private fun processResult(tracks: List<Track>) {
-        if (tracks.isEmpty()) {
-            renderState(FavoriteTrackState.Empty(message = "!!!!!!"))
-        } else {
-            renderState(FavoriteTrackState.Content(tracks))
-        }
-    }
-
-    private fun renderState(state: FavoriteTrackState) {
-        stateLiveData.postValue(state)
-    }
 }

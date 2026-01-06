@@ -31,8 +31,7 @@
     <fragment
         android:id="@+id/favoriteMediaFragment"
         android:name="com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteTracksFragment"
-        android:label="fragment_favorite_media"
-        tools:layout="@layout/fragment_favorite_media">
+        android:label="fragment_favorite_media">
 
     </fragment>
 

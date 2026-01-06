@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
+import com.bignerdranch.playlistmaker.audio.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentMediaBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -29,7 +30,7 @@ class MediaContainerFragment: Fragment() {
                     onTrackClicked = { track ->
                         findNavController().navigate(
                             R.id.action_mediaFragment_to_audioPlayerFragment,
-                            // передайте аргументы трека
+                            AudioPlayerFragment.Companion.createArgs(track)// передаем аргументы трека
                         )
                     },
                     onPlaylistClicked = { playlist ->

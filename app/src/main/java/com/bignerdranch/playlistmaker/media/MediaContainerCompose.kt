@@ -1,6 +1,5 @@
 package com.bignerdranch.playlistmaker.media
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -27,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bignerdranch.playlistmaker.R
+import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteTracksCompose
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 
 import com.bignerdranch.playlistmaker.search.domain.network.Track
@@ -151,7 +150,7 @@ fun MediaTabs(
         modifier = Modifier.fillMaxSize()
     ) { page ->
         when (page) {
-            0 -> FavoriteTracksCompose( onTrackClicked = onTrackClicked )
+            0 -> FavoriteTracksCompose(onTrackClicked = onTrackClicked)
             1 -> PlaylistsCompose(
                 onPlaylistClicked = onPlaylistClicked,
                 onCreatePlaylistClicked = onCreatePlaylistClicked
