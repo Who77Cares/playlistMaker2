@@ -11,7 +11,7 @@
     <color name="settings_back_icon">#FFFFFFFF</color>
     <color name="settings_add_icons">#FFFFFFFF</color>
 
-    <color name="search_icon_color">#1A1B22</color>
+
 
 
     <color name="search_hint">#1A1B22</color>
@@ -36,5 +36,7 @@
     <color name="color_3772E7">#3772E7</color>
     <color name="colors_FFFFFFFF_1A1B22"> #1A1B22</color>
     <color name="colors_E6E8EB_FFFFFFFF">#FFFFFF</color>
+
+    <color name="colors_AEAFB4_1A1B22">#1A1B22</color>
 
 </resources>
