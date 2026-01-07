@@ -261,6 +261,8 @@ class AudioPlayerFragment(): Fragment() {
         // Сбрасываем флаг через ViewModel
         viewModel.setAppInBackground(false)
         unbindMusicService()
+
+
     }
 
     private fun extractTrackFromBundle(): Track {
@@ -331,6 +333,9 @@ class AudioPlayerFragment(): Fragment() {
 
         bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
+
+                if (_binding == null) return
+
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding.overlay.visibility = View.GONE
@@ -344,6 +349,9 @@ class AudioPlayerFragment(): Fragment() {
 
             // По умолчанию slideOffset начинает меняться только после того, как шит "отлипнет" от peekHeight, то есть когда он выходит из состояния STATE_COLLAPSED.
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+                if (_binding == null) return
+
                 binding.overlay.apply {
                     visibility = View.VISIBLE
                     alpha = slideOffset.coerceIn(0f, 0.7f)

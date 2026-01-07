@@ -10,9 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.AudioPlayerFragment
-import com.bignerdranch.playlistmaker.databinding.FragmentMediaBinding
 import com.bignerdranch.playlistmaker.media.playlist.SinglePlaylistFragment
-import com.google.android.material.tabs.TabLayoutMediator
+
 
 class MediaContainerFragment : Fragment() {
 
