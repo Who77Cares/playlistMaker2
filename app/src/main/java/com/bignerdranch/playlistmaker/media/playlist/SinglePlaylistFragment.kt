@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.AudioPlayerFragment
 import com.bignerdranch.playlistmaker.databinding.FragmentPlaylistSingleBinding
-import com.bignerdranch.playlistmaker.media.db_favorite.ui.FavoriteAdapter
 import com.bignerdranch.playlistmaker.media.new_playlist.db_playlists.domain.PlaylistModel
 import com.bignerdranch.playlistmaker.media.new_playlist.ui.NewPlaylistFragment
 import com.bignerdranch.playlistmaker.search.domain.network.Track

@@ -1,4 +1,4 @@
-package com.bignerdranch.playlistmaker.media.db_favorite.ui
+package com.bignerdranch.playlistmaker.media.playlist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,6 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+// адаптер использовался также в FavoriteTracksFragment до перехода на компоуз
 class FavoriteAdapter(
     private val onItemClick: (Track) -> Unit,
     private val onLongItemClick: (trackId: Int) -> Unit

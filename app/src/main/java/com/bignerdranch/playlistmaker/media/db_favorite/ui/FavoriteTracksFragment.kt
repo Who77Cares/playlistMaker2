@@ -4,82 +4,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+
 import com.bignerdranch.playlistmaker.R
 import com.bignerdranch.playlistmaker.audio.ui.AudioPlayerFragment
-import com.bignerdranch.playlistmaker.databinding.FragmentFavoriteMediaBinding
+
 import com.bignerdranch.playlistmaker.search.domain.network.Track
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteTracksFragment: Fragment() {
-
-    private val adapter = FavoriteAdapter(
-        onItemClick = { track -> onTrackClicked(track) },
-        onLongItemClick = {  }
-    )
-
-
-    companion object {
-        fun newInstance(): FavoriteTracksFragment {
-            return FavoriteTracksFragment().apply {
-                arguments = Bundle().apply {
-                    // если нужно будет передать данные — положим сюда
-                } } }
-    }
-
-    private var _binding: FragmentFavoriteMediaBinding? = null
-    private val binding get() = _binding!!
-
-    private val viewModel: FavoriteTracksViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentFavoriteMediaBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(
+                ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+            )
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.favoriteRecycleView.layoutManager = LinearLayoutManager(requireContext())
-        binding.favoriteRecycleView.adapter = adapter
-
-        viewModel.fillData()
-
-        viewModel.observeState().observe(viewLifecycleOwner) {
-            render(it)
+            setContent {
+                FavoriteTracksCompose(
+                    onTrackClicked = { track -> onTrackClicked(track) }
+                )
+            }
         }
-
-    }
-
-    private fun render(state: FavoriteTrackState) {
-        when(state) {
-            is FavoriteTrackState.Content -> showContent(state.tracks)
-            is FavoriteTrackState.Empty -> showEmpty()
-        }
-    }
-
-    private fun showContent(track: List<Track>) {
-
-        binding.favoriteRecycleView.visibility = View.VISIBLE
-        binding.favoritePlaceholderImge.visibility = View.GONE
-        binding.favoritePlaceholderText.visibility = View.GONE
-
-        adapter.tracks.clear()
-        adapter.tracks.addAll(track)
-        adapter.notifyDataSetChanged()
-    }
-
-    private fun showEmpty() {
-        binding.favoriteRecycleView.visibility = View.GONE
-        binding.favoritePlaceholderImge.visibility = View.VISIBLE
-        binding.favoritePlaceholderText.visibility = View.VISIBLE
     }
 
     private fun onTrackClicked(track: Track) {
@@ -88,10 +40,4 @@ class FavoriteTracksFragment: Fragment() {
             AudioPlayerFragment.Companion.createArgs(track)
         )
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
 }

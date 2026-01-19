@@ -4,48 +4,52 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bignerdranch.playlistmaker.R
-import com.bignerdranch.playlistmaker.databinding.FragmentMediaBinding
-import com.google.android.material.tabs.TabLayoutMediator
+import com.bignerdranch.playlistmaker.audio.ui.AudioPlayerFragment
+import com.bignerdranch.playlistmaker.media.playlist.SinglePlaylistFragment
 
-class MediaContainerFragment: Fragment() {
 
-    private var _binding: FragmentMediaBinding? = null
-    private val binding get() = _binding!!
-
-    private lateinit var tabMediator: TabLayoutMediator
-
+class MediaContainerFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMediaBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(
+                ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+            )
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+            setContent {
+                MediaContainerCompose(
+                    onTrackClicked = { track ->
+                        findNavController().navigate(
+                            R.id.action_mediaFragment_to_audioPlayerFragment,
+                            AudioPlayerFragment.Companion.createArgs(track)// передаем аргументы трека
+                        )
+                    },
+                    onPlaylistClicked = { playlist ->
+                        findNavController().navigate(
+                            R.id.action_mediaFragment_to_singlePlaylistFragment,
+                            SinglePlaylistFragment.Companion.createArgs(playlist)
+                        )
+                    },
 
-        binding.viewPager.adapter = MediaViewPagerAdapter(this)
+                    onCreatePlaylistClicked = { // ← теперь есть этот параметр!
+                        findNavController().navigate(
+                            R.id.action_favoriteMediaFragment_to_newPlaylistFragment
+                        )
+                    }
 
-        tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            when (position) {
-                0 -> tab.text = getString(R.string.tab1)
-                1 -> tab.text = getString(R.string.tab2)
+                    )
             }
         }
-        tabMediator.attach()
-
-
     }
-    override fun onDestroyView() {
-        super.onDestroyView()
-        tabMediator.detach()
-        _binding = null
-
-    }
-
 }
+
+

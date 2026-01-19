@@ -19,18 +19,32 @@ class SearchViewModel(
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
     private var searchJob: Job? = null
+    private var lastSearchText: String = ""
 
     private val stateLiveData = MutableLiveData<TrackState>()
-    fun observerState(): LiveData<TrackState> = stateLiveData
+    val state: LiveData<TrackState> = stateLiveData
+
+    private var isClickAllowed = true
+
+    //    fun observerState(): LiveData<TrackState> = stateLiveData
+    private var lastSearchQuery: String? = null
+
 
     // метод для получения текущего состояния
     fun getCurrentState(): TrackState? = stateLiveData.value
 
-    private var lastSearchText: String = ""
 
+    // Метод для повторного поиска
+    fun retryLastSearch() {
+        lastSearchQuery?.let { query ->
+            searchRequest(query)
+        }
+    }
 
     // отложенный запрос в сеть через 2 сек после ввода текста в эдиттекст
     fun searchDebounce(newText: String, forceUpdate: Boolean = false) {
@@ -39,6 +53,7 @@ class SearchViewModel(
 
         if (newText.isEmpty()) {
             loadHistory()
+            lastSearchQuery = null
             return
         }
 
@@ -47,6 +62,8 @@ class SearchViewModel(
         if (lastSearchText != newText || forceUpdate) {
 
             lastSearchText = newText
+            lastSearchQuery = newText
+
             searchJob = viewModelScope.launch {
                 delay(SEARCH_DEBOUNCE_DELAY)
                 searchRequest(newText)
@@ -55,62 +72,47 @@ class SearchViewModel(
     }
 
 
-    private fun searchRequest(newSearchText: String) {
-        Log.d("SearchViewModel", "searchRequest called with: \"$newSearchText\"")
-        if (newSearchText.isEmpty()) {
+    private fun searchRequest(searchText: String) {
+        if (searchText.isEmpty()) return
 
-            return
+        // Сохраняем запрос для возможного retry
+        lastSearchQuery = searchText
 
+        stateLiveData.value = TrackState.Loading
+
+        viewModelScope.launch {
+            trackInteractor
+                .searchTrack(searchText)
+                .collect { pair ->
+                    processResult(pair.first, pair.second)
+                }
         }
-
-        renderState( TrackState.Loading )
-
-       viewModelScope.launch {
-           trackInteractor
-               .searchTrack(newSearchText)
-               .collect { pair ->
-                   processResult(pair.first, pair.second)
-               }
-       }
-
     }
+
 
     private fun processResult(foundTracks: List<Track>?, errorMessage: String?) {
-        val tracks = mutableListOf<Track>()
+        val tracks = foundTracks ?: emptyList()
 
-
-        if(foundTracks != null) {
-            tracks.addAll(foundTracks)
-
-        }
         when (errorMessage) {
-            "Проверьте подключение к интернету" -> {
-                renderState(TrackState.Error(errorMessage))
-            }
-
+            "Проверьте подключение к интернету",
             "Ошибка сервера" -> {
-                renderState(TrackState.Error(errorMessage))
+                stateLiveData.value = TrackState.Error(errorMessage!!)
             }
-
             "Ничего не найдено" -> {
-                renderState(TrackState.Empty(errorMessage))
+                stateLiveData.value = TrackState.Empty(errorMessage!!)
             }
             else -> {
-                renderState(TrackState.Content(tracks))
+                stateLiveData.value = TrackState.Content(tracks)
             }
         }
-
     }
 
-    fun renderState(state: TrackState) {
-        stateLiveData.setValue(state)
-    }
 
     fun loadHistory() {
         historyTrackInteractor.getHistory(
             object : SearchHistoryInteractor.HistoryConsumer {
                 override fun consume(searchHistory: List<Track>?) {
-                    renderState(TrackState.History(searchHistory?: emptyList()))
+                    stateLiveData.value = TrackState.History(searchHistory ?: emptyList())
                 }
 
             }
@@ -124,6 +126,18 @@ class SearchViewModel(
     fun clearHistory() {
         historyTrackInteractor.clearHistory()
         loadHistory()
+    }
+
+    // Click debounce для Compose
+    suspend fun clickDebounce(): Boolean {
+        return if (isClickAllowed) {
+            isClickAllowed = false
+            delay(CLICK_DEBOUNCE_DELAY)
+            isClickAllowed = true
+            true
+        } else {
+            false
+        }
     }
 
 }

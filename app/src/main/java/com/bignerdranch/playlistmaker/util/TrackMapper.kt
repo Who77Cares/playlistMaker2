@@ -80,10 +80,15 @@ class TrackMapper {
     }
 
     fun formatYear(track: Track): String {
-        val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-            .parse(track.releaseDate)
+        if (track.releaseDate == null || track.releaseDate.isEmpty()) {
+            return ""
+        }
+        else {
+            val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+                .parse(track.releaseDate)
 
-        return SimpleDateFormat("yyyy", Locale.getDefault()).format(date!!)
+          return SimpleDateFormat("yyyy", Locale.getDefault()).format(date)
+        }
     }
 
 
