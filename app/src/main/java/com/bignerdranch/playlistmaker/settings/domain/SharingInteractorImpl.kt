@@ -15,6 +15,8 @@ class SharingInteractorImpl(
         )
     }
 
+
+
     override fun openSupport() {
         navigator.openEmail(
             email = textProvider.getSupportEmail(),
@@ -26,6 +28,7 @@ class SharingInteractorImpl(
     override fun openLink() {
         navigator.openLink(textProvider.getTermsUrl())
     }
+
 
 
 
